@@ -8,8 +8,19 @@
 import ProjectDescription
 
 let dependencies = Dependencies(
-    swiftPackageManager: [
-        .remote(url: "https://github.com/Alamofire/Alamofire", requirement: .upToNextMajor(from: "5.0.0")),
-    ],
+    carthage: [],
+    swiftPackageManager: .init([
+        .moya,
+        .swiftyJSON,
+        .kingfisher,
+        .firebaseSdk,
+    ]),
     platforms: [.iOS]
 )
+
+public extension Package {
+    static let moya: Package = .remote(url: "https://github.com/Moya/Moya.git", requirement: .branch("master"))
+    static let swiftyJSON: Package = .remote(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", requirement: .branch("master"))
+    static let kingfisher: Package = .remote(url: "https://github.com/onevcat/Kingfisher.git", requirement: .branch("master"))
+    static let firebaseSdk: Package = .remote(url: "https://github.com/firebase/firebase-ios-sdk.git", requirement: .upToNextMajor(from: "10.9.0"))
+}

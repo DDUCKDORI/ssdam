@@ -38,8 +38,12 @@ let project = Project(
             sources: ["Targets/Ssdam/Sources/**"],
             resources: ["Targets/Ssdam/Resources/**"],
             dependencies: [
-                .external(name: "Alamofire"),
-            ]
+                .kingfisher,
+                .firebaseAnalytics,
+                .firebaseCrashlytics,
+                .firebaseDynamicLinks,
+                .firebaseRemoteConfig
+            ] + [Module.data, Module.domain, Module.network].map(\.project)
         ),
     ]
 )

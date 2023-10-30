@@ -88,7 +88,7 @@ extension Project {
 }
 
 extension Project {
-    static let organizationName = "com.dduckdori.Ssdam"
+    static let organizationName = "com.dduckdori"
 }
 
 public extension Project {
