@@ -5,6 +5,18 @@ import ProjectDescription
 /// Create your own conventions, e.g: a func that makes sure all shared targets are "static frameworks"
 /// See https://docs.tuist.io/guides/helpers/
 
+import ProjectDescription
+
+public extension TargetDependency {
+    static let moya: TargetDependency = .external(name: "Moya")
+    static let swiftyJSON: TargetDependency = .external(name: "SwiftyJSON")
+    static let kingfisher: TargetDependency = .external(name: "Kingfisher")
+    static let firebaseRemoteConfig: TargetDependency = .external(name: "FirebaseRemoteConfig")
+    static let firebaseAnalytics: TargetDependency = .external(name: "FirebaseAnalytics")
+    static let firebaseDynamicLinks: TargetDependency = .external(name: "FirebaseDynamicLinks")
+    static let firebaseCrashlytics: TargetDependency = .external(name: "FirebaseCrashlytics")
+}
+
 extension Project {
     /// Helper function to create the Project for this ExampleApp
     public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
@@ -13,7 +25,7 @@ extension Project {
                                      dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
         targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
         return Project(name: name,
-                       organizationName: "tuist.io",
+                       organizationName: "com.dduckdori",
                        targets: targets)
     }
 
@@ -24,7 +36,7 @@ extension Project {
         let sources = Target(name: name,
                 platform: platform,
                 product: .framework,
-                bundleId: "io.tuist.\(name)",
+                bundleId: "com.dduckdori.\(name)",
                 infoPlist: .default,
                 sources: ["Targets/\(name)/Sources/**"],
                 resources: [],
@@ -32,7 +44,7 @@ extension Project {
         let tests = Target(name: "\(name)Tests",
                 platform: platform,
                 product: .unitTests,
-                bundleId: "io.tuist.\(name)Tests",
+                bundleId: "com.dduckdori.\(name)Tests",
                 infoPlist: .default,
                 sources: ["Targets/\(name)/Tests/**"],
                 resources: [],
@@ -54,7 +66,7 @@ extension Project {
             name: name,
             platform: platform,
             product: .app,
-            bundleId: "io.tuist.\(name)",
+            bundleId: "com.dduckdori.\(name)",
             infoPlist: .extendingDefault(with: infoPlist),
             sources: ["Targets/\(name)/Sources/**"],
             resources: ["Targets/\(name)/Resources/**"],
@@ -65,12 +77,60 @@ extension Project {
             name: "\(name)Tests",
             platform: platform,
             product: .unitTests,
-            bundleId: "io.tuist.\(name)Tests",
+            bundleId: "com.dduckdori.\(name)Tests",
             infoPlist: .default,
             sources: ["Targets/\(name)/Tests/**"],
             dependencies: [
                 .target(name: "\(name)")
         ])
         return [mainTarget, testTarget]
+    }
+}
+
+extension Project {
+    static let organizationName = "com.dduckdori.Ssdam"
+}
+
+public extension Project {
+    static func module(
+        name: String,
+        dependencies: [TargetDependency],
+        additionalTargets: [String],
+        resources: ProjectDescription.ResourceFileElements? = nil) -> Project {
+//        let settings: Settings = makeAppSettings()
+
+        let targets: [Target] = [
+            Target(
+                name: name,
+                platform: .iOS,
+                product: .framework,
+                bundleId: "\(organizationName).\(name)",
+                deploymentTarget: .iOS(targetVersion: "15.0",
+                                       devices: [.iphone]),
+                infoPlist: .default,
+                sources: ["Sources/**"],
+                resources: resources,
+                dependencies: dependencies
+//                settings: settings
+            )
+        ]
+
+//        let schemes: [Scheme] = [
+//            Scheme(
+//                name: "\(name)",
+//                shared: true,
+//                buildAction: .buildAction(targets: [".\(name)"]),
+//                testAction: .targets(["\(name)Tests"]),
+//                runAction: .runAction(configuration: .debug,
+//                                      executable: "\(name)"),
+//                archiveAction: .archiveAction(configuration: .debug))
+//        ]
+
+        return Project(name: name,
+                       organizationName: organizationName,
+//                       settings: settings,
+                       targets: targets
+//                       schemes: schemes
+        )
     }
 }

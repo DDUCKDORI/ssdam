@@ -26,13 +26,13 @@ let localHelper = LocalHelper(name: "MyPlugin")
 // Creates our project using a helper function defined in ProjectDescriptionHelpers
 let project = Project(
     name: "Ssdam",
-    organizationName: "tuist.io",
+    organizationName: "com.dduckdori",
     targets: [
         Target(
             name: "Ssdam",
             platform: .iOS,
             product: .app,
-            bundleId: "io.tuist.Ssdam",
+            bundleId: "com.dduckdori.Ssdam",
             deploymentTarget: .iOS(targetVersion: "16.4", devices: .iphone),
             infoPlist: .default,
             sources: ["Targets/Ssdam/Sources/**"],
