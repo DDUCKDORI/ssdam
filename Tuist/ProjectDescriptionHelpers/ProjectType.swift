@@ -11,20 +11,16 @@ public enum Module: CaseIterable {
     case app
     case domain
     case data
-    case utils
     case network
-//    case designSystem
 }
 
 public extension Module {
     var name: String {
         switch self {
-        case .app: return "ggugeApp"
+        case .app: return "SsdamApp"
         case .domain: return "Domain"
         case .data: return "Data"
-        case .utils: return "Utils"
         case .network: return "Networking"
-//        case .designSystem: return "DesignSystem"
         }
     }
 
