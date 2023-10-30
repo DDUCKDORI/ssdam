@@ -9,6 +9,7 @@ import ProjectDescription
 
 public extension TargetDependency {
     static let moya: TargetDependency = .external(name: "Moya")
+    static let combineMoya: TargetDependency = .external(name: "CombineMoya")
     static let swiftyJSON: TargetDependency = .external(name: "SwiftyJSON")
     static let kingfisher: TargetDependency = .external(name: "Kingfisher")
     static let firebaseRemoteConfig: TargetDependency = .external(name: "FirebaseRemoteConfig")

@@ -10,6 +10,6 @@ import ProjectDescriptionHelpers
 
 let project = Project.module(
     name: Module.network.name,
-    dependencies: [.moya],
+    dependencies: [.moya, .combineMoya],
     additionalTargets: []
 )
