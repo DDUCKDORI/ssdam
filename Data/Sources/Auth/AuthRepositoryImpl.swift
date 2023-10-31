@@ -14,7 +14,7 @@ import SwiftyJSON
 public final class AuthRepositoryImpl: AuthRepository {
     private let client: APIClient
 
-    init(client: APIClient) {
+    public init(client: APIClient) {
         self.client = client
     }
 
