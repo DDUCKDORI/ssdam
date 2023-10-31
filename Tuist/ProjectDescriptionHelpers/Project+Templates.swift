@@ -28,6 +28,10 @@ extension Project {
         targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
         return Project(name: name,
                        organizationName: "com.dduckdori",
+                       options: .options(
+                        disableBundleAccessors: true,
+                        disableSynthesizedResourceAccessors: true
+                       ),
                        targets: targets)
     }
 
@@ -42,6 +46,7 @@ extension Project {
                 infoPlist: .default,
                 sources: ["Targets/\(name)/Sources/**"],
                 resources: [],
+                entitlements: .relativeToRoot("\(Module.app.name)/Entitlements/Ssdam.entitlements"),
                 dependencies: [])
         let tests = Target(name: "\(name)Tests",
                 platform: platform,

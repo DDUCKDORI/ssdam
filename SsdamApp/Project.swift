@@ -10,7 +10,7 @@ import ProjectDescriptionHelpers
 
 let project = Project(
     name: "Ssdam",
-    organizationName: "com.dduckdori",
+    organizationName: "com.dduckdori", options: .options(disableBundleAccessors: true, disableSynthesizedResourceAccessors: true),
     targets: [
         Target(
             name: "Ssdam",
@@ -18,17 +18,19 @@ let project = Project(
             product: .app,
             bundleId: "com.dduckdori.Ssdam",
             deploymentTarget: .iOS(targetVersion: "16.4", devices: .iphone),
-            infoPlist: .default,
+            infoPlist: "Config/Ssdam-Info.plist",
             sources: ["Sources/**"],
             resources: ["Resources/**"],
+            entitlements: .relativeToRoot("SsdamApp/Entitlements/Ssdam.entitlements"),
             dependencies: [
                 .kingfisher,
                 .firebaseAnalytics,
                 .firebaseCrashlytics,
                 .firebaseDynamicLinks,
                 .firebaseRemoteConfig,
-                .tca,
+                .tca
             ] + [Module.data, Module.domain, Module.network].map(\.project)
         ),
     ]
 )
+ 
