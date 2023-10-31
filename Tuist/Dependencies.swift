@@ -14,6 +14,7 @@ let dependencies = Dependencies(
         .swiftyJSON,
         .kingfisher,
         .firebaseSdk,
+        .tca
     ]),
     platforms: [.iOS]
 )
@@ -23,4 +24,5 @@ public extension Package {
     static let swiftyJSON: Package = .remote(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", requirement: .branch("master"))
     static let kingfisher: Package = .remote(url: "https://github.com/onevcat/Kingfisher.git", requirement: .branch("master"))
     static let firebaseSdk: Package = .remote(url: "https://github.com/firebase/firebase-ios-sdk.git", requirement: .upToNextMajor(from: "10.9.0"))
+    static let tca: Package = .remote(url: "https://github.com/pointfreeco/swift-composable-architecture.git", requirement: .branch("main"))
 }

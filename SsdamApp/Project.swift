@@ -26,7 +26,8 @@ let project = Project(
                 .firebaseAnalytics,
                 .firebaseCrashlytics,
                 .firebaseDynamicLinks,
-                .firebaseRemoteConfig
+                .firebaseRemoteConfig,
+                .tca,
             ] + [Module.data, Module.domain, Module.network].map(\.project)
         ),
     ]
