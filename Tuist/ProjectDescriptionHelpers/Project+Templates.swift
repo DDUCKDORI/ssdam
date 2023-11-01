@@ -21,11 +21,11 @@ public extension TargetDependency {
 
 extension Project {
     /// Helper function to create the Project for this ExampleApp
-    public static func app(name: String, platform: Platform, additionalTargets: [String]) -> Project {
+    public static func app(name: String, platform: Platform, dependencies: [TargetDependency], additionalTargets: [String]) -> Project {
         var targets = makeAppTargets(name: name,
                                      platform: platform,
-                                     dependencies: additionalTargets.map { TargetDependency.target(name: $0) })
-        targets += additionalTargets.flatMap({ makeFrameworkTargets(name: $0, platform: platform) })
+                                     dependencies: dependencies)
+        
         return Project(name: name,
                        organizationName: "com.dduckdori",
                        options: .options(
@@ -52,8 +52,8 @@ extension Project {
                 platform: platform,
                 product: .unitTests,
                 bundleId: "com.dduckdori.\(name)Tests",
-                infoPlist: .default,
-                sources: ["Targets/\(name)/Tests/**"],
+                infoPlist: "Config/SsdamTest-Info.plist",
+                sources: ["Tests/**"],
                 resources: [],
                 dependencies: [.target(name: name)])
         return [sources, tests]
@@ -62,21 +62,22 @@ extension Project {
     /// Helper function to create the application target and the unit test target.
     private static func makeAppTargets(name: String, platform: Platform, dependencies: [TargetDependency]) -> [Target] {
         let platform: Platform = platform
-        let infoPlist: [String: InfoPlist.Value] = [
-            "CFBundleShortVersionString": "1.0",
-            "CFBundleVersion": "1",
-            "UIMainStoryboardFile": "",
-            "UILaunchStoryboardName": "LaunchScreen"
-            ]
+//        let infoPlist: [String: InfoPlist.Value] = [
+//            "CFBundleShortVersionString": "1.0",
+//            "CFBundleVersion": "1",
+//            "UIMainStoryboardFile": "",
+//            "UILaunchStoryboardName": "LaunchScreen"
+//            ]
 
         let mainTarget = Target(
             name: name,
             platform: platform,
             product: .app,
             bundleId: "com.dduckdori.\(name)",
-            infoPlist: .extendingDefault(with: infoPlist),
-            sources: ["Targets/\(name)/Sources/**"],
-            resources: ["Targets/\(name)/Resources/**"],
+            infoPlist: "Config/Ssdam-Info.plist",
+            sources: ["Sources/**"],
+            resources: ["Resources/**"],
+            entitlements: .relativeToRoot("\(Module.app.name)/Entitlements/Ssdam.entitlements"),
             dependencies: dependencies
         )
 
@@ -85,8 +86,8 @@ extension Project {
             platform: platform,
             product: .unitTests,
             bundleId: "com.dduckdori.\(name)Tests",
-            infoPlist: .default,
-            sources: ["Targets/\(name)/Tests/**"],
+            infoPlist: "Config/SsdamTest-Info.plist",
+            sources: ["Tests/**"],
             dependencies: [
                 .target(name: "\(name)")
         ])

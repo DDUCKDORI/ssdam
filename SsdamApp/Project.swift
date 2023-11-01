@@ -8,29 +8,14 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 
-let project = Project(
+let project = Project.app(
     name: "Ssdam",
-    organizationName: "com.dduckdori", options: .options(disableBundleAccessors: true, disableSynthesizedResourceAccessors: true),
-    targets: [
-        Target(
-            name: "Ssdam",
-            platform: .iOS,
-            product: .app,
-            bundleId: "com.dduckdori.Ssdam",
-            deploymentTarget: .iOS(targetVersion: "16.4", devices: .iphone),
-            infoPlist: "Config/Ssdam-Info.plist",
-            sources: ["Sources/**"],
-            resources: ["Resources/**"],
-            entitlements: .relativeToRoot("SsdamApp/Entitlements/Ssdam.entitlements"),
-            dependencies: [
-                .kingfisher,
-                .firebaseAnalytics,
-                .firebaseCrashlytics,
-                .firebaseDynamicLinks,
-                .firebaseRemoteConfig,
-                .tca
-            ] + [Module.data, Module.domain, Module.network].map(\.project)
-        ),
-    ]
-)
- 
+    platform: .iOS,
+    dependencies: [
+        .kingfisher,
+        .firebaseAnalytics,
+        .firebaseCrashlytics,
+        .firebaseDynamicLinks,
+        .firebaseRemoteConfig,
+        .tca
+    ] + [Module.data, Module.domain, Module.network].map(\.project), additionalTargets: [])
