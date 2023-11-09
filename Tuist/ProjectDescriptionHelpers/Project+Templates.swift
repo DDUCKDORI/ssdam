@@ -28,10 +28,10 @@ extension Project {
         
         return Project(name: name,
                        organizationName: "com.dduckdori",
-                       options: .options(
-                        disableBundleAccessors: true,
-                        disableSynthesizedResourceAccessors: true
-                       ),
+//                       options: .options(
+//                        disableBundleAccessors: true,
+//                        disableSynthesizedResourceAccessors: true
+//                       ),
                        targets: targets)
     }
 

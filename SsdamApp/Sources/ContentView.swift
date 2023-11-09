@@ -1,7 +1,6 @@
 import SwiftUI
 
 public struct ContentView: View {
-    public init() {}
 
     public var body: some View {
         VStack {
@@ -13,7 +12,6 @@ public struct ContentView: View {
                 .padding()
             Text("Hello, World!")
                 .font(.custom("Pretendard-SemiBold", size: 50))
-                .foregroundStyle(Colors.gray10)
                 .padding()
         }
         .onAppear {
