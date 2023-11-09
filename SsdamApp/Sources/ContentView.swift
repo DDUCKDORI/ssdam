@@ -13,6 +13,7 @@ public struct ContentView: View {
                 .padding()
             Text("Hello, World!")
                 .font(.custom("Pretendard-SemiBold", size: 50))
+                .foregroundStyle(Colors.gray10)
                 .padding()
         }
         .onAppear {
