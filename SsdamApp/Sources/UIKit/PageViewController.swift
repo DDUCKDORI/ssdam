@@ -14,7 +14,7 @@ struct PageViewController<Page: View>: UIViewControllerRepresentable {
     @Binding var currentPage: Int
     
     func makeUIViewController(context: Context) -> UIPageViewController {
-        let pageViewController = UIPageViewController(transitionStyle: .pageCurl, navigationOrientation: .horizontal)
+        let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
         
         pageViewController.dataSource = context.coordinator
         pageViewController.delegate = context.coordinator
@@ -23,7 +23,7 @@ struct PageViewController<Page: View>: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ pageViewController: UIPageViewController, context: Context) {
-        pageViewController.setViewControllers([context.coordinator.controllers[currentPage]], direction: .forward, animated: false)
+        pageViewController.setViewControllers([context.coordinator.controllers[currentPage]], direction: .forward, animated: true)
         pageViewController.dataSource = context.coordinator
     }
     

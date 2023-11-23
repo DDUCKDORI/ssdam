@@ -16,13 +16,13 @@ struct SelectableButtonModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .font(.pButton)
-            .foregroundStyle(Color(.black))
+            .foregroundStyle(Color(.systemBlack))
             .padding(.vertical, 16)
             .frame(maxWidth: .infinity)
-            .background(isSelected ? Color(.yellowSecondary) : .white)
+            .background(isSelected ? Color(.mint50) : .white)
             .clipShape(.rect(cornerRadius: 10))
             .overlay(isSelected ? nil : RoundedRectangle(cornerRadius: 10)
-                .stroke(Color(.yellowSecondary), lineWidth: 2)
+                .stroke(Color(.mint50), lineWidth: 2)
             )
     }
 }
