@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "checkmark.circle.min.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
