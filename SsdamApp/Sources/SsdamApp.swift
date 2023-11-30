@@ -7,18 +7,17 @@
 //
 
 import SwiftUI
-import FirebaseCore
+import ComposableArchitecture
 
 @main
 struct SsdamApp: App {
-    init() {
-        FirebaseApp.configure()
-    }
+    @Dependency(\.screenRouter) var screenRouter
+    @UIApplicationDelegateAdaptor var delegate: AppDelegate
+    
+    
     var body: some Scene {
         WindowGroup {
-            ContentView(store: .init(initialState: MainReducer.State(), reducer: {
-                MainReducer()
-            }))
+            screenRouter.start(.login)
         }
     }
 }

@@ -17,9 +17,20 @@ extension AuthUseCaseImpl: DependencyKey {
     }
 }
 
+extension Router: DependencyKey {
+    public static var liveValue: ScreenRouter {
+        ScreenRouter(factory: .init())
+    }
+}
+
 extension DependencyValues {
     var authUseCase: AuthUseCaseImpl {
         get { self[AuthUseCaseImpl.self] }
         set { self[AuthUseCaseImpl.self] = newValue }
+    }
+    
+    var screenRouter: ScreenRouter {
+        get { self[ScreenRouter.self] }
+        set { self[ScreenRouter.self] = newValue}
     }
 }
