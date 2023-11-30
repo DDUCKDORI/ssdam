@@ -17,7 +17,6 @@ enum UserType {
 struct UserTypeReducer: Reducer {
     struct State: Equatable {
         var userType: UserType? = nil
-        var page: Int
     }
     
     enum Action: Equatable {
@@ -29,7 +28,6 @@ struct UserTypeReducer: Reducer {
             switch action {
             case let .userTypeTapped(type):
                 state.userType = type
-                state.page += 1
                 return .none
             }
         }
@@ -38,6 +36,7 @@ struct UserTypeReducer: Reducer {
 
 struct UserTypeView: View {
     let store: StoreOf<UserTypeReducer>
+    @Binding var page: Int
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             VStack(spacing: 16) {
@@ -47,7 +46,8 @@ struct UserTypeView: View {
                 
                 HStack {
                     Button(action: {
-                        viewStore.send(.userTypeTapped(.parent))
+                        page += 1
+//                        viewStore.send(.userTypeTapped(.parent))
                     }, label: {
                         Text("부모")
                             .selectableButton(viewStore.userType == .parent ? .constant(true) : .constant(false))
@@ -60,6 +60,7 @@ struct UserTypeView: View {
                     })
                 }
             }
+            .padding(.horizontal, 30)
         }
     }
 }

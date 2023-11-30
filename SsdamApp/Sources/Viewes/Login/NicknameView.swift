@@ -23,21 +23,20 @@ struct NicknameReducer: Reducer {
         case agreeAllToggled(Bool)
         case serviceAgreementToggled(Bool)
         case privacyAgreementToggled(Bool)
-        
     }
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case let .nicknameChanged(nickname):
-                state.nickname = nickname
+            case let .nicknameChanged(newValue):
+                state.nickname = newValue
+                print(state.nickname)
                 return .none
             case let .nicknameValidation(newValue):
                 if newValue.count > 10 {
                     state.nickname.removeLast()
                     return .none
                 }
-                // validation check
                 if newValue.count > 1 {
                     state.isValid = true
                     return .none
@@ -75,15 +74,18 @@ struct NicknameView: View {
                     .foregroundStyle(Color(.systemBlack))
                 
                 ZStack(alignment: .trailing) {
-                    TextField("1~10자 이내 작성", text: viewStore.binding(get: \.nickname, send: .nicknameChanged(viewStore.nickname)))
-                        .font(.pButton)
-                        .foregroundStyle(Color(.systemBlack))
-                        .padding(.vertical, 16)
-                        .multilineTextAlignment(.center)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.mint50), lineWidth: 2))
-                        .onChange(of: viewStore.nickname){ newValue in
-                            viewStore.send(.nicknameValidation(newValue))
-                        }
+                    TextField("1~10자 이내 작성", text: viewStore.binding(get: \.nickname, send: { value in
+                            .nicknameChanged(value)
+                    }))
+                    .font(.pButton)
+                    .foregroundStyle(Color(.systemBlack))
+                    .padding(.vertical, 16)
+                    .multilineTextAlignment(.center)
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.mint50), lineWidth: 2))
+                    .onChange(of: viewStore.nickname){ _, newValue in
+                        viewStore.send(.nicknameValidation(newValue))
+                        
+                    }
                     if viewStore.isValid {
                         Image(.checkmarkCircleMint)
                             .padding(.vertical, 16)

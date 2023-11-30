@@ -1,0 +1,73 @@
+//
+//  SignupView.swift
+//  Ssdam
+//
+//  Created by 김재민 on 2023/11/26.
+//  Copyright © 2023 com.dduckdori. All rights reserved.
+//
+
+import SwiftUI
+import ComposableArchitecture
+
+struct SignupReducer: Reducer {
+    struct State: Equatable {
+        var userType: UserTypeReducer.State = .init()
+        var nickname: NicknameReducer.State = .init()
+        var page: Int = 0
+    }
+    
+    enum Action: Equatable {
+        case userType(UserTypeReducer.Action)
+        case nickname(NicknameReducer.Action)
+        case pageChanged
+    }
+    
+    var body: some ReducerOf<Self> {
+        Scope(state: \.userType, action: /Action.userType) {
+            UserTypeReducer()
+        }
+        Scope(state: \.nickname, action: /Action.nickname) {
+            NicknameReducer()
+        }
+        Reduce { state, action in
+            switch action {
+            case .pageChanged:
+                state.page += 1
+                return .none
+            default:
+                return .none
+            }
+        }
+    }
+    
+}
+
+struct SignupView: View {
+    let store: StoreOf<SignupReducer>
+    var body: some View {
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            VStack {
+                HStack(spacing: 8) {
+                    ForEach(0 ..< 2, id: \.self) { index in
+                        Color(index <= viewStore.page ? .mint50 : .gray10)
+                            .frame(maxWidth: .infinity, maxHeight: 10)
+                    }
+                    Color(viewStore.nickname.isValid ? .mint50 : .gray10)
+                        .frame(maxWidth: .infinity, maxHeight: 10)
+                }
+                .padding(.horizontal, 30)
+                
+                PageViewController(pages: [
+                    AnyView(UserTypeView(store: self.store.scope(state: \.userType, action: SignupReducer.Action.userType), page: viewStore.binding(get: \.page, send: .pageChanged))),
+                    AnyView(NicknameView(store: self.store.scope(state: \.nickname, action: SignupReducer.Action.nickname)))
+                ], currentPage: viewStore.binding(get: \.page, send: .pageChanged))
+            }
+        }
+    }
+}
+
+#Preview {
+    SignupView(store: .init(initialState: SignupReducer.State(), reducer: {
+        SignupReducer()
+    }))
+}

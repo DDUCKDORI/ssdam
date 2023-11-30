@@ -7,12 +7,18 @@
 //
 
 import SwiftUI
+import FirebaseCore
 
 @main
 struct SsdamApp: App {
+    init() {
+        FirebaseApp.configure()
+    }
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(store: .init(initialState: MainReducer.State(), reducer: {
+                MainReducer()
+            }))
         }
     }
 }
