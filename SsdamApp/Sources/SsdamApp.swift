@@ -11,13 +11,16 @@ import ComposableArchitecture
 
 @main
 struct SsdamApp: App {
-    @Dependency(\.screenRouter) var screenRouter
+    let screenRouter = ScreenRouter(rootScreen: .login, factory: .init())
     @UIApplicationDelegateAdaptor var delegate: AppDelegate
     
     
     var body: some Scene {
         WindowGroup {
-            screenRouter.start(.login)
+            MainView(store: .init(initialState: MainReducer.State(), reducer: {
+                MainReducer()
+            }))
+            .environmentObject(screenRouter)
         }
     }
 }

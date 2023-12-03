@@ -56,12 +56,12 @@ struct SignupView: View {
                         .frame(maxWidth: .infinity, maxHeight: 10)
                 }
                 .padding(.horizontal, 30)
-                
                 PageViewController(pages: [
                     AnyView(UserTypeView(store: self.store.scope(state: \.userType, action: SignupReducer.Action.userType), page: viewStore.binding(get: \.page, send: .pageChanged))),
                     AnyView(NicknameView(store: self.store.scope(state: \.nickname, action: SignupReducer.Action.nickname)))
                 ], currentPage: viewStore.binding(get: \.page, send: .pageChanged))
             }
+            Spacer()
         }
     }
 }

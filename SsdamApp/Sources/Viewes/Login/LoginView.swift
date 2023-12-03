@@ -27,27 +27,31 @@ struct LoginReducer: Reducer {
 }
 
 struct LoginView: View {
+    @EnvironmentObject var screenRouter: ScreenRouter
+    let store: StoreOf<LoginReducer>
     var body: some View {
-        ZStack {
-            Image(.tile)
-                .resizable(resizingMode: .tile)
-                .ignoresSafeArea()
-            VStack(spacing: 263) {
-                Image(.characters)
-                    .padding(.top, 272)
-                SignInWithAppleButton(.signIn) { _ in
-                    
-                } onCompletion: { _ in
-                    
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            ZStack {
+                Image(.tile)
+                    .resizable(resizingMode: .tile)
+                    .ignoresSafeArea()
+                VStack(spacing: 263) {
+                    Image(.characters)
+                        .padding(.top, 272)
+                    SignInWithAppleButton(.signIn) { _ in
+                        
+                    } onCompletion: { _ in
+                        screenRouter.navigateTo(.signUp)
+                    }
+                    .frame(height: 56)
+                    .padding(.bottom, 112)
+                    .padding(.horizontal, 30)
                 }
-                .frame(height: 56)
-                .padding(.bottom, 112)
-                .padding(.horizontal, 30)
             }
         }
     }
 }
 
-#Preview {
-    LoginView()
-}
+//#Preview {
+//    LoginView()
+//}
