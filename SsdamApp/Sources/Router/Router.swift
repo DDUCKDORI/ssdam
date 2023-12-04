@@ -20,6 +20,7 @@ enum ScreenRoute: ScreenProtocol {
     
     case login
     case signUp
+    case signUpSuccess
     case fullScreen
     case sheetScreen
     
@@ -27,7 +28,7 @@ enum ScreenRoute: ScreenProtocol {
         switch self {
         case .login, .sheetScreen:
             return true
-        case .signUp, .fullScreen:
+        case .signUp, .signUpSuccess, .fullScreen:
             return false
         }
     }
@@ -45,6 +46,8 @@ class ScreenRouterFactory: RouterFactory {
             SignupView(store: .init(initialState: SignupReducer.State(), reducer: {
                 SignupReducer()
             }))
+        case .signUpSuccess:
+            SignUpSuccessView()
         case .fullScreen:
             EmptyView()
         case .sheetScreen:
