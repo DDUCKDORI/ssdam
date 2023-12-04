@@ -61,6 +61,7 @@ struct UserTypeView: View {
                 }
             }
             .padding(.horizontal, 30)
+            Spacer()
         }
     }
 }

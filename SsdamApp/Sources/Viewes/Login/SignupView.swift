@@ -47,6 +47,7 @@ struct SignupView: View {
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             VStack {
+                Spacer()
                 HStack(spacing: 8) {
                     ForEach(0 ..< 2, id: \.self) { index in
                         Color(index <= viewStore.page ? .mint50 : .gray10)
@@ -56,12 +57,13 @@ struct SignupView: View {
                         .frame(maxWidth: .infinity, maxHeight: 10)
                 }
                 .padding(.horizontal, 30)
+                Spacer()
                 PageViewController(pages: [
                     AnyView(UserTypeView(store: self.store.scope(state: \.userType, action: SignupReducer.Action.userType), page: viewStore.binding(get: \.page, send: .pageChanged))),
                     AnyView(NicknameView(store: self.store.scope(state: \.nickname, action: SignupReducer.Action.nickname)))
                 ], currentPage: viewStore.binding(get: \.page, send: .pageChanged))
+                .frame(maxHeight: 525)
             }
-            Spacer()
         }
     }
 }

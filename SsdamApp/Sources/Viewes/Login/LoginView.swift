@@ -41,7 +41,7 @@ struct LoginView: View {
                     SignInWithAppleButton(.signIn) { _ in
                         
                     } onCompletion: { _ in
-                        screenRouter.navigateTo(.signUp)
+                        screenRouter.change(.signUp)
                     }
                     .frame(height: 56)
                     .padding(.bottom, 112)

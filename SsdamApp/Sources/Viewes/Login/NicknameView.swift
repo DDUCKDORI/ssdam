@@ -59,6 +59,7 @@ struct NicknameReducer: Reducer {
 }
 
 struct NicknameView: View {
+    @EnvironmentObject var screenRouter: ScreenRouter
     let store: StoreOf<NicknameReducer>
     
     var body: some View {
@@ -147,7 +148,7 @@ struct NicknameView: View {
                 
                 if viewStore.isValid, viewStore.serviceAgreement, viewStore.privacyAgreement {
                     Button {
-                        
+                        screenRouter.change(.signUpSuccess)
                     } label: {
                         Text("가입하기")
                             .font(.pButton2)
@@ -160,6 +161,7 @@ struct NicknameView: View {
                 }
             }
             .padding(.horizontal, 30)
+            Spacer()
         }
     }
 }
