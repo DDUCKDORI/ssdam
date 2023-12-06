@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "guide3.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
