@@ -20,13 +20,14 @@ enum ScreenRoute: ScreenProtocol {
     
     case login
     case signUp
-    case signUpSuccess
+    case signUpSuccess(String)
+    case home
     case fullScreen
     case sheetScreen
     
     var embedInNavView: Bool {
         switch self {
-        case .login, .sheetScreen:
+        case .login, .sheetScreen, .home:
             return true
         case .signUp, .signUpSuccess, .fullScreen:
             return false
@@ -46,8 +47,14 @@ class ScreenRouterFactory: RouterFactory {
             SignupView(store: .init(initialState: SignupReducer.State(), reducer: {
                 SignupReducer()
             }))
-        case .signUpSuccess:
-            SignUpSuccessView()
+        case let .signUpSuccess(nickname):
+            SignUpSuccessView(store: .init(initialState: SignUpSuccessReducer.State(nickname: nickname), reducer: {
+                SignUpSuccessReducer()
+            }))
+        case .home:
+            TabRouterView(store: .init(initialState: TabRouterReducer.State(), reducer: {
+                TabRouterReducer()
+            }))
         case .fullScreen:
             EmptyView()
         case .sheetScreen:

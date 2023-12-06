@@ -148,7 +148,7 @@ struct NicknameView: View {
                 
                 if viewStore.isValid, viewStore.serviceAgreement, viewStore.privacyAgreement {
                     Button {
-                        screenRouter.change(.signUpSuccess)
+                        screenRouter.change(.signUpSuccess(viewStore.nickname))
                     } label: {
                         Text("가입하기")
                             .font(.pButton2)
