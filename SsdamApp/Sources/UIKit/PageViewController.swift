@@ -12,6 +12,15 @@ import UIKit
 struct PageViewController<Page: View>: UIViewControllerRepresentable {
     var pages: [Page]
     @Binding var currentPage: Int
+    let swipeable: Bool
+    let backgroundColor: Color
+    
+    init(pages: [Page], currentPage: Binding<Int>, swipeable: Bool = true, backgroundColor: Color = .clear) {
+        self.pages = pages
+        self._currentPage = currentPage
+        self.swipeable = swipeable
+        self.backgroundColor = backgroundColor
+    }
     
     func makeUIViewController(context: Context) -> UIPageViewController {
         let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
@@ -33,35 +42,68 @@ struct PageViewController<Page: View>: UIViewControllerRepresentable {
         
         init(_ pageViewController: PageViewController) {
             parent = pageViewController
-            controllers = parent.pages.map { UIHostingController(rootView: $0) }
-        }
-        func pageViewController(
-            _ pageViewController: UIPageViewController,
-            viewControllerBefore viewController: UIViewController) -> UIViewController?
-        {
-            return nil
-        }
-        
-        func pageViewController(
-            _ pageViewController: UIPageViewController,
-            viewControllerAfter viewController: UIViewController) -> UIViewController?
-        {
-            return nil
-        }
-        
-        func pageViewController(
-            _ pageViewController: UIPageViewController,
-            didFinishAnimating finished: Bool,
-            previousViewControllers: [UIViewController],
-            transitionCompleted completed: Bool) {
-                if completed,
-                   let visibleViewController = pageViewController.viewControllers?.first,
-                   let index = controllers.firstIndex(of: visibleViewController) {
-                    parent.currentPage = index
-                }
+            let color = parent.backgroundColor
+            controllers = parent.pages.map {
+                let controller = UIHostingController(rootView: $0)
+                controller.view.backgroundColor = UIColor(color)
+                return controller
             }
     }
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+    func pageViewController(
+        _ pageViewController: UIPageViewController,
+        viewControllerBefore viewController: UIViewController) -> UIViewController?
+    {
+        if !parent.swipeable {
+            return nil
+        }
+        guard let index = controllers.firstIndex(of: viewController) else {
+            return nil
+        }
+        
+        if controllers.count == 1 {
+            return nil
+        }
+        
+        if index == 0 {
+            return nil
+        }
+        return controllers[index - 1]
     }
+    
+    func pageViewController(
+        _ pageViewController: UIPageViewController,
+        viewControllerAfter viewController: UIViewController) -> UIViewController?
+    {
+        if !parent.swipeable {
+            return nil
+        }
+        guard let index = controllers.firstIndex(of: viewController) else {
+            return nil
+        }
+        if controllers.count == 1 {
+            return nil
+        }
+        
+        if index + 1 == controllers.count {
+            return nil
+        }
+        
+        return controllers[index + 1]
+    }
+    
+    func pageViewController(
+        _ pageViewController: UIPageViewController,
+        didFinishAnimating finished: Bool,
+        previousViewControllers: [UIViewController],
+        transitionCompleted completed: Bool) {
+            if completed,
+               let visibleViewController = pageViewController.viewControllers?.first,
+               let index = controllers.firstIndex(of: visibleViewController) {
+                parent.currentPage = index
+            }
+        }
+}
+func makeCoordinator() -> Coordinator {
+    Coordinator(self)
+}
 }
