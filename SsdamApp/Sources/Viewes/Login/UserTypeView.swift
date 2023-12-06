@@ -46,14 +46,14 @@ struct UserTypeView: View {
                 
                 HStack {
                     Button(action: {
-                        page += 1
+                        page = 1
 //                        viewStore.send(.userTypeTapped(.parent))
                     }, label: {
                         Text("부모")
                             .selectableButton(viewStore.userType == .parent ? .constant(true) : .constant(false))
                     })
                     Button(action: {
-                        viewStore.send(.userTypeTapped(.child))
+                        page = 1
                     }, label: {
                         Text("아이")
                             .selectableButton(viewStore.userType == .child ? .constant(true) : .constant(false))

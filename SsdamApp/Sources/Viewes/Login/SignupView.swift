@@ -32,7 +32,7 @@ struct SignupReducer: Reducer {
         Reduce { state, action in
             switch action {
             case .pageChanged:
-                state.page += 1
+                state.page = 1
                 return .none
             default:
                 return .none
@@ -50,7 +50,7 @@ struct SignupView: View {
                 Spacer()
                 HStack(spacing: 8) {
                     ForEach(0 ..< 2, id: \.self) { index in
-                        Color(index <= viewStore.page ? .mint50 : .gray10)
+                        Color(index <= viewStore.page ? .mint50 : .gray20)
                             .frame(maxWidth: .infinity, maxHeight: 10)
                     }
                     Color(viewStore.nickname.isValid ? .mint50 : .gray10)
@@ -61,7 +61,7 @@ struct SignupView: View {
                 PageViewController(pages: [
                     AnyView(UserTypeView(store: self.store.scope(state: \.userType, action: SignupReducer.Action.userType), page: viewStore.binding(get: \.page, send: .pageChanged))),
                     AnyView(NicknameView(store: self.store.scope(state: \.nickname, action: SignupReducer.Action.nickname)))
-                ], currentPage: viewStore.binding(get: \.page, send: .pageChanged))
+                ], currentPage: viewStore.binding(get: \.page, send: .pageChanged), swipeable: false)
                 .frame(maxHeight: 525)
             }
         }
