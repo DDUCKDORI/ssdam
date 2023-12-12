@@ -48,22 +48,28 @@ struct TabRouterView: View {
     let store: StoreOf<TabRouterReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
+            HStack {
+                Image(.logo)
+                Spacer()
+                Image(.setting)
+            }
+            .padding(.horizontal, 28)
             TabView(selection: viewStore.binding(get: \.tab, send: { value in
                     .tabChanged(value)
             }), content: {
-                Color(.mint50)
+                Text("Calendar")
                     .ignoresSafeArea(edges: .top)
                     .tabItem { Image(.calendar)
                             .renderingMode(.template)
                     }
                     .tag(TabRouterReducer.Tab.calendar)
-                Color(.yellow50)
+                Text("Home")
                     .ignoresSafeArea(edges: .top)
                     .tabItem { Image(.home)
                             .renderingMode(.template)
                     }
                     .tag(TabRouterReducer.Tab.home)
-                Color(.gray50)
+                Text("Share")
                     .ignoresSafeArea(edges: .top)
                     .tabItem { Image(.share)
                         .renderingMode(.template) }
