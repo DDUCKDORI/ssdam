@@ -35,9 +35,10 @@ struct LoginView: View {
                 Image(.tile)
                     .resizable(resizingMode: .tile)
                     .ignoresSafeArea()
-                VStack(spacing: 263) {
+                VStack {
+                    Spacer()
                     Image(.characters)
-                        .padding(.top, 272)
+                    Spacer()
                     SignInWithAppleButton(.signIn) { _ in
                         
                     } onCompletion: { _ in

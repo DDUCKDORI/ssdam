@@ -53,7 +53,7 @@ struct SignupView: View {
                         Color(index <= viewStore.page ? .mint50 : .gray20)
                             .frame(maxWidth: .infinity, maxHeight: 10)
                     }
-                    Color(viewStore.nickname.isValid ? .mint50 : .gray10)
+                    Color(viewStore.nickname.isValid ? .mint50 : .gray20)
                         .frame(maxWidth: .infinity, maxHeight: 10)
                 }
                 .padding(.horizontal, 30)
@@ -63,6 +63,7 @@ struct SignupView: View {
                     AnyView(NicknameView(store: self.store.scope(state: \.nickname, action: SignupReducer.Action.nickname)))
                 ], currentPage: viewStore.binding(get: \.page, send: .pageChanged), swipeable: false)
                 .frame(maxHeight: 525)
+                Spacer()
             }
         }
     }

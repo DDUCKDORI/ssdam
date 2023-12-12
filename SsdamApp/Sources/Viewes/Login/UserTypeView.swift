@@ -44,16 +44,24 @@ struct UserTypeView: View {
                     .font(.pHeadline2)
                     .foregroundStyle(Color(.systemBlack))
                 
+                // todo :: navigate after button color changed
                 HStack {
                     Button(action: {
-                        page = 1
-//                        viewStore.send(.userTypeTapped(.parent))
+                        viewStore.send(.userTypeTapped(.parent))
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            page = 1
+                        }
+
                     }, label: {
                         Text("부모")
                             .selectableButton(viewStore.userType == .parent ? .constant(true) : .constant(false))
                     })
                     Button(action: {
-                        page = 1
+                        viewStore.send(.userTypeTapped(.parent))
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                            page = 1
+                        }
+
                     }, label: {
                         Text("아이")
                             .selectableButton(viewStore.userType == .child ? .constant(true) : .constant(false))
