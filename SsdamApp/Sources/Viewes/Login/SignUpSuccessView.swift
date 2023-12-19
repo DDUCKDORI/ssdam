@@ -18,12 +18,7 @@ struct SignUpSuccessReducer: Reducer {
             "답변을 완료하면 매일 아침\n9시에 새로운 질문이 도착해요",
             "소중한 우리 가족의 기록을 지금 남겨보세요 :)"
         ]
-        var images: [ImageResource] {
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                return [.guide1, .guide2, .guide3, .guide4]
-            }
-            return [.ipadGuide1, .ipadGuide2, .ipadGuide3, .ipadGuide4]
-        }
+        var images: [ImageResource] = [.guide1, .guide2, .guide3, .guide4]
         var currentPage: Int = 0
         var nickname: String
         var welcomeMessage: AttributedString {
@@ -65,11 +60,9 @@ struct SignUpSuccessView: View {
     var body: some View {
         WithViewStore(self.store, observe:  { $0 } ) { viewStore in
             ZStack {
-                Color(.mint20)
-                    .ignoresSafeArea()
                 PageViewController(pages: viewStore.images.map { Image($0) }, currentPage: viewStore.binding(get: \.currentPage, send: { value in
                         .pageChanged(value)
-                }), backgroundColor: Color(.mint20))
+                }))
                 Group {
                     if viewStore.currentPage == 0 {
                         Text(viewStore.welcomeMessage)
@@ -86,7 +79,7 @@ struct SignUpSuccessView: View {
                 .offset(y: 210)
                 
                 Button(action: {
-                    if viewStore.currentPage < 3 { 
+                    if viewStore.currentPage < 3 {
                         store.send(.tapNextButton)
                         return
                     }

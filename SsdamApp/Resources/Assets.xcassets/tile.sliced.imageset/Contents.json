@@ -1,18 +1,21 @@
 {
   "images" : [
     {
-      "filename" : "tile.png",
+      "filename" : "pattern_01 (1).png",
       "idiom" : "universal",
       "resizing" : {
         "cap-insets" : {
           "bottom" : 0,
+          "left" : 0,
+          "right" : 0,
           "top" : 0
         },
         "center" : {
-          "height" : 217,
-          "mode" : "tile"
+          "height" : 368,
+          "mode" : "tile",
+          "width" : 375
         },
-        "mode" : "3-part-vertical"
+        "mode" : "9-part"
       }
     }
   ],
