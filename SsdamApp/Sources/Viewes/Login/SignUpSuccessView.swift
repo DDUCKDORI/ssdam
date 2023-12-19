@@ -70,6 +70,7 @@ struct SignUpSuccessView: View {
                     else {
                         Text(viewStore.titles[viewStore.currentPage])
                             .font(.pHeadline2)
+                            .multilineTextAlignment(.center)
                     }
                 }
                 .offset(y: -228)
