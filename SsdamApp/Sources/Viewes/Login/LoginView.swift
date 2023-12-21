@@ -32,7 +32,7 @@ struct LoginView: View {
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             ZStack {
-                Image(.tile)
+                Image(.tileMint)
                     .resizable(resizingMode: .tile)
                     .ignoresSafeArea()
                 VStack {

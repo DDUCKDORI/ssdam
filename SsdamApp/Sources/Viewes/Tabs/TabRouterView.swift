@@ -53,22 +53,20 @@ struct TabRouterView: View {
                     .resizable(resizingMode: .tile)
                     .ignoresSafeArea()
                 VStack {
-                    VStack {
-                        TabView(selection: viewStore.binding(get: \.tab, send: { value in
-                                .tabChanged(value)
-                        }), content: {
-                            Text("Calendar")
-                                .tag(TabRouterReducer.Tab.calendar)
-                            HomeView(store: .init(initialState: HomeReducer.State(), reducer: {
-                                HomeReducer()
-                            }))
-                            .tag(TabRouterReducer.Tab.home)
-                            Text("Share")
-                                .tag(TabRouterReducer.Tab.share)
-                        })
-                        .preferredColorScheme(.light)
-                        
-                    }
+                    TabView(selection: viewStore.binding(get: \.tab, send: { value in
+                            .tabChanged(value)
+                    }), content: {
+                        Text("Calendar")
+                            .tag(TabRouterReducer.Tab.calendar)
+                        HomeView(store: .init(initialState: HomeReducer.State(), reducer: {
+                            HomeReducer()
+                        }))
+                        .tag(TabRouterReducer.Tab.home)
+                        Text("Share")
+                            .tag(TabRouterReducer.Tab.share)
+                    })
+                    .preferredColorScheme(.light)
+                    
                 }
             }
             .safeAreaInset(edge: .bottom) {

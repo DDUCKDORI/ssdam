@@ -7,13 +7,32 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
-struct HeaderView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct HeaderReducer: Reducer {
+    struct State: Equatable {
+    }
+    
+    enum Action: Equatable {
+    }
+    
+    var body: some ReducerOf<Self> {
+        Reduce { state, action in
+            return .none
+        }
     }
 }
 
-#Preview {
-    HeaderView()
+struct HeaderView: View {
+    let store: StoreOf<HeaderReducer>
+    var body: some View {
+        WithViewStore(self.store, observe: { $0 }) { viewStore in
+            HStack {
+                Image(.logo)
+                Spacer()
+                Image(.setting)
+            }
+            .padding(.horizontal, 28)
+        }
+    }
 }

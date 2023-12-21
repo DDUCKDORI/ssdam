@@ -22,6 +22,7 @@ enum ScreenRoute: ScreenProtocol {
     case signUp
     case signUpSuccess(String)
     case home
+    case write
     case fullScreen
     case sheetScreen
     
@@ -29,7 +30,7 @@ enum ScreenRoute: ScreenProtocol {
         switch self {
         case .login, .sheetScreen, .home:
             return true
-        case .signUp, .signUpSuccess, .fullScreen:
+        case .signUp, .signUpSuccess, .write,  .fullScreen:
             return false
         }
     }
@@ -55,8 +56,12 @@ class ScreenRouterFactory: RouterFactory {
             TabRouterView(store: .init(initialState: TabRouterReducer.State(), reducer: {
                 TabRouterReducer()
             }))
+        case .write:
+            WriteView(store: .init(initialState: WriteReducer.State(), reducer: {
+                WriteReducer()
+            }))
         case .fullScreen:
-            EmptyView()
+            Text("Full Screen")
         case .sheetScreen:
             EmptyView()
         }

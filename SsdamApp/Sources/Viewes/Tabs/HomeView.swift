@@ -25,13 +25,14 @@ struct HomeReducer: Reducer {
 }
 
 struct HomeView: View {
+    @EnvironmentObject var screenRouter: ScreenRouter
     let store: StoreOf<HomeReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             ZStack {
                 Image(.tileMint)
                     .resizable(resizingMode: .tile)
-                VStack {
+                VStack(spacing: 0) {
                     Text("NEW")
                         .ssdamLabel()
                         .padding(.bottom, 12)
@@ -43,6 +44,9 @@ struct HomeView: View {
                     
                     Image(.characterMain)
                         .padding(.bottom, 12)
+                        .onTapGesture {
+                            screenRouter.presentFullScreen(.write)
+                        }
                     
                     Text("클릭 후 답변을 작성해주세요")
                         .font(.pCaption)
