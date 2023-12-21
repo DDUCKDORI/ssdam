@@ -48,35 +48,64 @@ struct TabRouterView: View {
     let store: StoreOf<TabRouterReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            HStack {
-                Image(.logo)
-                Spacer()
-                Image(.setting)
+            ZStack {
+                Image(.tileMint)
+                    .resizable(resizingMode: .tile)
+                    .ignoresSafeArea()
+                VStack {
+                    VStack {
+                        TabView(selection: viewStore.binding(get: \.tab, send: { value in
+                                .tabChanged(value)
+                        }), content: {
+                            Text("Calendar")
+                                .tag(TabRouterReducer.Tab.calendar)
+                            HomeView(store: .init(initialState: HomeReducer.State(), reducer: {
+                                HomeReducer()
+                            }))
+                            .tag(TabRouterReducer.Tab.home)
+                            Text("Share")
+                                .tag(TabRouterReducer.Tab.share)
+                        })
+                        .preferredColorScheme(.light)
+                        
+                    }
+                }
             }
-            .padding(.horizontal, 28)
-            TabView(selection: viewStore.binding(get: \.tab, send: { value in
-                    .tabChanged(value)
-            }), content: {
-                Text("Calendar")
-                    .ignoresSafeArea(edges: .top)
-                    .tabItem { Image(.calendar)
-                            .renderingMode(.template)
+            .safeAreaInset(edge: .bottom) {
+                VStack {
+                    ZStack(alignment: .top) {
+                        HStack {
+                            Image(.calendar)
+                                .renderingMode(.template)
+                                .foregroundStyle(viewStore.tab == .calendar ? Color(.mint50) : Color(.gray30))
+                                .onTapGesture {
+                                    viewStore.send(.tabChanged(.calendar))
+                                }
+                            Spacer()
+                            Image(.home)
+                                .renderingMode(.template)
+                                .foregroundStyle(viewStore.tab == .home ? Color(.mint50) : Color(.gray30))
+                                .onTapGesture {
+                                    viewStore.send(.tabChanged(.home))
+                                }
+                            Spacer()
+                            Image(.share)
+                                .renderingMode(.template)
+                                .foregroundStyle(viewStore.tab == .share ? Color(.mint50) : Color(.gray30))
+                                .onTapGesture {
+                                    viewStore.send(.tabChanged(.share))
+                                }
+                        }
+                        .padding(.vertical, 9)
+                        .padding(.horizontal, 47)
+                        .frame(maxWidth: .infinity)
+                        .background(Color(.white))
+                        Rectangle()
+                            .frame(height: 1)
+                            .foregroundStyle(Color(.gray10))
                     }
-                    .tag(TabRouterReducer.Tab.calendar)
-                Text("Home")
-                    .ignoresSafeArea(edges: .top)
-                    .tabItem { Image(.home)
-                            .renderingMode(.template)
-                    }
-                    .tag(TabRouterReducer.Tab.home)
-                Text("Share")
-                    .ignoresSafeArea(edges: .top)
-                    .tabItem { Image(.share)
-                        .renderingMode(.template) }
-                    .tag(TabRouterReducer.Tab.share)
-            })
-            .tint(Color(.mint50))
-            .preferredColorScheme(.light)
+                }
+            }
         }
     }
 }
