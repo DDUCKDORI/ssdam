@@ -16,6 +16,7 @@ struct WriteReducer: Reducer {
     
     enum Action: Equatable {
         case textChanged(String)
+        case textValidation(String)
     }
     
     var body: some ReducerOf<Self> {
@@ -23,6 +24,11 @@ struct WriteReducer: Reducer {
             switch action {
             case let .textChanged(text):
                 state.text = text
+                return .none
+            case let .textValidation(text):
+                if text.count > 50 {
+                    state.text.removeLast()
+                }
                 return .none
             }
         }
@@ -59,6 +65,9 @@ struct WriteView: View {
                     .padding(.horizontal, 30)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 28)
+                    .onChange(of: viewStore.text){ _, newValue in
+                        viewStore.send(.textValidation(newValue))
+                    }
                     
                     Button(action: {
                         screenRouter.dismissLast()
