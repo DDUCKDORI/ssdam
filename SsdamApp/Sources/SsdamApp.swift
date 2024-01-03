@@ -11,9 +11,8 @@ import ComposableArchitecture
 
 @main
 struct SsdamApp: App {
-    let screenRouter = ScreenRouter(rootScreen: .login, factory: .init())
+    let screenRouter = ScreenRouter(rootScreen: .launch, factory: .init())
     @UIApplicationDelegateAdaptor var delegate: AppDelegate
-    
     
     var body: some Scene {
         WindowGroup {
