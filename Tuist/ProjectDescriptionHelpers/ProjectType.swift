@@ -12,6 +12,7 @@ public enum Module: CaseIterable {
     case domain
     case data
     case network
+    case utils
 }
 
 public extension Module {
@@ -21,6 +22,7 @@ public extension Module {
         case .domain: return "Domain"
         case .data: return "Data"
         case .network: return "Networking"
+        case .utils: return "Utils"
         }
     }
 
