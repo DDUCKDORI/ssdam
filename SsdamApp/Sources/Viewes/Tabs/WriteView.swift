@@ -30,6 +30,8 @@ struct WriteReducer: Reducer {
                     state.text.removeLast()
                 }
                 return .none
+            default:
+                return .none
             }
         }
     }
@@ -38,6 +40,7 @@ struct WriteReducer: Reducer {
 
 struct WriteView: View {
     @EnvironmentObject var screenRouter: ScreenRouter
+    @Binding var viewType: HomeViewType
     let store: StoreOf<WriteReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -70,6 +73,7 @@ struct WriteView: View {
                     }
                     
                     Button(action: {
+                        viewType = .list
                         screenRouter.dismissLast()
                     }, label: {
                         Text("답변하기")
@@ -92,7 +96,7 @@ struct WriteView: View {
 }
 
 #Preview {
-    WriteView(store: .init(initialState: WriteReducer.State(), reducer: {
+    WriteView(viewType: .constant(.question), store: .init(initialState: WriteReducer.State(), reducer: {
         WriteReducer()
     }))
 }

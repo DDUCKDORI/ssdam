@@ -10,13 +10,17 @@ import Foundation
 import SwiftUI
 import ComposableArchitecture
 
+enum HomeViewType {
+    case question
+    case list
+}
+
 struct HomeReducer: Reducer {
     struct State: Equatable {
     }
     
     enum Action: Equatable {
     }
-    
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             return .none
@@ -26,31 +30,18 @@ struct HomeReducer: Reducer {
 
 struct HomeView: View {
     @EnvironmentObject var screenRouter: ScreenRouter
+    @State var viewType: HomeViewType = .question
     let store: StoreOf<HomeReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             ZStack {
-                Image(.tileMint)
-                    .resizable(resizingMode: .tile)
-                VStack(spacing: 0) {
-                    Text("NEW")
-                        .ssdamLabel()
-                        .padding(.bottom, 12)
-
-                    Text("오늘부터 쓰담하며\n우리 가족의 목표는 무엇인가요?")
-                        .font(.pHeadline2)
-                        .multilineTextAlignment(.center)
-                        .padding(.bottom, 30)
+                if viewType == .question {
+                    MainQuestionView()
                     
-                    Image(.characterMain)
-                        .padding(.bottom, 12)
-                        .onTapGesture {
-                            screenRouter.presentFullScreen(.write)
-                        }
-                    
-                    Text("클릭 후 답변을 작성해주세요")
-                        .font(.pCaption)
-                        .foregroundStyle(Color(.mint50))
+                } else {
+                    AnswerListView(store: .init(initialState: AnswerListReducer.State(), reducer: {
+                        AnswerListReducer()
+                    }))
                 }
             }
             .ignoresSafeArea()
@@ -58,6 +49,30 @@ struct HomeView: View {
                 HeaderView(store: .init(initialState: HeaderReducer.State(), reducer: {
                     HeaderReducer()
                 }))
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func MainQuestionView() -> some View {
+        ZStack {
+            Image(.tileMint)
+                .resizable(resizingMode: .tile)
+            VStack(spacing: 0) {
+                Text("NEW")
+                    .ssdamLabel()
+                    .padding(.bottom, 12)
+                
+                Text("오늘부터 쓰담하며\n우리 가족의 목표는 무엇인가요?")
+                    .font(.pHeadline2)
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom, 30)
+                
+                Image(.characterMain)
+                    .padding(.bottom, 12)
+                    .onTapGesture {
+                        screenRouter.presentFullScreen(.write($viewType))
+                    }
             }
         }
     }
