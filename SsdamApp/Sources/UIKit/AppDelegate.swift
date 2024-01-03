@@ -12,34 +12,34 @@ import UIKit
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         FirebaseApp.configure()
-
-//        UNUserNotificationCenter.current().delegate = self
-//
-//        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-//        UNUserNotificationCenter.current().requestAuthorization(
-//            options: authOptions,
-//            completionHandler: { _, _ in }
-//        )
-//
-//        application.registerForRemoteNotifications()
-
-//        Messaging.messaging().delegate = self
-//        
-//        Messaging.messaging().token { token, error in
-//          if let error = error {
-//            print("Error fetching FCM registration token: \(error)")
-//          } else if let token = token {
-//            print("FCM registration token: \(token)")
-//          }
-//        }
-
+        
+        //        UNUserNotificationCenter.current().delegate = self
+        //
+        //        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        //        UNUserNotificationCenter.current().requestAuthorization(
+        //            options: authOptions,
+        //            completionHandler: { _, _ in }
+        //        )
+        //
+        //        application.registerForRemoteNotifications()
+        
+        //        Messaging.messaging().delegate = self
+        //
+        //        Messaging.messaging().token { token, error in
+        //          if let error = error {
+        //            print("Error fetching FCM registration token: \(error)")
+        //          } else if let token = token {
+        //            print("FCM registration token: \(token)")
+        //          }
+        //        }
+        
         
         return true
     }
     
-//    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-//        Messaging.messaging().apnsToken = deviceToken
-//    }
+    //    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    //        Messaging.messaging().apnsToken = deviceToken
+    //    }
 }
 
 //extension AppDelegate: MessagingDelegate {
