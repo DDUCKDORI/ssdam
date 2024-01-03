@@ -14,6 +14,10 @@ extension View {
             .modifier(SelectableButtonModifier(isSelected))
     }
     
+    func roundedCorner(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+          clipShape(RoundedCorner(radius: radius, corners: corners) )
+      }
+    
     @ViewBuilder func present<Content: View>(asSheet: Bool, isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) -> some View {
         if asSheet {
             self.sheet(
