@@ -14,6 +14,11 @@ extension View {
             .modifier(SelectableButtonModifier(isSelected))
     }
     
+    func ssdamLabel() -> some View {
+        self
+            .modifier(SsdamLabelModifier())
+    }
+    
     func roundedCorner(_ radius: CGFloat, corners: UIRectCorner) -> some View {
           clipShape(RoundedCorner(radius: radius, corners: corners) )
       }

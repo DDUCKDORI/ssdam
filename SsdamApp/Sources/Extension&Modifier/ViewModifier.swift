@@ -26,6 +26,19 @@ struct SelectableButtonModifier: ViewModifier {
             )
     }
 }
+
+struct SsdamLabelModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.pButton2)
+            .foregroundStyle(.white)
+            .padding(.vertical, 3)
+            .padding(.horizontal, 19)
+            .background(Color(.mint50))
+            .clipShape(Capsule())
+    }
+}
+
 struct RoundedCorner: Shape {
     var radius: CGFloat = .infinity
     var corners: UIRectCorner = .allCorners
