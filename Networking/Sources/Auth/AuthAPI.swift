@@ -10,45 +10,53 @@ import Foundation
 import Moya
 
 public enum AuthAPI {
-    case fetchAccessCode(phoneNumber: String)
+    case issueAccessToken(String, String)
 }
 
 extension AuthAPI: TargetType {
     public var baseURL: URL {
         switch self {
-        case .fetchAccessCode:
-            return URL(string: "")!
+        default:
+            return URL(string: "https://test-ssdam.site/ssdam")!
         }
     }
-
+    
     public var path: String {
         switch self {
-        case .fetchAccessCode:
-            return "user/access-code/send-issuance-message"
+        case .issueAccessToken:
+            return "/apple/login/callback"
         }
     }
-
+    
     public var method: Moya.Method {
-        .post
+        switch self {
+        default:
+            return .post
+        }
     }
-
+    
     public var task: Moya.Task {
         switch self {
-        default: return .requestParameters(parameters: parameter, encoding: encoding)
+        default:
+            return .requestParameters(parameters: parameter, encoding: encoding)
         }
     }
-
+    
     public var parameter: [String: Any] {
         switch self {
-        case .fetchAccessCode(let phoneNumber): return ["phoneNumber": phoneNumber]
+        case let .issueAccessToken(code, token):
+            return ["code": code, "id_token": token]
         }
     }
-
+    
     public var headers: [String: String]? {
         return ["Content-type": "application/json"]
     }
-
+    
     public var encoding: ParameterEncoding {
-        JSONEncoding.default
+        switch self {
+        default:
+            return JSONEncoding.default
+        }
     }
 }

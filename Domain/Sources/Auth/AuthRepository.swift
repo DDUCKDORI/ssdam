@@ -12,5 +12,5 @@ import Networking
 import SwiftyJSON
 
 public protocol AuthRepository: AnyObject {
-    func fetchAccessCode(phoneNumber: String) -> AnyPublisher<JSON, BackendError>
+    func issueAccessToken(_ code: String, _ token: String) async -> JSON
 }

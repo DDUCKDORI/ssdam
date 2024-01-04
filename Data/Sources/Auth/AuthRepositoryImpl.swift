@@ -13,15 +13,15 @@ import SwiftyJSON
 
 public final class AuthRepositoryImpl: AuthRepository {
     private let client: APIClient
-
+    
     public init(client: APIClient) {
         self.client = client
     }
-
-    public func fetchAccessCode(phoneNumber: String) -> AnyPublisher<JSON, BackendError> {
-        client.request(router: AuthAPI.fetchAccessCode(phoneNumber: phoneNumber))
-            .compactMap { try? JSON(data: $0.data)["data"] }
-            .mapError(\.backendError)
-            .eraseToAnyPublisher()
+    
+    public func issueAccessToken(_ code: String, _ token: String) async -> JSON {
+        let data = try? await client.request(router: AuthAPI.issueAccessToken(code, token))
+            .map { JSON($0) }
+            .get()
+        return data ?? ""
     }
 }
