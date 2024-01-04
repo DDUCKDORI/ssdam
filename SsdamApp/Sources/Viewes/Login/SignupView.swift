@@ -65,6 +65,7 @@ struct SignupView: View {
                 .frame(maxHeight: 525)
                 Spacer()
             }
+            .ignoresSafeArea(.keyboard)
         }
     }
 }

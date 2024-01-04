@@ -161,7 +161,6 @@ struct NicknameView: View {
                 }
             }
             .padding(.horizontal, 30)
-            .ignoresSafeArea(.keyboard)
             Spacer()
         }
     }
