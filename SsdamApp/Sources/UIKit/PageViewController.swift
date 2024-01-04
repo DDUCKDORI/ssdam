@@ -13,13 +13,11 @@ struct PageViewController<Page: View>: UIViewControllerRepresentable {
     var pages: [Page]
     @Binding var currentPage: Int
     let swipeable: Bool
-    let backgroundColor: Color
-    
-    init(pages: [Page], currentPage: Binding<Int>, swipeable: Bool = true, backgroundColor: Color = .clear) {
+
+    init(pages: [Page], currentPage: Binding<Int>, swipeable: Bool = true) {
         self.pages = pages
         self._currentPage = currentPage
         self.swipeable = swipeable
-        self.backgroundColor = backgroundColor
     }
     
     func makeUIViewController(context: Context) -> UIPageViewController {
@@ -42,12 +40,7 @@ struct PageViewController<Page: View>: UIViewControllerRepresentable {
         
         init(_ pageViewController: PageViewController) {
             parent = pageViewController
-            let color = parent.backgroundColor
-            controllers = parent.pages.map {
-                let controller = UIHostingController(rootView: $0)
-                controller.view.backgroundColor = UIColor(color)
-                return controller
-            }
+            controllers = parent.pages.map { UIHostingController(rootView: $0) }
     }
     func pageViewController(
         _ pageViewController: UIPageViewController,
