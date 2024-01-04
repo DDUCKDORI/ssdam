@@ -18,4 +18,4 @@ let project = Project.app(
         .firebaseDynamicLinks,
         .firebaseRemoteConfig,
         .tca
-    ] + [Module.data, Module.domain, Module.network].map(\.project), additionalTargets: [])
+    ] + [Module.data, Module.domain, Module.network, Module.utils].map(\.project), additionalTargets: [])
