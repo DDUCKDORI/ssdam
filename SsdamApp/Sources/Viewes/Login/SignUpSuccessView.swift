@@ -16,7 +16,7 @@ struct SignUpSuccessReducer: Reducer {
             "",
             "이제부터 가족과 질문에\n대한 생각을 기록할 수 있어요",
             "답변을 완료하면 매일 아침\n9시에 새로운 질문이 도착해요",
-            "소중한 우리 가족의 기록을 지금 남겨보세요 :)"
+            "소중한 우리 가족의 기록을\n지금 남겨보세요 :)"
         ]
         var images: [ImageResource] = [.guide1, .guide2, .guide3, .guide4]
         var currentPage: Int = 0
@@ -73,11 +73,11 @@ struct SignUpSuccessView: View {
                             .multilineTextAlignment(.center)
                     }
                 }
-                .offset(y: -228)
+                .offset(y: -185)
                 
                 PageControl(numberOfPages: viewStore.images.count, currentPage: viewStore.binding(get: \.currentPage, send: { value in
                     .pageChanged(value) }))
-                .offset(y: 210)
+                .offset(y: 197)
                 
                 Button(action: {
                     if viewStore.currentPage < 3 {
@@ -95,7 +95,7 @@ struct SignUpSuccessView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 100))
                         .padding(.horizontal, 80)
                 })
-                .offset(y: 280)
+                .offset(y: 249)
             }
         }
     }
