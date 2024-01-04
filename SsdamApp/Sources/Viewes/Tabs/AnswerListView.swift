@@ -11,7 +11,7 @@ import ComposableArchitecture
 
 struct AnswerListReducer: Reducer {
     struct State: Equatable {
-        var isExpended: Bool = false
+        var isExpended: Bool = true
     }
     
     enum Action: Equatable {
@@ -102,11 +102,6 @@ struct AnswerListView: View {
                 .padding(.top, 142)
             }
             .ignoresSafeArea()
-            .safeAreaInset(edge: .top) {
-                HeaderView(store: .init(initialState: HeaderReducer.State(), reducer: {
-                    HeaderReducer()
-                }))
-            }
         }
     }
 }
