@@ -18,11 +18,12 @@ enum ScreenRoute: ScreenProtocol {
         }
     }
     
+    case launch
     case login
     case signUp
     case signUpSuccess(String)
     case home
-    case write
+    case write(Binding<HomeViewType>)
     case fullScreen
     case sheetScreen
     
@@ -30,7 +31,7 @@ enum ScreenRoute: ScreenProtocol {
         switch self {
         case .login, .sheetScreen, .home:
             return true
-        case .signUp, .signUpSuccess, .write,  .fullScreen:
+        case .signUp, .signUpSuccess, .write, .fullScreen, .launch:
             return false
         }
     }
@@ -40,6 +41,10 @@ class ScreenRouterFactory: RouterFactory {
     
     @ViewBuilder func makeBody(for screen: ScreenRoute) -> some View {
         switch screen {
+        case .launch:
+            LaunchView(store: .init(initialState: LaunchReducer.State(), reducer: {
+                LaunchReducer()
+            }))
         case .login:
             LoginView(store: .init(initialState: LoginReducer.State(), reducer: {
                 LoginReducer()
@@ -56,8 +61,8 @@ class ScreenRouterFactory: RouterFactory {
             TabRouterView(store: .init(initialState: TabRouterReducer.State(), reducer: {
                 TabRouterReducer()
             }))
-        case .write:
-            WriteView(store: .init(initialState: WriteReducer.State(), reducer: {
+        case let .write(viewType):
+            WriteView(viewType: viewType, store: .init(initialState: WriteReducer.State(), reducer: {
                 WriteReducer()
             }))
         case .fullScreen:
