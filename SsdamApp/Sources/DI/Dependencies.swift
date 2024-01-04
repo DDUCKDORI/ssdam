@@ -19,7 +19,7 @@ extension AuthUseCaseImpl: DependencyKey {
 
 extension Router: DependencyKey {
     public static var liveValue: ScreenRouter {
-        ScreenRouter(factory: .init())
+        ScreenRouter(rootScreen: .login, factory: .init())
     }
 }
 
