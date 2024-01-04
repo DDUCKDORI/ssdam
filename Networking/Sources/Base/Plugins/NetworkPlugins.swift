@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import Utils
 
 // abstract 플러그인
 protocol MoyaPlugins: PluginType {
@@ -28,8 +29,7 @@ class NetworkAuthPlugins: MoyaPlugins {
 
     private init() {
         authPlugin = AccessTokenPlugin { _ in
-            // TODO: get access token
-            ""
+            Const.accessToken
         }
     }
 

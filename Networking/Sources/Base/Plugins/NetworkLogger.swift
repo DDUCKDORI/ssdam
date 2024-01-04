@@ -8,12 +8,13 @@
 
 import Foundation
 import Moya
+import SwiftUI
 
 /// CUSTOM Newtork Logger
 final class NetworkLogger: PluginType {
     /**
      Called immediately before a request is sent over the network (or stubbed).
-
+     
      REQUEST Logger
      */
     func willSend(_ request: RequestType, target: TargetType) {
@@ -41,48 +42,87 @@ final class NetworkLogger: PluginType {
             """)
         }
     }
-
+    
     /**
      Called after a response has been received, but before the MoyaProvider has invoked its completion handler.
-
+     
      RESPONSE Logger
      */
     func didReceive(_ result: Result<Response, MoyaError>, target: TargetType) {
-        let response = try? result.get()
-        let request = response?.request
-
-        let url = request?.url?.absoluteString ?? "Nil"
-        let method = request?.httpMethod ?? "Nil"
-        let statusCode = response?.statusCode ?? 0
-        var bodyString = "Nil"
-        if let data = (request?.httpBody), let string = String(bytes: data, encoding: String.Encoding.utf8) {
-            bodyString = string
-        }
-        var responseString = "Nil"
-        if let data = response?.data, let reString = String(bytes: data, encoding: String.Encoding.utf8) {
-            responseString = reString
-        }
-
+        
         switch result {
-        case .success:
-            print("""
-                ◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
-                <didReceive - \(method) statusCode: \(statusCode)>
-                url: \(url)
-                body: \(bodyString)
-                response: \(responseString)
-                ◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
-            """)
+        case let .success(response):
+            onSuceed(response, target: target, isFromError: false)
         case .failure(let error):
-            print("""
-                ◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
-                <didReceive - \(method) statusCode: \(statusCode)>
-                url: \(url)
-                body: \(bodyString)
-                error: \(error.localizedDescription)")
-                response: \(responseString)
-                ◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤◢◤
-            """)
+            onFail(error, target: target)
         }
+    }
+    func onSuceed(_ response: Response, target: TargetType, isFromError: Bool) {
+        let request = response.request
+        let url = request?.url?.absoluteString ?? "nil"
+        let statusCode = response.statusCode
+        
+        var log = "------------------- SUCCESS (isFromError: \(isFromError)) -------------------"
+        log.append("\n[\(statusCode)] \(url)\n----------------------------------------------------\n")
+        log.append("API: \(target)\n")
+        response.response?.allHeaderFields.forEach {
+            log.append("\($0): \($1)\n")
+        }
+        if let reString = String(bytes: response.data, encoding: String.Encoding.utf8) {
+            log.append("\(reString)\n")
+        }
+        log.append("------------------- END HTTP (\(response.data.count)-byte body) -------------------")
+        print(log)
+        
+        // 🔥 in case of 401.
+        switch statusCode {
+        case 401:
+            let acessToken = UserDefaults.standard.string(forKey: "accessToken")
+            let refreshToken = UserDefaults.standard.string(forKey: "refreshToken")
+            
+            reissueAccessToken(request: TokenInfo(accessToken: "", refreshToken: ""))
+            
+        default:
+            return
+        }
+    }
+    func onFail(_ error: MoyaError, target: TargetType) {
+        if let response = error.response {
+            onSuceed(response, target: target, isFromError: true)
+            return
+        }
+        var log = "네트워크 오류"
+        log.append("<-- \(error.errorCode) \(target)\n")
+        log.append("\(error.failureReason ?? error.errorDescription ?? "unknown error")\n")
+        log.append("<-- END HTTP")
+        print(log)
+    }
+}
+
+extension NetworkLogger {
+    func reissueAccessToken(request: TokenInfo) {
+        let provider = MoyaProvider<AuthAPI>()
+//        provider.request(.fetchAccessCode(request)) { result in
+//            switch result {
+//            case .success(let response):
+//                let decoder = JSONDecoder()
+//                // reissue access token
+//                if let tokenData = try? decoder.decode(TokenInfo.self, from: response.data) {
+//                    UserDefaults.standard.set(tokenData.accessToken, forKey: "accessToken")
+//                    UserDefaults.standard.set(tokenData.refreshToken, forKey: "refreshToken")
+//                    
+//                    print("userTokenReissueWithAPI - success")
+//                }
+//            case .failure(let error):
+//                // in case of invalide refresh token
+//                if let statusCode = error.response?.statusCode, statusCode == 406 {
+//                    
+//                    UserDefaults.standard.removeObject(forKey: "accessToken")
+//                    UserDefaults.standard.removeObject(forKey: "refreshToken")
+//                    //                    UserDefaults.standard.removeObject(forKey: Const.userID)
+//                    print("error - statusCode: \(statusCode)")
+//                }
+//            }
+//        }
     }
 }
