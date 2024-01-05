@@ -14,7 +14,7 @@ public struct TokenEntity: Equatable {
     public var accessToken: String
     public var refreshToken: String
     public var inviteCd: String
-    public var memId: String
+    public var memId: Int
     public var fmDvcd: String
     public var nickname: String
     public var email: String
@@ -25,7 +25,7 @@ public struct TokenEntity: Equatable {
         self.accessToken = json["access_token"].stringValue
         self.refreshToken = json["refresh_token"].stringValue
         self.inviteCd = json["invite_cd"].stringValue
-        self.memId = json["mem_id"].stringValue
+        self.memId = json["mem_id"].intValue
         self.fmDvcd = json["fm_dvcd"].stringValue
         self.nickname = json["nick_nm"].stringValue
         self.email = json["email"].stringValue

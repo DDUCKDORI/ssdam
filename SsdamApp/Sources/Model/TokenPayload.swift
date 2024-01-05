@@ -14,13 +14,13 @@ struct TokenPayload: Equatable {
     var accessToken: String
     var refreshToken: String
     var inviteCd: String?
-    var memId: String
+    var memId: Int
     var fmDvcd: String?
     var nickname: String?
     var email: String
     var memSub: String
     
-    init(isUser: String = "", accessToken: String = "", refreshToken: String = "", inviteCd: String? = nil, memId: String = "", fmDvcd: String? = nil, nickname: String? = nil, email: String = "", memSub: String = "") {
+    init(isUser: String = "", accessToken: String = "", refreshToken: String = "", inviteCd: String? = nil, memId: Int = -1, fmDvcd: String? = nil, nickname: String? = nil, email: String = "", memSub: String = "") {
         self.isUser = isUser
         self.accessToken = accessToken
         self.refreshToken = refreshToken
