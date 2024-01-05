@@ -19,27 +19,28 @@ struct LoginReducer: Reducer {
     }
     
     enum Action: Equatable {
-        case login(String, String)
-        case loginResponse(TaskResult<TokenEntity>)
+        case issueToken(String, String)
+        case issueTokenResponse(TaskResult<TokenEntity>)
     }
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case let .login(code, token):
+            case let .issueToken(code, token):
                 return .run { send in
                     let result = await TaskResult{
                         let data = await authUseCase.issueAccessToken(code, token)
                         return data
                     }
-                    await send(.loginResponse(result))
+                    await send(.issueTokenResponse(result))
                 }
-            case .loginResponse(.success(let entity)):
+            case .issueTokenResponse(.success(let entity)):
                 state.tokenInfo = TokenPayload(entity)
                 return .none
-            case .loginResponse(.failure(_)):
+            case .issueTokenResponse(.failure(_)):
                 return .none
             }
+            
         }
     }
 }
@@ -70,19 +71,26 @@ struct LoginView: View {
                                 let authorizationCode = String(data: appleIDCredential.authorizationCode!, encoding: .utf8)
                                 
                                 guard let code = authorizationCode, let token = identityToken else { return }
-                                viewStore.send(.login(code, token))
+                                viewStore.send(.issueToken(code, token))
+                                
+                                Const.accessToken = viewStore.tokenInfo.accessToken
+                                Const.refreshToken = viewStore.tokenInfo.refreshToken
+                                Const.nickname = viewStore.tokenInfo.nickname ?? ""
+                                Const.inviteCd = viewStore.tokenInfo.inviteCd ?? ""
+                                Const.email = viewStore.tokenInfo.email
+                                Const.userType = viewStore.tokenInfo.fmDvcd ?? ""
+                                Const.memId = viewStore.tokenInfo.memId
+                                Const.memSub = viewStore.tokenInfo.memSub
                                 
                             default:
                                 break
                             }
-//                            if viewStore.tokenInfo.isUser == "yes" {
-//                                Const.accessToken = viewStore.tokenInfo.accessToken
-//                                Const.refreshToken = viewStore.tokenInfo.refreshToken
+                            if viewStore.tokenInfo.isUser == "yes" {
+                                screenRouter.change(.home)
+                            }
+                            else {
                                 screenRouter.change(.signUp)
-//                            }
-//                            else {
-//                                screenRouter.change(.signUp)
-//                            }
+                            }
                         case let .failure(error):
                             print(error.localizedDescription)
                             print(error)

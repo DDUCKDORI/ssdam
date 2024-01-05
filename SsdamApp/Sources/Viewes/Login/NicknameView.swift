@@ -8,13 +8,17 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Domain
+import Utils
 
 struct NicknameReducer: Reducer {
+    @Dependency(\.authUseCase) var authUseCase
     struct State: Equatable {
         var nickname: String = ""
         var isValid: Bool = false
         var serviceAgreement: Bool = false
         var privacyAgreement: Bool = false
+        var tokenInfo: TokenPayload = .init()
     }
     
     enum Action: Equatable {
@@ -23,6 +27,8 @@ struct NicknameReducer: Reducer {
         case agreeAllToggled(Bool)
         case serviceAgreementToggled(Bool)
         case privacyAgreementToggled(Bool)
+        case login(TokenPayload)
+        case loginResponse(TaskResult<TokenEntity>)
     }
     
     var body: some ReducerOf<Self> {
@@ -52,6 +58,28 @@ struct NicknameReducer: Reducer {
                 return .none
             case let .privacyAgreementToggled(isOn):
                 state.privacyAgreement = isOn
+                return .none
+            case let .login(entity):
+                return .run { send in
+                    let result = await TaskResult {
+                        let body = ["exists_yn" : entity.isUser,
+                                    "access_token" : entity.accessToken,
+                                    "refresh_token" : entity.refreshToken,
+                                    "invite_cd" : entity.inviteCd,
+                                    "fm_dvcd" : entity.fmDvcd,
+                                    "nick_nm" : entity.nickname,
+                                    "email": entity.email,
+                                    "mem_sub": entity.memSub
+                        ]
+                        let data = await authUseCase.login(tokenInfo: body as [String : Any])
+                        return data
+                    }
+                    await send(.loginResponse(result))
+                }
+            case .loginResponse(.success(let entity)):
+                state.tokenInfo = TokenPayload(entity)
+                return .none
+            case .loginResponse(.failure(_)):
                 return .none
             }
         }
@@ -148,6 +176,17 @@ struct NicknameView: View {
                 
                 if viewStore.isValid, viewStore.serviceAgreement, viewStore.privacyAgreement {
                     Button {
+                        viewStore.send(.login(TokenPayload(
+                            isUser: "no",
+                            accessToken: Const.accessToken,
+                            refreshToken: Const.refreshToken,
+                            inviteCd: Const.inviteCd,
+                            memId: Const.memId,
+                            fmDvcd: Const.userType,
+                            nickname: viewStore.nickname,
+                            email: Const.email,
+                            memSub: Const.memSub)))
+
                         screenRouter.change(.signUpSuccess(viewStore.nickname))
                     } label: {
                         Text("가입하기")

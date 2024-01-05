@@ -8,6 +8,7 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Utils
 
 enum UserType {
     case parent
@@ -47,6 +48,7 @@ struct UserTypeView: View {
                 // todo :: navigate after button color changed
                 HStack {
                     Button(action: {
+                        Const.userType = "01"
                         viewStore.send(.userTypeTapped(.parent))
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                             page = 1
@@ -57,7 +59,8 @@ struct UserTypeView: View {
                             .selectableButton(viewStore.userType == .parent ? .constant(true) : .constant(false))
                     })
                     Button(action: {
-                        viewStore.send(.userTypeTapped(.parent))
+                        Const.userType = "02"
+                        viewStore.send(.userTypeTapped(.child))
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                             page = 1
                         }
