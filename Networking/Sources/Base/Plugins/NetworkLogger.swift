@@ -9,6 +9,7 @@
 import Foundation
 import Moya
 import SwiftUI
+import Utils
 
 /// CUSTOM Newtork Logger
 final class NetworkLogger: PluginType {
@@ -65,22 +66,19 @@ final class NetworkLogger: PluginType {
         var log = "------------------- SUCCESS (isFromError: \(isFromError)) -------------------"
         log.append("\n[\(statusCode)] \(url)\n----------------------------------------------------\n")
         log.append("API: \(target)\n")
-        response.response?.allHeaderFields.forEach {
-            log.append("\($0): \($1)\n")
-        }
-        if let reString = String(bytes: response.data, encoding: String.Encoding.utf8) {
-            log.append("\(reString)\n")
-        }
-        log.append("------------------- END HTTP (\(response.data.count)-byte body) -------------------")
+//        response.response?.allHeaderFields.forEach {
+//            log.append("\($0): \($1)\n")
+//        }
+//        if let reString = String(bytes: response.data, encoding: String.Encoding.utf8) {
+//            log.append("\(reString)\n")
+//        }
+////        log.append("------------------- END HTTP (\(response.data.count)-byte body) -------------------")
         print(log)
         
         // 🔥 in case of 401.
         switch statusCode {
         case 401:
-            let acessToken = UserDefaults.standard.string(forKey: "accessToken")
-            let refreshToken = UserDefaults.standard.string(forKey: "refreshToken")
-            
-            reissueAccessToken(request: TokenInfo(accessToken: "", refreshToken: ""))
+            reissueAccessToken(request: TokenInfo(accessToken: Const.accessToken, refreshToken: Const.refreshToken))
             
         default:
             return
