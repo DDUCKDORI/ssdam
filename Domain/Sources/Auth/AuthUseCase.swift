@@ -12,6 +12,7 @@ import Networking
 
 public protocol AuthUseCase {
     func issueAccessToken(_ code: String, _ token: String) async -> TokenEntity
+    func login(tokenInfo: [String: Any]) async -> TokenEntity
 }
 
 public final class AuthUseCaseImpl: AuthUseCase {
@@ -23,5 +24,9 @@ public final class AuthUseCaseImpl: AuthUseCase {
     
     public func issueAccessToken(_ code: String, _ token: String) async -> TokenEntity {
         return await TokenEntity(repository.issueAccessToken(code, token))
+    }
+    
+    public func login(tokenInfo: [String: Any]) async -> TokenEntity {
+        return await TokenEntity(repository.login(tokenInfo: tokenInfo))
     }
 }

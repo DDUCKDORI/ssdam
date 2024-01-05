@@ -11,6 +11,7 @@ import Moya
 
 public enum AuthAPI {
     case issueAccessToken(String, String)
+    case login([String: Any])
 }
 
 extension AuthAPI: TargetType {
@@ -25,6 +26,8 @@ extension AuthAPI: TargetType {
         switch self {
         case .issueAccessToken:
             return "/apple/login/callback"
+        case . login:
+            return "/login"
         }
     }
     
@@ -46,11 +49,19 @@ extension AuthAPI: TargetType {
         switch self {
         case let .issueAccessToken(code, token):
             return ["code": code, "id_token": token]
+        case let .login(tokenInfo):
+            guard let jsonData = try? JSONSerialization.data(withJSONObject: tokenInfo, options: []) else {
+                return [:]
+            }
+            return tokenInfo
         }
     }
     
     public var headers: [String: String]? {
-        return ["Content-type": "application/json"]
+        switch self {
+        default:
+            return ["Content-type": "application/json"]
+        }
     }
     
     public var encoding: ParameterEncoding {

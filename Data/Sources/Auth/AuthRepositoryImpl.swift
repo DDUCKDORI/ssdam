@@ -24,4 +24,11 @@ public final class AuthRepositoryImpl: AuthRepository {
             .get()
         return data ?? ""
     }
+    
+    public func login(tokenInfo: [String: Any]) async -> JSON {
+        let data = try? await client.request(router: AuthAPI.login(tokenInfo))
+            .map { JSON($0) }
+            .get()
+        return data ?? ""
+    }
 }
