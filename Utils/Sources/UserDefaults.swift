@@ -33,4 +33,22 @@ public enum Const {
     
     @UserDefault(key: "refreshToken", defaultValue: "")
     public static var refreshToken: String
+    
+    @UserDefault(key: "userType", defaultValue: "")
+    public static var userType: String
+    
+    @UserDefault(key: "email", defaultValue: "")
+    public static var email: String
+    
+    @UserDefault(key: "inviteCd", defaultValue: "")
+    public static var inviteCd: String
+    
+    @UserDefault(key: "nickname", defaultValue: "")
+    public static var nickname: String
+    
+    @UserDefault(key: "memId", defaultValue: -1)
+    public static var memId: Int
+    
+    @UserDefault(key: "memSub", defaultValue: "")
+    public static var memSub: String
 }
