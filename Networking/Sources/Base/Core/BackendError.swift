@@ -11,19 +11,16 @@ import Moya
 import SwiftyJSON
 
 public struct BackendError: Decodable, Error {
-    public var statusCode: Int
     public var status: String
     public var message: String
 
     public init() {
-        statusCode = 0
         status = ""
         message = ""
     }
 
     public init(json: JSON) {
-        statusCode = json["statusCode"].intValue
-        status = json["status"].stringValue
+        status = json["result"].stringValue
         message = json["message"].stringValue
     }
 }
