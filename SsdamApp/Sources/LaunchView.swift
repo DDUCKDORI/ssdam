@@ -29,21 +29,16 @@ struct LaunchReducer: Reducer {
 struct LaunchView: View {
     @EnvironmentObject var screenRouter: ScreenRouter
     let store: StoreOf<LaunchReducer>
-
+    
     var body: some View {
         ZStack(alignment: .top) {
             Image(.tileMint)
                 .resizable(resizingMode: .tile)
-                    }
+        }
         .ignoresSafeArea()
         .safeAreaInset(edge: .top) {
-            VStack(spacing: 0) {
-                Image(.charactersSilhouette)
-                Text("우리 가족 쓰고 담고")
-                    .font(.pHeadline2)
-                    .padding(.top, 20)
-            }
-            .offset(y: 272)
+            Image(.charactersSilhouette)
+                .offset(y: 285)
         }
         .onAppear {
             if !Const.refreshToken.isEmpty {
