@@ -17,10 +17,10 @@ struct TokenPayload: Equatable {
     var memId: Int
     var fmDvcd: String?
     var nickname: String?
-    var email: String
+    var email: String?
     var memSub: String
     
-    init(isUser: String = "", accessToken: String = "", refreshToken: String = "", inviteCd: String? = nil, memId: Int = -1, fmDvcd: String? = nil, nickname: String? = nil, email: String = "", memSub: String = "") {
+    init(isUser: String = "", accessToken: String = "", refreshToken: String = "", inviteCd: String? = nil, memId: Int = -1, fmDvcd: String? = nil, nickname: String? = nil, email: String? = nil, memSub: String = "") {
         self.isUser = isUser
         self.accessToken = accessToken
         self.refreshToken = refreshToken

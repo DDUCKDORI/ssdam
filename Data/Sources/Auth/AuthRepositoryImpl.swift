@@ -20,14 +20,16 @@ public final class AuthRepositoryImpl: AuthRepository {
     
     public func issueAccessToken(_ code: String, _ token: String) async -> JSON {
         let data = try? await client.request(router: AuthAPI.issueAccessToken(code, token))
-            .map { JSON($0) }
+            .map { try? JSON(data: $0.data) }
+            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
     
     public func login(tokenInfo: [String: Any]) async -> JSON {
         let data = try? await client.request(router: AuthAPI.login(tokenInfo))
-            .map { JSON($0) }
+            .map { try? JSON(data: $0.data) }
+            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
