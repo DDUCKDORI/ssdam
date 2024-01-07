@@ -77,10 +77,11 @@ struct LoginView: View {
                                 Const.refreshToken = viewStore.tokenInfo.refreshToken
                                 Const.nickname = viewStore.tokenInfo.nickname ?? ""
                                 Const.inviteCd = viewStore.tokenInfo.inviteCd ?? ""
-                                Const.email = viewStore.tokenInfo.email
+                                Const.email = viewStore.tokenInfo.email ?? ""
                                 Const.userType = viewStore.tokenInfo.fmDvcd ?? ""
                                 Const.memId = viewStore.tokenInfo.memId
                                 Const.memSub = viewStore.tokenInfo.memSub
+                                break
                                 
                             default:
                                 break
