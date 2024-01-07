@@ -66,13 +66,13 @@ final class NetworkLogger: PluginType {
         var log = "------------------- SUCCESS (isFromError: \(isFromError)) -------------------"
         log.append("\n[\(statusCode)] \(url)\n----------------------------------------------------\n")
         log.append("API: \(target)\n")
-//        response.response?.allHeaderFields.forEach {
-//            log.append("\($0): \($1)\n")
-//        }
-//        if let reString = String(bytes: response.data, encoding: String.Encoding.utf8) {
-//            log.append("\(reString)\n")
-//        }
-////        log.append("------------------- END HTTP (\(response.data.count)-byte body) -------------------")
+        response.response?.allHeaderFields.forEach {
+            log.append("\($0): \($1)\n")
+        }
+        if let reString = String(bytes: response.data, encoding: String.Encoding.utf8) {
+            log.append("\(reString)\n")
+        }
+        log.append("------------------- END HTTP (\(response.data.count)-byte body) -------------------")
         print(log)
         
         // 🔥 in case of 401.
