@@ -27,8 +27,12 @@ struct NicknameReducer: Reducer {
         case agreeAllToggled(Bool)
         case serviceAgreementToggled(Bool)
         case privacyAgreementToggled(Bool)
-        case login(TokenPayload)
+        case login
         case loginResponse(TaskResult<TokenEntity>)
+    }
+    
+    private func getNickname() -> String {
+        return State().nickname
     }
     
     var body: some ReducerOf<Self> {
@@ -59,17 +63,17 @@ struct NicknameReducer: Reducer {
             case let .privacyAgreementToggled(isOn):
                 state.privacyAgreement = isOn
                 return .none
-            case let .login(entity):
+            case .login:
                 return .run { send in
                     let result = await TaskResult {
-                        let body = ["exists_yn" : entity.isUser,
-                                    "access_token" : entity.accessToken,
-                                    "refresh_token" : entity.refreshToken,
-                                    "invite_cd" : entity.inviteCd,
-                                    "fm_dvcd" : entity.fmDvcd,
-                                    "nick_nm" : entity.nickname,
-                                    "email": entity.email,
-                                    "mem_sub": entity.memSub
+                        let body = ["exists_yn" : "no",
+                                    "access_token" : Const.accessToken,
+                                    "refresh_token" : Const.refreshToken,
+                                    "invite_cd" : Const.inviteCd,
+                                    "fm_dvcd" : Const.userType,
+                                    "nick_nm" : getNickname(),
+                                    "email": Const.email,
+                                    "mem_sub": Const.memSub
                         ]
                         let data = await authUseCase.login(tokenInfo: body as [String : Any])
                         return data
@@ -176,17 +180,7 @@ struct NicknameView: View {
                 
                 if viewStore.isValid, viewStore.serviceAgreement, viewStore.privacyAgreement {
                     Button {
-                        viewStore.send(.login(TokenPayload(
-                            isUser: "no",
-                            accessToken: Const.accessToken,
-                            refreshToken: Const.refreshToken,
-                            inviteCd: Const.inviteCd,
-                            memId: Const.memId,
-                            fmDvcd: Const.userType,
-                            nickname: viewStore.nickname,
-                            email: Const.email,
-                            memSub: Const.memSub)))
-
+                        viewStore.send(.login)
                         screenRouter.change(.signUpSuccess(viewStore.nickname))
                     } label: {
                         Text("가입하기")
