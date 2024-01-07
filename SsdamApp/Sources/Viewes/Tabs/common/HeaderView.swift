@@ -32,7 +32,7 @@ struct HeaderView: View {
                 Spacer()
                 Image(.setting)
             }
-            .padding(.horizontal, 28)
+            .padding(.horizontal, 30)
         }
     }
 }
