@@ -2,16 +2,10 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="ipad12_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="Pretendard-SemiBold.otf">
-            <string>Pretendard-SemiBold</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--View Controller-->
         <scene sceneID="EHf-IW-A2E">
@@ -26,20 +20,12 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="characters.silhouette" translatesAutoresizingMaskIntoConstraints="NO" id="ZLj-VS-NNL">
-                                <rect key="frame" x="453.5" y="296" width="117" height="62"/>
+                                <rect key="frame" x="451.5" y="296" width="121" height="121"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="우리 가족 쓰고 담기" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rd7-Xn-Sh5">
-                                <rect key="frame" x="435.5" y="378" width="153" height="24"/>
-                                <fontDescription key="fontDescription" name="Pretendard-SemiBold" family="Pretendard" pointSize="20"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Rd7-Xn-Sh5" firstAttribute="top" secondItem="ZLj-VS-NNL" secondAttribute="bottom" constant="20" id="LRM-Tt-xEe"/>
-                            <constraint firstItem="Rd7-Xn-Sh5" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Tpx-Pz-hu9"/>
                             <constraint firstItem="ZLj-VS-NNL" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" constant="272" id="cTF-CV-ZZy"/>
                             <constraint firstItem="ZLj-VS-NNL" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="oYN-sI-0Xr"/>
                         </constraints>
@@ -51,7 +37,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="characters.silhouette" width="117" height="62"/>
-        <image name="tile.sliced" width="375" height="217"/>
+        <image name="characters.silhouette" width="121" height="121"/>
+        <image name="tile.sliced" width="375" height="368"/>
     </resources>
 </document>
