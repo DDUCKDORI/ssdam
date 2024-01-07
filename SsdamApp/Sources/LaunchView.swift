@@ -32,7 +32,7 @@ struct LaunchView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
-            Image(.tileMint)
+            Image(.tileYellow)
                 .resizable(resizingMode: .tile)
         }
         .ignoresSafeArea()
