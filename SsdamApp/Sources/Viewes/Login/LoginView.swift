@@ -36,6 +36,16 @@ struct LoginReducer: Reducer {
                 }
             case .issueTokenResponse(.success(let entity)):
                 state.tokenInfo = TokenPayload(entity)
+                
+                Const.accessToken = state.tokenInfo.accessToken
+                Const.refreshToken = state.tokenInfo.refreshToken
+                Const.nickname = state.tokenInfo.nickname ?? ""
+                Const.inviteCd = state.tokenInfo.inviteCd ?? ""
+                Const.email = state.tokenInfo.email ?? ""
+                Const.userType = state.tokenInfo.fmDvcd ?? ""
+                Const.memId = state.tokenInfo.memId
+                Const.memSub = state.tokenInfo.memSub
+                
                 return .none
             case .issueTokenResponse(.failure(_)):
                 return .none
@@ -73,19 +83,12 @@ struct LoginView: View {
                                 guard let code = authorizationCode, let token = identityToken else { return }
                                 viewStore.send(.issueToken(code, token))
                                 
-                                Const.accessToken = viewStore.tokenInfo.accessToken
-                                Const.refreshToken = viewStore.tokenInfo.refreshToken
-                                Const.nickname = viewStore.tokenInfo.nickname ?? ""
-                                Const.inviteCd = viewStore.tokenInfo.inviteCd ?? ""
-                                Const.email = viewStore.tokenInfo.email ?? ""
-                                Const.userType = viewStore.tokenInfo.fmDvcd ?? ""
-                                Const.memId = viewStore.tokenInfo.memId
-                                Const.memSub = viewStore.tokenInfo.memSub
                                 break
                                 
                             default:
                                 break
                             }
+                            
                             if viewStore.tokenInfo.isUser == "yes" {
                                 screenRouter.change(.home)
                             }
