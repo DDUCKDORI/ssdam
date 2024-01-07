@@ -9,6 +9,26 @@
 import Foundation
 
 public struct TokenInfo: Decodable {
-    let accessToken: String
-    let refreshToken: String
+    public var isUser: String
+    public var accessToken: String
+    public var refreshToken: String
+    public var inviteCd: String?
+    public var memId: Int
+    public var fmDvcd: String?
+    public var nickname: String?
+    public var email: String?
+    public var memSub: String
+    
+    public init(isUser: String = "", accessToken: String = "", refreshToken: String = "", inviteCd: String? = nil, memId: Int = -1, fmDvcd: String? = nil, nickname: String? = nil, email: String? = nil, memSub: String = "") {
+        self.isUser = isUser
+        self.accessToken = accessToken
+        self.refreshToken = refreshToken
+        self.inviteCd = inviteCd
+        self.memId = memId
+        self.fmDvcd = fmDvcd
+        self.nickname = nickname
+        self.email = email
+        self.memSub = memSub
+    }
+    
 }

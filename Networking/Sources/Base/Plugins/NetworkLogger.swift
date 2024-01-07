@@ -100,27 +100,27 @@ final class NetworkLogger: PluginType {
 extension NetworkLogger {
     func reissueAccessToken(request: TokenInfo) {
         let provider = MoyaProvider<AuthAPI>()
-//        provider.request(.fetchAccessCode(request)) { result in
-//            switch result {
-//            case .success(let response):
-//                let decoder = JSONDecoder()
-//                // reissue access token
-//                if let tokenData = try? decoder.decode(TokenInfo.self, from: response.data) {
-//                    UserDefaults.standard.set(tokenData.accessToken, forKey: "accessToken")
-//                    UserDefaults.standard.set(tokenData.refreshToken, forKey: "refreshToken")
-//                    
-//                    print("userTokenReissueWithAPI - success")
-//                }
-//            case .failure(let error):
-//                // in case of invalide refresh token
-//                if let statusCode = error.response?.statusCode, statusCode == 406 {
-//                    
-//                    UserDefaults.standard.removeObject(forKey: "accessToken")
-//                    UserDefaults.standard.removeObject(forKey: "refreshToken")
-//                    //                    UserDefaults.standard.removeObject(forKey: Const.userID)
-//                    print("error - statusCode: \(statusCode)")
-//                }
-//            }
-//        }
+        provider.request(.issueAccessToken(Const.accessToken, Const.refreshToken)) { result in
+            switch result {
+            case .success(let response):
+                let decoder = JSONDecoder()
+                // reissue access token
+                if let tokenData = try? decoder.decode(TokenInfo.self, from: response.data) {
+                    Const.accessToken = tokenData.accessToken
+                    Const.refreshToken = tokenData.refreshToken
+                    
+                    print("userTokenReissueWithAPI - success")
+                }
+            case .failure(let error):
+                // in case of invalide refresh token
+                if let statusCode = error.response?.statusCode, statusCode == 406 {
+                    
+                    UserDefaults.standard.removeObject(forKey: "accessToken")
+                    UserDefaults.standard.removeObject(forKey: "refreshToken")
+                    //                    UserDefaults.standard.removeObject(forKey: Const.userID)
+                    print("error - statusCode: \(statusCode)")
+                }
+            }
+        }
     }
 }
