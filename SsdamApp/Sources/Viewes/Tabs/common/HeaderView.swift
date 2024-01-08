@@ -24,13 +24,18 @@ struct HeaderReducer: Reducer {
 }
 
 struct HeaderView: View {
+    @EnvironmentObject var screenRouter: ScreenRouter
     let store: StoreOf<HeaderReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             HStack {
                 Image(.logo)
                 Spacer()
-                Image(.setting)
+                Button(action: {
+                    screenRouter.navigateTo(.setting)
+                }, label: {
+                    Image(.setting)
+                })
             }
             .padding(.horizontal, 30)
         }
