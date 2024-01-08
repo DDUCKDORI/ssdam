@@ -39,14 +39,10 @@ struct CalendarView: View {
     let store: StoreOf<CalendarReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            ZStack(alignment: .top) {
+            VStack {
                 CalendarViewRepresentable(selectedDate: viewStore.binding(get: \.date, send: { value in
                         .datePicked((value ?? .init(Calendar.current.dateComponents([.day, .month, .year], from: .now))) ?? .init())
                 }))
-//                .offset(y: 60)
-
-                
-                
             }
             .sheet(isPresented: viewStore.binding(get: \.isPresented, send: .presentSheet), content: {
                 ZStack {
@@ -101,7 +97,6 @@ struct CalendarView: View {
             HeaderView(store: .init(initialState: HeaderReducer.State(), reducer: {
                 HeaderReducer()
             }))
-            .padding(.bottom, UIDevice.current.hasNotch ? 0 : 65)
         }
     }
 }
