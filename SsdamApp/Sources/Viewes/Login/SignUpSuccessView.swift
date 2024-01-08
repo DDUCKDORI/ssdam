@@ -73,7 +73,7 @@ struct SignUpSuccessView: View {
                             .multilineTextAlignment(.center)
                     }
                 }
-                .offset(y: -185)
+                .offset(y: -205)
                 
                 PageControl(numberOfPages: viewStore.images.count, currentPage: viewStore.binding(get: \.currentPage, send: { value in
                     .pageChanged(value) }))
@@ -95,7 +95,7 @@ struct SignUpSuccessView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 100))
                         .padding(.horizontal, 80)
                 })
-                .offset(y: 249)
+                .offset(y: 265)
             }
         }
     }
