@@ -43,12 +43,11 @@ struct CalendarView: View {
                 CalendarViewRepresentable(selectedDate: viewStore.binding(get: \.date, send: { value in
                         .datePicked((value ?? .init(Calendar.current.dateComponents([.day, .month, .year], from: .now))) ?? .init())
                 }))
-                .frame(height: UIScreen().bounds.height / 2)
-                .frame(maxHeight: .infinity)
+//                .offset(y: 60)
+
                 
                 
             }
-            .offset(y: -105)
             .sheet(isPresented: viewStore.binding(get: \.isPresented, send: .presentSheet), content: {
                 ZStack {
                     Color(.yellow20)
@@ -94,7 +93,7 @@ struct CalendarView: View {
                         }
                     }
                 }
-                .presentationDetents([.fraction(0.3) , .large])
+                .presentationDetents([.fraction(0.4) , .large])
             })
             
         }
@@ -102,6 +101,7 @@ struct CalendarView: View {
             HeaderView(store: .init(initialState: HeaderReducer.State(), reducer: {
                 HeaderReducer()
             }))
+            .padding(.bottom, UIDevice.current.hasNotch ? 0 : 65)
         }
     }
 }
