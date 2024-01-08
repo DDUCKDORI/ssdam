@@ -56,8 +56,9 @@ struct TabRouterView: View {
                     TabView(selection: viewStore.binding(get: \.tab, send: { value in
                             .tabChanged(value)
                     }), content: {
-                        Text("Calendar")
-                            .tag(TabRouterReducer.Tab.calendar)
+                        CalendarView(store: .init(initialState: CalendarReducer.State(), reducer: {
+                            CalendarReducer()
+                        }))                            .tag(TabRouterReducer.Tab.calendar)
                         HomeView(store: .init(initialState: HomeReducer.State(), reducer: {
                             HomeReducer()
                         }))
