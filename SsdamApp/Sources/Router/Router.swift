@@ -26,12 +26,13 @@ enum ScreenRoute: ScreenProtocol {
     case write(Binding<HomeViewType>)
     case fullScreen
     case sheetScreen
+    case setting
     
     var embedInNavView: Bool {
         switch self {
         case .login, .sheetScreen, .home:
             return true
-        case .signUp, .signUpSuccess, .write, .fullScreen, .launch:
+        case .signUp, .signUpSuccess, .write, .fullScreen, .launch, .setting:
             return false
         }
     }
@@ -67,6 +68,10 @@ class ScreenRouterFactory: RouterFactory {
             }))
         case .fullScreen:
             Text("Full Screen")
+        case .setting:
+            SettingView(store: .init(initialState: SettingReducer.State(), reducer: {
+                SettingReducer()
+            }))
         case .sheetScreen:
             EmptyView()
         }
