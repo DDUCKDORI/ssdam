@@ -9,9 +9,22 @@
 import FirebaseCore
 import UIKit
 
+@main
 class AppDelegate: NSObject, UIApplicationDelegate {
+    var window: UIWindow?
+    let screenRouter = ScreenRouter(factory: .init())
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         FirebaseApp.configure()
+        
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        self.window = window
+        let launchView = LaunchView(store: .init(initialState: LaunchReducer.State(), reducer: {
+            LaunchReducer()
+        }))
+        screenRouter.start(window: window, rootView: launchView)
+        window.makeKeyAndVisible()
+        
         
         //        UNUserNotificationCenter.current().delegate = self
         //
