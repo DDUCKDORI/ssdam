@@ -43,12 +43,10 @@ struct LaunchView: View {
             ZStack(alignment: .top) {
                 Image(.tileMint)
                     .resizable(resizingMode: .tile)
+                Image(.charactersSilhouette)
+                    .offset(y: 296)
             }
             .ignoresSafeArea()
-            .safeAreaInset(edge: .top) {
-                Image(.charactersSilhouette)
-                    .offset(y: 285)                   
-            }
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                     viewStore.send(.onAppear)
