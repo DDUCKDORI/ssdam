@@ -8,9 +8,10 @@
 import Foundation
 import SwiftUI
 
-protocol RouterFactory {
+public protocol RouterFactory {
     associatedtype Body: View
     associatedtype Screen: ScreenProtocol
-    
+
     @ViewBuilder func makeBody(for screen: Screen) -> Self.Body
+    func makeViewController(for screen: Screen) -> UIViewController
 }

@@ -7,152 +7,128 @@
 
 import Foundation
 import SwiftUI
-
-enum ScreenRoute: ScreenProtocol {
-    var title: String {
-        switch self {
-        case .signUp:
-            return "회원가입"
-        default:
-            return ""
-        }
-    }
-    
-    case launch
-    case login
-    case signUp
-    case signUpSuccess(String)
-    case home
-    case write(Binding<HomeViewType>)
-    case fullScreen
-    case sheetScreen
-    case setting
-    
-    var embedInNavView: Bool {
-        switch self {
-        case .login, .sheetScreen, .home:
-            return true
-        case .signUp, .signUpSuccess, .write, .fullScreen, .launch, .setting:
-            return false
-        }
+import UIKit
+extension UIWindow {
+    static var key: UIWindow? {
+        guard let keyWindow = UIApplication.shared.connectedScenes
+            .filter({$0.activationState == .foregroundActive})
+            .map({$0 as? UIWindowScene})
+            .compactMap({$0})
+            .first?.windows
+            .filter({$0.isKeyWindow}).first else { return nil }
+        
+        return keyWindow
     }
 }
 
-class ScreenRouterFactory: RouterFactory {
-    
-    @ViewBuilder func makeBody(for screen: ScreenRoute) -> some View {
-        switch screen {
-        case .launch:
-            LaunchView(store: .init(initialState: LaunchReducer.State(), reducer: {
-                LaunchReducer()
-            }))
-        case .login:
-            LoginView(store: .init(initialState: LoginReducer.State(), reducer: {
-                LoginReducer()
-            }))
-        case .signUp:
-            SignupView(store: .init(initialState: SignupReducer.State(), reducer: {
-                SignupReducer()
-            }))
-        case let .signUpSuccess(nickname):
-            SignUpSuccessView(store: .init(initialState: SignUpSuccessReducer.State(nickname: nickname), reducer: {
-                SignUpSuccessReducer()
-            }))
-        case .home:
-            TabRouterView(store: .init(initialState: TabRouterReducer.State(), reducer: {
-                TabRouterReducer()
-            }))
-        case let .write(viewType):
-            WriteView(viewType: viewType, store: .init(initialState: WriteReducer.State(), reducer: {
-                WriteReducer()
-            }))
-        case .fullScreen:
-            Text("Full Screen")
-        case .setting:
-            SettingView(store: .init(initialState: SettingReducer.State(), reducer: {
-                SettingReducer()
-            }))
-        case .sheetScreen:
-            EmptyView()
-        }
-    }
-}
-
-typealias ScreenRouter = Router<ScreenRoute, ScreenRouterFactory>
-
-enum PresentationType {
-    case push
-    case full
-    case modal
-}
-
-protocol ScreenProtocol {
-    var embedInNavView: Bool { get }
+public protocol ScreenProtocol {
+    var isHiddenNavigation: Bool { get }
     var title: String { get }
 }
 
-protocol RouterObject: AnyObject {
+public protocol RouterObject: AnyObject {
     associatedtype Screen = ScreenProtocol
     associatedtype Body = View
     
-    func start() -> Body
-    func navigateTo(_ screen: Screen)
-    func presentSheet(_ screen: Screen)
-    func presentFullScreen(_ screen: Screen)
-    func dismissLast()
-    func popToRoot()
+    var rootViewController: UINavigationController? { get }
+    
+    func start(window: UIWindow, rootView: some View)
+    func change(root screen: Screen)
+    func routeTo(_ screen: Screen, animated: Bool)
+    func presentSheet(_ screen: Screen, animated: Bool)
+    func presentFullScreen(_ screen: Screen, animated: Bool)
+    func dismiss(animated: Bool, completion: (() -> Void)?)
+    func popToRoot(animated: Bool, completion: (() -> Void)?)
 }
 
-struct RouterContext<ScreenType: ScreenProtocol> {
-    let screen: ScreenType
-    let presentationType: PresentationType
-}
-
-class Router<ScreenType, Factory: RouterFactory>: ObservableObject, RouterObject where Factory.Screen == ScreenType {
+public class Router<ScreenType, Factory: RouterFactory>: ObservableObject, RouterObject where Factory.Screen == ScreenType {
+    public var rootViewController: UINavigationController?
+    private var factory: Factory
     
-    @Published private var stack: [RouterContext<ScreenType>] = []
-    var factory: Factory
-    
-    init(rootScreen: ScreenType, presentationType: PresentationType = .push, factory: Factory) {
-        self.stack = [RouterContext(screen: rootScreen, presentationType: .push)]
+    public init(factory: Factory) {
         self.factory = factory
     }
 }
 
-extension Router {
-    func start() -> some View {
-        let bindingScreens = Binding(get: {
-            return self.stack
-        }, set: {
-            self.stack = $0
-        })
+public extension Router {
+    func start(window: UIWindow, rootView: some View) {
+        let hostingViewController = UIHostingController(rootView: rootView)
+        let navigationViewController = UINavigationController(rootViewController: hostingViewController)
+        navigationViewController.hideNavigationByOS()
+        window.rootViewController = navigationViewController
+        self.rootViewController = navigationViewController
+    }
+    
+    func change(root screen: ScreenType) {
+        let navigationViewController = UINavigationController(rootViewController: factory.makeViewController(for: screen))
+        navigationViewController.hideNavigationByOS()
+        guard let window = UIWindow.key else {
+            UIWindow.key?.rootViewController = navigationViewController
+            self.rootViewController = navigationViewController
+            return
+        }
+        window.rootViewController = navigationViewController
+        self.rootViewController = navigationViewController
         
-        return Routing(stack: bindingScreens) { screen in
-            self.factory.makeBody(for: screen)
+        UIView.transition(with: window,
+                          duration: 0.3,
+                          options: .transitionCrossDissolve,
+                          animations: nil)
+    }
+    
+    func routeTo(_ screen: ScreenType, animated: Bool = true) {
+        //        let baseVC = UIWindow.key?.rootViewController
+        //        guard let naviController = baseVC as? UINavigationController else { return }
+        rootViewController?.isHiddenNavigation(screen.isHiddenNavigation)
+        rootViewController?.navigationBar.topItem?.backButtonTitle = screen.title
+        rootViewController?.setNeedsStatusBarAppearanceUpdate()
+        rootViewController?.pushViewController(factory.makeViewController(for: screen), animated: animated)
+    }
+    
+    func pop(animated: Bool = true, completion: (() -> Void)? = nil) {
+        rootViewController?.popViewController(animated: animated)
+        completion?()
+    }
+    
+    func popToRoot(animated: Bool = true, completion: (() -> Void)? = nil) {
+        rootViewController?.popToRootViewController(animated: animated)
+        completion?()
+    }
+    
+    func presentFullScreen(_ screen: ScreenType, animated: Bool = true) {
+        let viewController = factory.makeViewController(for: screen)
+        viewController.modalPresentationStyle = .fullScreen
+        rootViewController?.present(viewController, animated: animated)
+    }
+    
+    func dismiss(animated: Bool = true, completion: (() -> Void)? = nil) {
+        rootViewController?.dismiss(animated: animated, completion: completion)
+    }
+    
+    func presentSheet(_ screen: ScreenType, animated: Bool = true) {
+        rootViewController?.present(factory.makeViewController(for: screen), animated: animated)
+    }
+}
+
+private extension UINavigationController {
+    func isHiddenNavigation(_ isHidden: Bool) {
+        self.setNavigationBarHidden(isHidden, animated: false)
+        self.isNavigationBarHidden = isHidden
+        self.navigationBar.isHidden = isHidden
+    }
+    
+    func hideNavigationByOS() {
+        if #available(iOS 16.0, *) {
+            self.isHiddenNavigation(true)
+        } else {
+            self.hideNaviagationBar()
         }
     }
     
-    func change(_ screen: ScreenType) {
-        self.stack = [RouterContext(screen: screen, presentationType: .push)]
-    }
-    
-    func presentSheet(_ screen: ScreenType) {
-        self.stack.append(RouterContext(screen: screen, presentationType: .modal))
-    }
-    
-    func dismissLast() {
-        self.stack.removeLast()
-    }
-    
-    func navigateTo(_ screen: ScreenType) {
-        self.stack.append(RouterContext(screen: screen, presentationType: .push))
-    }
-    
-    func presentFullScreen(_ screen: ScreenType) {
-        self.stack.append(RouterContext(screen: screen, presentationType: .full))
-    }
-    
-    func popToRoot() {
-        self.stack.removeLast(self.stack.count - 1)
+    private func hideNaviagationBar() {
+        DispatchQueue.main.async { [weak self] in
+            self?.navigationBar.isHidden = true
+            self?.view.setNeedsLayout()
+        }
     }
 }
