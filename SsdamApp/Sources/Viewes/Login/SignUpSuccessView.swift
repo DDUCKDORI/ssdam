@@ -10,7 +10,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct SignUpSuccessReducer: Reducer {
-    
+    @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
         var titles: [String] = [
             "",
@@ -47,7 +47,11 @@ struct SignUpSuccessReducer: Reducer {
                 state.currentPage = page
                 return .none
             case .tapNextButton:
-                state.currentPage += 1
+                if state.currentPage < 3 {
+                    state.currentPage += 1
+                    return .none
+                }
+                screenRouter.change(root: .home)
                 return .none
             }
         }
@@ -55,7 +59,6 @@ struct SignUpSuccessReducer: Reducer {
 }
 
 struct SignUpSuccessView: View {
-    @EnvironmentObject var screenRouter: ScreenRouter
     let store: StoreOf<SignUpSuccessReducer>
     var body: some View {
         WithViewStore(self.store, observe:  { $0 } ) { viewStore in
@@ -80,11 +83,7 @@ struct SignUpSuccessView: View {
                 .offset(y: 197)
                 
                 Button(action: {
-                    if viewStore.currentPage < 3 {
-                        store.send(.tapNextButton)
-                        return
-                    }
-                    screenRouter.change(.home)
+                    store.send(.tapNextButton)
                 }, label: {
                     Text(viewStore.currentPage < 3 ? "다음" : "시작하기")
                         .font(.pButton)

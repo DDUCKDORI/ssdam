@@ -10,6 +10,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct WriteReducer: Reducer {
+    @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
         var text: String = ""
     }
@@ -17,6 +18,7 @@ struct WriteReducer: Reducer {
     enum Action: Equatable {
         case textChanged(String)
         case textValidation(String)
+        case answerButtonTapped
     }
     
     var body: some ReducerOf<Self> {
@@ -30,7 +32,8 @@ struct WriteReducer: Reducer {
                     state.text.removeLast()
                 }
                 return .none
-            default:
+            case .answerButtonTapped:
+                screenRouter.dismiss()
                 return .none
             }
         }
@@ -39,7 +42,6 @@ struct WriteReducer: Reducer {
 
 
 struct WriteView: View {
-    @EnvironmentObject var screenRouter: ScreenRouter
     @Binding var viewType: HomeViewType
     let store: StoreOf<WriteReducer>
     var body: some View {
@@ -73,8 +75,8 @@ struct WriteView: View {
                     }
                     
                     Button(action: {
+                        viewStore.send(.answerButtonTapped)
                         viewType = .list
-                        screenRouter.dismissLast()
                     }, label: {
                         Text("답변하기")
                             .font(.pButton)

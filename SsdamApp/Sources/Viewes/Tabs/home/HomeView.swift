@@ -10,26 +10,31 @@ import Foundation
 import SwiftUI
 import ComposableArchitecture
 
-enum HomeViewType {
+public enum HomeViewType {
     case question
     case list
 }
 
 struct HomeReducer: Reducer {
+    @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
     }
     
     enum Action: Equatable {
+        case imageTapped
     }
     var body: some ReducerOf<Self> {
         Reduce { state, action in
-            return .none
+            switch action {
+            case .imageTapped:
+                screenRouter.presentFullScreen(.write(.constant(.question)))
+                return .none
+            }
         }
     }
 }
 
 struct HomeView: View {
-    @EnvironmentObject var screenRouter: ScreenRouter
     @State var viewType: HomeViewType = .question
     let store: StoreOf<HomeReducer>
     var body: some View {
@@ -37,6 +42,9 @@ struct HomeView: View {
             ZStack {
                 if viewType == .question {
                     MainQuestionView()
+                        .onTapGesture {
+                            viewStore.send(.imageTapped)
+                        }
                     
                 } else {
                     AnswerListView(store: .init(initialState: AnswerListReducer.State(), reducer: {
@@ -70,9 +78,6 @@ struct HomeView: View {
                 
                 Image(.characterMain)
                     .padding(.bottom, 12)
-                    .onTapGesture {
-                        screenRouter.presentFullScreen(.write($viewType))
-                    }
             }
         }
     }

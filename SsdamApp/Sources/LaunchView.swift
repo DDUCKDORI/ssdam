@@ -11,8 +11,9 @@ import ComposableArchitecture
 import Utils
 
 struct LaunchReducer: Reducer {
+    @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
-        var text: String = ""
+        //        var text: String = ""
     }
     
     enum Action: Equatable {
@@ -21,31 +22,38 @@ struct LaunchReducer: Reducer {
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
-            return .none
+            switch action {
+            case .onAppear:
+                if !Const.refreshToken.isEmpty {
+                    screenRouter.change(root: .home)
+                    return .none
+                }
+                screenRouter.change(root: .login)
+                return .none
+            }
         }
     }
 }
 
 struct LaunchView: View {
-    @EnvironmentObject var screenRouter: ScreenRouter
     let store: StoreOf<LaunchReducer>
     
     var body: some View {
-        ZStack(alignment: .top) {
-            Image(.tileMint)
-                .resizable(resizingMode: .tile)
-        }
-        .ignoresSafeArea()
-        .safeAreaInset(edge: .top) {
-            Image(.charactersSilhouette)
-                .offset(y: 285)
-        }
-        .onAppear {
-            if !Const.refreshToken.isEmpty {
-                screenRouter.change(.home)
-                return
+        WithViewStore(self.store, observe:  { $0 } ) { viewStore in
+            ZStack(alignment: .top) {
+                Image(.tileMint)
+                    .resizable(resizingMode: .tile)
             }
-            screenRouter.change(.login)
+            .ignoresSafeArea()
+            .safeAreaInset(edge: .top) {
+                Image(.charactersSilhouette)
+                    .offset(y: 285)                   
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    viewStore.send(.onAppear)
+                }
+            }
         }
     }
 }

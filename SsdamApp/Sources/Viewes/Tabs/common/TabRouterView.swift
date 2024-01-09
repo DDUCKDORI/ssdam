@@ -12,6 +12,9 @@ import ComposableArchitecture
 struct TabRouterReducer: Reducer {
     struct State: Equatable {
         var tab: Tab = .home
+        var homeState: HomeReducer.State = .init()
+        var calendarState: CalendarReducer.State = .init()
+//        var shareState: ShareReducer.State = .init()
     }
     
     enum Action: Equatable {

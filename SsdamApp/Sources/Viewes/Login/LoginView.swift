@@ -13,6 +13,7 @@ import Domain
 import Utils
 
 struct LoginReducer: Reducer {
+    @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.authUseCase) var authUseCase
     struct State: Equatable {
         var tokenInfo: TokenPayload = .init()
@@ -46,6 +47,13 @@ struct LoginReducer: Reducer {
                 Const.memId = state.tokenInfo.memId
                 Const.memSub = state.tokenInfo.memSub
                 
+                if state.tokenInfo.isUser == "yes" {
+                    screenRouter.change(root: .home)
+                }
+                else {
+                    screenRouter.change(root: .signUp)
+                }
+                
                 return .none
             case .issueTokenResponse(.failure(_)):
                 return .none
@@ -56,7 +64,6 @@ struct LoginReducer: Reducer {
 }
 
 struct LoginView: View {
-    @EnvironmentObject var screenRouter: ScreenRouter
     let store: StoreOf<LoginReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -81,6 +88,7 @@ struct LoginView: View {
                                 let authorizationCode = String(data: appleIDCredential.authorizationCode!, encoding: .utf8)
                                 
                                 guard let code = authorizationCode, let token = identityToken else { return }
+                                
                                 viewStore.send(.issueToken(code, token))
                                 
                                 break
@@ -89,12 +97,6 @@ struct LoginView: View {
                                 break
                             }
                             
-                            if viewStore.tokenInfo.isUser == "yes" {
-                                screenRouter.change(.home)
-                            }
-                            else {
-                                screenRouter.change(.signUp)
-                            }
                         case let .failure(error):
                             print(error.localizedDescription)
                             print(error)

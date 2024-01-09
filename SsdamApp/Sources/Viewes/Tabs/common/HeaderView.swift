@@ -10,21 +10,26 @@ import SwiftUI
 import ComposableArchitecture
 
 struct HeaderReducer: Reducer {
+    @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
     }
     
     enum Action: Equatable {
+        case settingTapped
     }
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
-            return .none
+            switch action {
+            case .settingTapped:
+                screenRouter.routeTo(.setting)
+                return .none
+            }
         }
     }
 }
 
 struct HeaderView: View {
-    @EnvironmentObject var screenRouter: ScreenRouter
     let store: StoreOf<HeaderReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -32,7 +37,7 @@ struct HeaderView: View {
                 Image(.logo)
                 Spacer()
                 Button(action: {
-                    screenRouter.navigateTo(.setting)
+                    viewStore.send(.settingTapped)
                 }, label: {
                     Image(.setting)
                 })

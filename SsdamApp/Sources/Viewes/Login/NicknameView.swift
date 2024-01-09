@@ -12,6 +12,7 @@ import Domain
 import Utils
 
 struct NicknameReducer: Reducer {
+    @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.authUseCase) var authUseCase
     struct State: Equatable {
         var nickname: String = ""
@@ -82,6 +83,7 @@ struct NicknameReducer: Reducer {
                 }
             case .loginResponse(.success(let entity)):
                 state.tokenInfo = TokenPayload(entity)
+                screenRouter.routeTo(.signUpSuccess(state.nickname))
                 return .none
             case .loginResponse(.failure(_)):
                 return .none
@@ -91,7 +93,6 @@ struct NicknameReducer: Reducer {
 }
 
 struct NicknameView: View {
-    @EnvironmentObject var screenRouter: ScreenRouter
     let store: StoreOf<NicknameReducer>
     
     var body: some View {
@@ -181,7 +182,6 @@ struct NicknameView: View {
                 if viewStore.isValid, viewStore.serviceAgreement, viewStore.privacyAgreement {
                     Button {
                         viewStore.send(.login)
-                        screenRouter.change(.signUpSuccess(viewStore.nickname))
                     } label: {
                         Text("가입하기")
                             .font(.pButton2)
