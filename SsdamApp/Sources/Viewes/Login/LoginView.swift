@@ -23,6 +23,8 @@ struct LoginReducer: Reducer {
         case issueToken(String, String)
         case issueTokenResponse(TaskResult<TokenEntity>)
         case navigate
+        case routeToHome
+        case routeToSignup
     }
     
     var body: some ReducerOf<Self> {
@@ -54,13 +56,21 @@ struct LoginReducer: Reducer {
                 return .none
             case .navigate:
                 if state.tokenInfo.isUser == "yes" {
+                    return .send(.routeToHome)
+                }
+                return .send(.routeToSignup)
+            case .routeToHome:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     screenRouter.change(root: .home)
                 }
-                else {
+                return .none
+            case .routeToSignup:
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     screenRouter.change(root: .signUp)
                 }
                 return .none
             }
+            
         }
     }
 }
