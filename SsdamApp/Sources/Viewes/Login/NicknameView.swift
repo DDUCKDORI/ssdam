@@ -41,7 +41,6 @@ struct NicknameReducer: Reducer {
             switch action {
             case let .nicknameChanged(newValue):
                 state.nickname = newValue
-                print(state.nickname)
                 return .none
             case let .nicknameValidation(newValue):
                 if newValue.count > 10 {

@@ -66,6 +66,7 @@ public final class ScreenRouterFactory: RouterFactory {
             TabRouterView(store: .init(initialState: TabRouterReducer.State(), reducer: {
                 TabRouterReducer()
             }))
+            .ignoresSafeArea(.keyboard, edges: .bottom)
         case let .write(viewType):
             WriteView(viewType: viewType, store: .init(initialState: WriteReducer.State(), reducer: {
                 WriteReducer()
