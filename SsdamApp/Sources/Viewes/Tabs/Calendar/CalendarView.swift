@@ -10,6 +10,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct CalendarReducer: Reducer {
+    @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
         var date: DateComponents? = nil
         @PresentationState var isPresented: PresentationState<Bool>?
@@ -18,6 +19,7 @@ struct CalendarReducer: Reducer {
     enum Action: Equatable {
         case datePicked(DateComponents)
         case presentSheet(PresentationAction<Bool>)
+        case settingTapped
     }
     
     var body: some ReducerOf<Self> {
@@ -31,6 +33,9 @@ struct CalendarReducer: Reducer {
                 return .none
             case .presentSheet(.dismiss):
                 state.isPresented = nil
+                return .none
+            case .settingTapped:
+                screenRouter.routeTo(.setting)
                 return .none
             }
         }
@@ -94,12 +99,18 @@ struct CalendarView: View {
                 }
                 .presentationDetents([.fraction(0.4) , .large])
             }
-            
-        }
-        .safeAreaInset(edge: .top) {
-            HeaderView(store: .init(initialState: HeaderReducer.State(), reducer: {
-                HeaderReducer()
-            }))
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Image(.logo)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        viewStore.send(.settingTapped)
+                    }, label: {
+                        Image(.setting)
+                    })
+                }
+            })
         }
     }
 }

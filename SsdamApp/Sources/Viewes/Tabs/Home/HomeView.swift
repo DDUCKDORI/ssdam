@@ -22,12 +22,16 @@ struct HomeReducer: Reducer {
     
     enum Action: Equatable {
         case imageTapped
+        case settingTapped
     }
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .imageTapped:
                 screenRouter.presentFullScreen(.write(.constant(.question)))
+                return .none
+            case .settingTapped:
+                screenRouter.routeTo(.setting)
                 return .none
             }
         }
@@ -53,11 +57,18 @@ struct HomeView: View {
                 }
             }
             .ignoresSafeArea()
-            .safeAreaInset(edge: .top) {
-                HeaderView(store: .init(initialState: HeaderReducer.State(), reducer: {
-                    HeaderReducer()
-                }))
-            }
+            .toolbar(content: {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Image(.logo)
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        viewStore.send(.settingTapped)
+                    }, label: {
+                        Image(.setting)
+                    })
+                }
+            })
         }
     }
     
