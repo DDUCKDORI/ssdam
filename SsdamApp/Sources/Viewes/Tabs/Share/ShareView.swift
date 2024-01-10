@@ -9,7 +9,7 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct ShareViewReducer: Reducer {
+struct ShareReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
         var code: String = ""
@@ -48,7 +48,7 @@ struct ShareViewReducer: Reducer {
 }
 
 struct ShareView: View {
-    let store: StoreOf<ShareViewReducer>
+    let store: StoreOf<ShareReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             VStack {
@@ -59,7 +59,6 @@ struct ShareView: View {
                 ZStack {
                     Image(.ssmee)
                         .offset(y: -60)
-                        .rotationEffect(.degrees(viewStore.code.count == 0 ? 0 : viewStore.code.count % 2 == 0 ? -2 : 2))
                     VStack(spacing: 5) {
                         Text("연결된 가족")
                             .font(.pBody2)
@@ -97,7 +96,7 @@ struct ShareView: View {
                     .padding(.vertical, 12)
                     .opacity(viewStore.code.count > 0 && !viewStore.isValid ? 1 : 0)
                 
-                ShareLink(item: "asdfa") {
+                ShareLink(item: "CODE1001") {
                     Text("내 초대코드 복사하기")
                         .font(.pBody)
                         .underline()
@@ -124,7 +123,7 @@ struct ShareView: View {
 }
 
 #Preview {
-    ShareView(store: .init(initialState: ShareViewReducer.State(), reducer: {
-        ShareViewReducer()
+    ShareView(store: .init(initialState: ShareReducer.State(), reducer: {
+        ShareReducer()
     }))
 }

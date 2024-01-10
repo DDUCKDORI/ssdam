@@ -59,15 +59,24 @@ struct TabRouterView: View {
                     TabView(selection: viewStore.binding(get: \.tab, send: { value in
                             .tabChanged(value)
                     }), content: {
-                        CalendarView(store: .init(initialState: CalendarReducer.State(), reducer: {
-                            CalendarReducer()
-                        }))                            .tag(TabRouterReducer.Tab.calendar)
-                        HomeView(store: .init(initialState: HomeReducer.State(), reducer: {
-                            HomeReducer()
-                        }))
+                        NavigationStack {
+                            CalendarView(store: .init(initialState: CalendarReducer.State(), reducer: {
+                                CalendarReducer()
+                            }))
+                        }
+                        .tag(TabRouterReducer.Tab.calendar)
+                        NavigationStack {
+                            HomeView(store: .init(initialState: HomeReducer.State(), reducer: {
+                                HomeReducer()
+                            }))
+                        }
                         .tag(TabRouterReducer.Tab.home)
-                        Text("Share")
-                            .tag(TabRouterReducer.Tab.share)
+                        NavigationStack {
+                            ShareView(store: .init(initialState: ShareReducer.State(), reducer: {
+                                ShareReducer()
+                            }))
+                        }
+                        .tag(TabRouterReducer.Tab.share)
                     })
                     .preferredColorScheme(.light)
                     
