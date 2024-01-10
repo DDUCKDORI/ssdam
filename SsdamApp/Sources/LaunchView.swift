@@ -40,11 +40,11 @@ struct LaunchView: View {
     
     var body: some View {
         WithViewStore(self.store, observe:  { $0 } ) { viewStore in
-            ZStack(alignment: .top) {
+            ZStack {
                 Image(.tileMint)
                     .resizable(resizingMode: .tile)
                 Image(.charactersSilhouette)
-                    .offset(y: 296)
+                    .offset(y: -60)
             }
             .ignoresSafeArea()
             .onAppear {

@@ -82,47 +82,46 @@ struct LoginView: View {
             ZStack {
                 Image(.tileMint)
                     .resizable(resizingMode: .tile)
-                    .ignoresSafeArea()
-                VStack {
-                    Spacer()
-                    Image(.characters)
-                    Spacer()
-                    SignInWithAppleButton(.signIn) { request in
-                        request.requestedScopes = [.email]
-                    } onCompletion: { result in
-                        switch result {
-                        case let .success(authResults):
-                            switch authResults.credential{
-                            case let appleIDCredential as ASAuthorizationAppleIDCredential:
-                                let UserIdentifier = appleIDCredential.user
-                                let email = appleIDCredential.email
-                                let identityToken = String(data: appleIDCredential.identityToken!, encoding: .utf8)
-                                let authorizationCode = String(data: appleIDCredential.authorizationCode!, encoding: .utf8)
-                                
-                                guard let code = authorizationCode, let token = identityToken else { return }
-                                
-                                viewStore.send(.issueToken(code, token))
-                                
-                                break
-                                
-                            default:
-                                break
-                            }
+                Image(.charactersSilhouette)
+                    .offset(y: -60)
+                SignInWithAppleButton(.signIn) { request in
+                    request.requestedScopes = [.email]
+                } onCompletion: { result in
+                    switch result {
+                    case let .success(authResults):
+                        switch authResults.credential{
+                        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+                            let UserIdentifier = appleIDCredential.user
+                            let email = appleIDCredential.email
+                            let identityToken = String(data: appleIDCredential.identityToken!, encoding: .utf8)
+                            let authorizationCode = String(data: appleIDCredential.authorizationCode!, encoding: .utf8)
                             
-                        case let .failure(error):
-                            print(error.localizedDescription)
-                            print(error)
+                            guard let code = authorizationCode, let token = identityToken else { return }
+                            
+                            viewStore.send(.issueToken(code, token))
+                            
+                            break
+                            
+                        default:
+                            break
                         }
+                        
+                    case let .failure(error):
+                        print(error.localizedDescription)
+                        print(error)
                     }
-                    .frame(height: 56)
-                    .padding(.bottom, 112)
-                    .padding(.horizontal, 30)
                 }
+                .frame(height: 56)
+                .padding(.horizontal, 30)
+                .offset(y: 238)
             }
+            .ignoresSafeArea()
         }
     }
 }
 
-//#Preview {
-//    LoginView()
-//}
+#Preview {
+    LoginView(store: .init(initialState: LoginReducer.State(), reducer: {
+        LoginReducer()
+    }))
+}
