@@ -12,12 +12,12 @@ import ComposableArchitecture
 struct CalendarReducer: Reducer {
     struct State: Equatable {
         var date: DateComponents? = nil
-        var isPresented: Bool = false
+        @PresentationState var isPresented: PresentationState<Bool>?
     }
     
     enum Action: Equatable {
         case datePicked(DateComponents)
-        case presentSheet
+        case presentSheet(PresentationAction<Bool>)
     }
     
     var body: some ReducerOf<Self> {
@@ -25,9 +25,12 @@ struct CalendarReducer: Reducer {
             switch action {
             case let .datePicked(date):
                 state.date = date
-                return .send(.presentSheet)
-            case .presentSheet:
-                state.isPresented = true
+                return .send(.presentSheet(.presented(true)))
+            case let .presentSheet(.presented(value)):
+                state.isPresented = PresentationState(wrappedValue: value)
+                return .none
+            case .presentSheet(.dismiss):
+                state.isPresented = nil
                 return .none
             }
         }
@@ -44,7 +47,7 @@ struct CalendarView: View {
                         .datePicked((value ?? .init(Calendar.current.dateComponents([.day, .month, .year], from: .now))) ?? .init())
                 }))
             }
-            .sheet(isPresented: viewStore.binding(get: \.isPresented, send: .presentSheet), content: {
+            .sheet(store: self.store.scope(state: \.$isPresented, action: CalendarReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
                 ZStack {
                     Color(.yellow20)
                         .ignoresSafeArea()
@@ -90,7 +93,7 @@ struct CalendarView: View {
                     }
                 }
                 .presentationDetents([.fraction(0.4) , .large])
-            })
+            }
             
         }
         .safeAreaInset(edge: .top) {
