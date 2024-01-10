@@ -48,7 +48,7 @@ struct LaunchView: View {
             }
             .ignoresSafeArea()
             .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     viewStore.send(.onAppear)
                 }
             }
