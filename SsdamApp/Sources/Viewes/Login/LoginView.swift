@@ -22,6 +22,7 @@ struct LoginReducer: Reducer {
     enum Action: Equatable {
         case issueToken(String, String)
         case issueTokenResponse(TaskResult<TokenEntity>)
+        case navigate
     }
     
     var body: some ReducerOf<Self> {
@@ -47,18 +48,19 @@ struct LoginReducer: Reducer {
                 Const.memId = state.tokenInfo.memId
                 Const.memSub = state.tokenInfo.memSub
                 
+                return .send(.navigate)
+            case let .issueTokenResponse(.failure(error)):
+                print(error.localizedDescription)
+                return .none
+            case .navigate:
                 if state.tokenInfo.isUser == "yes" {
                     screenRouter.change(root: .home)
                 }
                 else {
                     screenRouter.change(root: .signUp)
                 }
-                
-                return .none
-            case .issueTokenResponse(.failure(_)):
                 return .none
             }
-            
         }
     }
 }
