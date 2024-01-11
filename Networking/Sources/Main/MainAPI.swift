@@ -14,6 +14,8 @@ public enum MainAPI {
     case fetchAnswer(String)
     case postQuestion(PostQuestionRequest)
     case modifyAnswer(PostQuestionRequest)
+    case fetchAnswerByDate(String, String)
+    case fetchMember(String)
     
 }
 
@@ -24,7 +26,6 @@ extension MainAPI: BaseAPI, TargetType {
     
     public var path: String {
         switch self {
-            
         case let .fetchQuestionByUser(id):
             return "/ssdam/question/\(id)"
         case let .fetchAnswer(id):
@@ -33,6 +34,10 @@ extension MainAPI: BaseAPI, TargetType {
             return "/ssdam/answer"
         case .modifyAnswer(_):
             return "/ssdam/answer"
+        case let .fetchAnswerByDate(date, code):
+            return "/ssdam/question/\(date)/\(code)"
+        case let .fetchMember(code):
+            return "/ssdam/family/\(code)"
         }
     }
     
