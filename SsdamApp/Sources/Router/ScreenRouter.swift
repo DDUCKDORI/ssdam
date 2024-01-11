@@ -19,7 +19,6 @@ public enum ScreenRoute: ScreenProtocol {
     case signUp
     case signUpSuccess(String)
     case home
-    case write(Binding<HomeViewType>)
     case fullScreen
     case sheetScreen
     case setting
@@ -67,10 +66,6 @@ public final class ScreenRouterFactory: RouterFactory {
                 TabRouterReducer()
             }))
             .ignoresSafeArea(.keyboard, edges: .bottom)
-        case let .write(viewType):
-            WriteView(viewType: viewType, store: .init(initialState: WriteReducer.State(), reducer: {
-                WriteReducer()
-            }))
         case .fullScreen:
             Text("Full Screen")
         case .setting:

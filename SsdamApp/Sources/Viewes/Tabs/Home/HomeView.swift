@@ -18,20 +18,39 @@ public enum HomeViewType {
 struct HomeReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
+        var writeState = WriteReducer.State()
+        var viewType: HomeViewType = .question
+        @PresentationState var isPresented: PresentationState<Bool>?
     }
     
     enum Action: Equatable {
-        case imageTapped
         case settingTapped
+        case viewTypeChanged
+        case writeAction(WriteReducer.Action)
+        case presentSheet(PresentationAction<Bool>)
     }
     var body: some ReducerOf<Self> {
+        Scope(state: \.writeState, action: /Action.writeAction) {
+            WriteReducer()
+        }
         Reduce { state, action in
             switch action {
-            case .imageTapped:
-                screenRouter.presentFullScreen(.write(.constant(.question)))
-                return .none
             case .settingTapped:
                 screenRouter.routeTo(.setting)
+                return .none
+            case .presentSheet(.presented(true)):
+                state.isPresented = PresentationState(wrappedValue: true)
+                return .none
+            case .presentSheet(.dismiss):
+                state.isPresented = nil
+                return .none
+            case .writeAction(.answerButtonTapped):
+                screenRouter.dismiss()
+                return .send(.viewTypeChanged)
+            case .viewTypeChanged:
+                state.viewType = .list
+                return .none
+            default:
                 return .none
             }
         }
@@ -39,15 +58,14 @@ struct HomeReducer: Reducer {
 }
 
 struct HomeView: View {
-    @State var viewType: HomeViewType = .question
     let store: StoreOf<HomeReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             ZStack {
-                if viewType == .question {
+                if viewStore.viewType == .question {
                     MainQuestionView()
                         .onTapGesture {
-                            viewStore.send(.imageTapped)
+                            viewStore.send(.presentSheet(.presented(true)))
                         }
                     
                 } else {
@@ -69,6 +87,9 @@ struct HomeView: View {
                     })
                 }
             })
+            .fullScreenCover(store: self.store.scope(state: \.$isPresented, action: HomeReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
+                WriteView(store: self.store.scope(state: \.writeState, action: HomeReducer.Action.writeAction))
+            }
         }
     }
     

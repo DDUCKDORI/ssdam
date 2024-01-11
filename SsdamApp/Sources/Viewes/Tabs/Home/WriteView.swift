@@ -33,7 +33,6 @@ struct WriteReducer: Reducer {
                 }
                 return .none
             case .answerButtonTapped:
-                screenRouter.dismiss()
                 return .none
             }
         }
@@ -42,7 +41,6 @@ struct WriteReducer: Reducer {
 
 
 struct WriteView: View {
-    @Binding var viewType: HomeViewType
     let store: StoreOf<WriteReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -76,7 +74,7 @@ struct WriteView: View {
                     
                     Button(action: {
                         viewStore.send(.answerButtonTapped)
-                        viewType = .list
+
                     }, label: {
                         Text("답변하기")
                             .font(.pButton)
@@ -98,7 +96,7 @@ struct WriteView: View {
 }
 
 #Preview {
-    WriteView(viewType: .constant(.question), store: .init(initialState: WriteReducer.State(), reducer: {
+    WriteView(store: .init(initialState: WriteReducer.State(), reducer: {
         WriteReducer()
     }))
 }
