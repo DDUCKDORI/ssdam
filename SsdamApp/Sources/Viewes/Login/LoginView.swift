@@ -88,17 +88,17 @@ struct LoginView: View {
                     request.requestedScopes = [.email]
                 } onCompletion: { result in
                     switch result {
-                    case let .success(authResults):
+                    case let .success(authResults): 
                         switch authResults.credential{
                         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-//                            let UserIdentifier = appleIDCredential.user
+                            //                            let UserIdentifier = appleIDCredential.user
                             let email = appleIDCredential.email
                             let identityToken = String(data: appleIDCredential.identityToken!, encoding: .utf8)
                             let authorizationCode = String(data: appleIDCredential.authorizationCode!, encoding: .utf8)
                             
-                            guard let code = authorizationCode, let token = identityToken, let email = email else { return }
+                            guard let code = authorizationCode, let token = identityToken else { return }
                             print(code, token)
-                            viewStore.send(.issueToken(code, token, email))
+                            viewStore.send(.issueToken(code, token, email ?? ""))
                             
                             break
                             
