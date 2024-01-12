@@ -23,14 +23,25 @@ extension Router: DependencyKey {
     }
 }
 
+extension MainUseCaseImpl: DependencyKey {
+    public static var liveValue: MainUseCaseImpl {
+        MainUseCaseImpl(repository: MainRepositoryImpl(client: .init()))
+    }
+}
+
 extension DependencyValues {
+    var screenRouter: ScreenRouter {
+        get { self[ScreenRouter.self] }
+        set { self[ScreenRouter.self] = newValue}
+    }
+    
     var authUseCase: AuthUseCaseImpl {
         get { self[AuthUseCaseImpl.self] }
         set { self[AuthUseCaseImpl.self] = newValue }
     }
     
-    var screenRouter: ScreenRouter {
-        get { self[ScreenRouter.self] }
-        set { self[ScreenRouter.self] = newValue}
+    var mainUseCase: MainUseCaseImpl {
+        get { self[MainUseCaseImpl.self] }
+        set { self[MainUseCaseImpl.self] = newValue }
     }
 }

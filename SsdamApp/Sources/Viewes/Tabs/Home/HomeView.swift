@@ -17,6 +17,7 @@ public enum HomeViewType {
 
 struct HomeReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
+    @Dependency(\.mainUseCase) var mainUseCase
     struct State: Equatable {
         var writeState = WriteReducer.State()
         var viewType: HomeViewType = .question
