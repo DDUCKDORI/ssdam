@@ -16,7 +16,7 @@ struct ToastReducer: Reducer {
     }
     
     public enum Action: Equatable {
-        case toast(PresentationAction<Bool>)
+        case toastPresented(PresentationAction<Bool>)
     }
     
     @Dependency(\.continuousClock) var clock
@@ -24,9 +24,9 @@ struct ToastReducer: Reducer {
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .toast(.presented(_)):
+            case .toastPresented(.presented(_)):
                 return .none
-            case .toast(.dismiss):
+            case .toastPresented(.dismiss):
                 state.isPresented?.wrappedValue = false
                 return .none
             }
@@ -53,7 +53,7 @@ struct ToastViewModifier<ToastContent>: ViewModifier where ToastContent: View {
                 toastContent()
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                            viewStore.send(.toast(.dismiss))
+                            viewStore.send(.toastPresented(.dismiss))
                         }
                     }
             }

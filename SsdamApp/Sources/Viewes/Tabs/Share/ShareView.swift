@@ -14,15 +14,20 @@ struct ShareReducer: Reducer {
     struct State: Equatable {
         var code: String = ""
         var isValid: Bool = false
+        var toastState: ToastReducer.State = .init()
     }
     
     enum Action: Equatable {
         case codeChanged(String)
         case codeValidation(String)
         case settingTapped
+        case toast(ToastReducer.Action)
     }
     
     var body: some ReducerOf<Self> {
+        Scope(state: \.toastState, action: /Action.toast) {
+            ToastReducer()
+        }
         Reduce { state, action in
             switch action {
             case let .codeChanged(newValue):
@@ -35,12 +40,17 @@ struct ShareReducer: Reducer {
                 }
                 if newValue.count > 1 {
                     state.isValid = true
-                    return .none
+                    return .send(.toast(.toastPresented(.presented(true))))
                 }
                 state.isValid = false
                 return .none
             case .settingTapped:
                 screenRouter.routeTo(.setting)
+                return .none
+            case .toast(.toastPresented(.presented(_))):
+                state.toastState.isPresented?.wrappedValue = true
+                return .none
+            case .toast(.toastPresented(.dismiss)):
                 return .none
             }
         }
@@ -117,6 +127,15 @@ struct ShareView: View {
                     })
                 }
             })
+            .toast(self.store.scope(state: \.toastState, action: ShareReducer.Action.toast)) {
+                Text("가족 연결이 완료되었습니다 🎉")
+                    .foregroundStyle(Color.white)
+                    .padding(.vertical, 17)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.black)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.horizontal, 30)
+            }
         }
         
     }

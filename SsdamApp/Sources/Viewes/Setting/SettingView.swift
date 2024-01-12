@@ -34,7 +34,6 @@ enum AlertType: Equatable {
 
 struct SettingReducer: Reducer {
     struct State: Equatable {
-        var isPresented: Bool = false
         @PresentationState var alert: AlertState<AlertType>?
         @PresentationState var sheet: PresentationState<SheetType>?
     }
