@@ -51,7 +51,7 @@ struct TabRouterView: View {
     let store: StoreOf<TabRouterReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            ZStack {
+            ZStack(alignment: .bottomTrailing) {
                 Image(.tileMint)
                     .resizable(resizingMode: .tile)
                     .ignoresSafeArea()
@@ -81,6 +81,8 @@ struct TabRouterView: View {
                     .preferredColorScheme(.light)
                     
                 }
+                ToolTipView()
+                    .offset(x: -47)
             }
             .safeAreaInset(edge: .bottom) {
                 VStack {
