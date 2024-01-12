@@ -14,9 +14,9 @@ public enum AuthAPI {
     case login([String: Any])
 }
 
-extension AuthAPI: TargetType, BaseAPI {
+extension AuthAPI: TargetType {
     public var baseURL: URL {
-        return self.apiURL
+        return URL(string:"https://test-ssdam.site/ssdam")!
     }
     
     public var path: String {
