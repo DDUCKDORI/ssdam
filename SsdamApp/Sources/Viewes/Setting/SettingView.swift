@@ -8,6 +8,7 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Utils
 
 enum SheetType: Equatable {
     case service
@@ -26,20 +27,22 @@ enum SheetType: Equatable {
     }
 }
 
-enum AlertType: Equatable {
+enum AlertActionType: Equatable {
     case disconnect
     case logout
     case withdraw
+    case deleteUserInfo
 }
 
 struct SettingReducer: Reducer {
+    @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
-        @PresentationState var alert: AlertState<AlertType>?
+        @PresentationState var alert: AlertState<AlertActionType>?
         @PresentationState var sheet: PresentationState<SheetType>?
     }
     
     enum Action: Equatable {
-        case alert(PresentationAction<AlertType>)
+        case alert(PresentationAction<AlertActionType>)
         case sheet(PresentationAction<SheetType>)
     }
     
@@ -59,7 +62,7 @@ struct SettingReducer: Reducer {
                     state.alert = AlertState(
                         title: TextState("로그아웃 확인"),
                         message: TextState("로그아웃하시겠어요?"),
-                        primaryButton: .default(TextState("로그아웃"), action: .send(.none)),
+                        primaryButton: .default(TextState("로그아웃"), action: .send(.deleteUserInfo)),
                         secondaryButton: .cancel(TextState("취소"))
                     )
                 case .withdraw:
@@ -69,6 +72,12 @@ struct SettingReducer: Reducer {
                         primaryButton: .destructive(TextState("탈퇴하기"), action: .send(.none)),
                         secondaryButton: .cancel(TextState("취소"))
                     )
+                case .deleteUserInfo:
+                    Const.refreshToken = ""
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        screenRouter.change(root: .launch)
+                    }
+                    return .none
                 }
                 return .none
             case .alert(.dismiss):
