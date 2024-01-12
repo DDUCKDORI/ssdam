@@ -34,6 +34,9 @@ public enum Const {
     @UserDefault(key: "refreshToken", defaultValue: "")
     public static var refreshToken: String
     
+    @UserDefault(key: "isUser", defaultValue: "")
+    public static var isUser: String
+    
     @UserDefault(key: "userType", defaultValue: "")
     public static var userType: String
     

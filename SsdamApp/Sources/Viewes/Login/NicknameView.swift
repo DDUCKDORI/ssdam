@@ -166,7 +166,7 @@ struct NicknameView: View {
                 
                 if viewStore.isValid, viewStore.serviceAgreement, viewStore.privacyAgreement {
                     Button {
-                        viewStore.send(.login(["exists_yn" : "no",
+                        viewStore.send(.login(["exists_yn" : Const.isUser,
                                                "access_token" : Const.accessToken,
                                                "refresh_token" : Const.refreshToken,
                                                "invite_cd" : Const.inviteCd,

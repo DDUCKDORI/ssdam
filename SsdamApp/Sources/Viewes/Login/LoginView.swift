@@ -43,6 +43,7 @@ struct LoginReducer: Reducer {
                 
                 Const.accessToken = state.tokenInfo.accessToken
                 Const.refreshToken = state.tokenInfo.refreshToken
+                Const.isUser = state.tokenInfo.isUser
                 Const.nickname = state.tokenInfo.nickname ?? ""
                 Const.inviteCd = state.tokenInfo.inviteCd ?? ""
                 Const.email = email
@@ -88,7 +89,7 @@ struct LoginView: View {
                     request.requestedScopes = [.email]
                 } onCompletion: { result in
                     switch result {
-                    case let .success(authResults): 
+                    case let .success(authResults):
                         switch authResults.credential{
                         case let appleIDCredential as ASAuthorizationAppleIDCredential:
                             //                            let UserIdentifier = appleIDCredential.user
