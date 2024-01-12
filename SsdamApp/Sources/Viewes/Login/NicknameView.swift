@@ -19,7 +19,6 @@ struct NicknameReducer: Reducer {
         var isValid: Bool = false
         var serviceAgreement: Bool = false
         var privacyAgreement: Bool = false
-        var tokenInfo: TokenPayload = .init()
     }
     
     enum Action: Equatable {
@@ -28,12 +27,8 @@ struct NicknameReducer: Reducer {
         case agreeAllToggled(Bool)
         case serviceAgreementToggled(Bool)
         case privacyAgreementToggled(Bool)
-        case login
+        case login([String: String])
         case loginResponse(TaskResult<TokenEntity>)
-    }
-    
-    private func getNickname() -> String {
-        return State().nickname
     }
     
     var body: some ReducerOf<Self> {
@@ -63,25 +58,16 @@ struct NicknameReducer: Reducer {
             case let .privacyAgreementToggled(isOn):
                 state.privacyAgreement = isOn
                 return .none
-            case .login:
+            case let .login(body):
                 return .run { send in
                     let result = await TaskResult {
-                        let body = ["exists_yn" : "no",
-                                    "access_token" : Const.accessToken,
-                                    "refresh_token" : Const.refreshToken,
-                                    "invite_cd" : Const.inviteCd,
-                                    "fm_dvcd" : Const.userType,
-                                    "nick_nm" : getNickname(),
-                                    "email": Const.email,
-                                    "mem_sub": Const.memSub
-                        ]
-                        let data = await authUseCase.login(tokenInfo: body as [String : Any])
+                        let data = await authUseCase.login(tokenInfo: body)
                         return data
                     }
                     await send(.loginResponse(result))
                 }
-            case .loginResponse(.success(let entity)):
-                state.tokenInfo = TokenPayload(entity)
+            case .loginResponse(.success):
+                Const.nickname = state.nickname
                 screenRouter.routeTo(.signUpSuccess(state.nickname))
                 return .none
             case .loginResponse(.failure(_)):
@@ -180,7 +166,14 @@ struct NicknameView: View {
                 
                 if viewStore.isValid, viewStore.serviceAgreement, viewStore.privacyAgreement {
                     Button {
-                        viewStore.send(.login)
+                        viewStore.send(.login(["exists_yn" : "no",
+                                               "access_token" : Const.accessToken,
+                                               "refresh_token" : Const.refreshToken,
+                                               "invite_cd" : Const.inviteCd,
+                                               "fm_dvcd" : Const.userType,
+                                               "nick_nm" : viewStore.nickname,
+                                               "email": Const.email,
+                                               "mem_sub": Const.memSub]))
                     } label: {
                         Text("가입하기")
                             .font(.pButton2)
