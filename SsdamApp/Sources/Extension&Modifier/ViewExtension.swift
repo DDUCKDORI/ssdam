@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 
 extension View {
     func selectableButton(_ isSelected: Binding<Bool>) -> some View {
@@ -20,22 +21,17 @@ extension View {
     }
     
     func roundedCorner(_ radius: CGFloat, corners: UIRectCorner) -> some View {
-          clipShape(RoundedCorner(radius: radius, corners: corners) )
-      }
+        clipShape(RoundedCorner(radius: radius, corners: corners) )
+    }
     
-    @ViewBuilder func present<Content: View>(asSheet: Bool, isPresented: Binding<Bool>, @ViewBuilder content: @escaping () -> Content) -> some View {
-        if asSheet {
-            self.sheet(
-                isPresented: isPresented,
-                onDismiss: nil,
-                content: content
+    @ViewBuilder
+    func toast(_ store: StoreOf<ToastReducer>, content: @escaping () -> some View) -> some View {
+        self
+            .modifier(
+                ToastViewModifier(
+                    viewStore: ViewStore(store, observe: { $0 }),
+                    toastContent: content
+                )
             )
-        } else {
-            self.fullScreenCover(
-                isPresented: isPresented,
-                onDismiss: nil,
-                content: content
-            )
-        }
     }
 }
