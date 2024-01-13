@@ -14,6 +14,7 @@ import SwiftyJSON
 public protocol MainRepository: AnyObject {
     func fetchQuestionByUser(id: String) async -> JSON
     func fetchAnswer(id: String) async -> JSON
+    func fetchAllAnswers(id: String) async -> [JSON]
     func postAnswer(request: PostAnswerBody) async -> JSON
     func modifyAnswer(request: PostAnswerBody) async -> JSON
 }

@@ -23,9 +23,10 @@ struct HomeReducer: Reducer {
     @Dependency(\.mainUseCase) var mainUseCase
     struct State: Equatable {
         var writeState = WriteReducer.State()
+        var listState: AnswerListReducer.State = .init()
         var viewType: HomeViewType = .question
         var questionPayload: QuestionPayload = .init()
-        var answerPayload: AnswerPayload = .init()
+        var answerPayload: RequestAnswerPayload = .init()
         @PresentationState var isPresented: PresentationState<Bool>?
     }
     
@@ -33,6 +34,7 @@ struct HomeReducer: Reducer {
         case settingTapped
         case viewTypeChanged
         case writeAction(WriteReducer.Action)
+        case listAction(AnswerListReducer.Action)
         case presentSheet(PresentationAction<Bool>)
         case fetchQuestion(String)
         case makeQuestionPayload(TaskResult<QuestionFetchEntity>)
@@ -42,6 +44,9 @@ struct HomeReducer: Reducer {
     var body: some ReducerOf<Self> {
         Scope(state: \.writeState, action: /Action.writeAction) {
             WriteReducer()
+        }
+        Scope(state: \.listState, action: /Action.listAction) {
+            AnswerListReducer()
         }
         Reduce { state, action in
             switch action {
@@ -58,6 +63,7 @@ struct HomeReducer: Reducer {
                 }
             case let .makeQuestionPayload(.success(entity)):
                 state.questionPayload = QuestionPayload(entity)
+                state.writeState.question = state.questionPayload.quesContent
                 return .none
             case let .makeQuestionPayload(.failure(error)):
                 print(error.localizedDescription)
@@ -79,7 +85,7 @@ struct HomeReducer: Reducer {
                     await send(.requestAnswerResponse(result))
                 }
             case let .requestAnswerResponse(.success(data)):
-                state.answerPayload = AnswerPayload(data)
+                state.answerPayload = RequestAnswerPayload(data)
                 screenRouter.dismiss()
                 return .send(.viewTypeChanged)
             case let .requestAnswerResponse(.failure(error)):
@@ -113,9 +119,7 @@ struct HomeView: View {
                         }
                     
                 } else {
-                    AnswerListView(store: .init(initialState: AnswerListReducer.State(), reducer: {
-                        AnswerListReducer()
-                    }))
+                    AnswerListView(store: self.store.scope(state: \.listState, action: HomeReducer.Action.listAction))
                 }
             }
             .ignoresSafeArea()

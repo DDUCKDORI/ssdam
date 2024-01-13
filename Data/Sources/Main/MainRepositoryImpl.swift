@@ -33,6 +33,14 @@ public final class MainRepositoryImpl: MainRepository {
         return data ?? ""
     }
     
+    public func fetchAllAnswers(id: String) async -> [JSON] {
+        let data = try? await client.request(router: MainAPI.fetchAnswer(id))
+            .map { try? JSON(data: $0.data).arrayValue }
+            .mapError(\.backendError)
+            .get()
+        return data ?? []
+    }
+    
     public func postAnswer(request: PostAnswerBody) async -> JSON {
         let data = try? await client.request(router: MainAPI.postQuestion(request))
             .map { try? JSON(data: $0.data) }

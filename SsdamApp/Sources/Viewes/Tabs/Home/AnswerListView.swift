@@ -8,22 +8,53 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Domain
+import Utils
 
 struct AnswerListReducer: Reducer {
     @Dependency(\.mainUseCase) var mainUseCase
     struct State: Equatable {
-        var isExpended: Bool = true
+        var answerPayloads: [FetchAnswerPayload] = []
+        var questionPayload: QuestionPayload = .init()
     }
     
     enum Action: Equatable {
-        case showDetails
+        case fetchAnswer(String)
+        case answerReponse(TaskResult<[AnswerFetchEntity]>)
+        case fetchQuestion(String)
+        case makeQuestionPayload(TaskResult<QuestionFetchEntity>)
     }
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .showDetails:
-                state.isExpended.toggle()
+            case let .fetchAnswer(id):
+                return .run { send in
+                    let result = await TaskResult {
+                        let data = await mainUseCase.fetchAllAnswers(id: id)
+                        return data
+                    }
+                    await send(.answerReponse(result))
+                }
+            case let .answerReponse(.success(entity)):
+                state.answerPayloads = entity.map { FetchAnswerPayload($0) }
+                return .none
+            case let .answerReponse(.failure(error)):
+                print(error.localizedDescription)
+                return .none
+            case let .fetchQuestion(id):
+                return .run { send in
+                    let result = await TaskResult {
+                        let data = await mainUseCase.fetchQuestionByUser(id: id)
+                        return data
+                    }
+                    await send(.makeQuestionPayload(result))
+                }
+            case let .makeQuestionPayload(.success(entity)):
+                state.questionPayload = QuestionPayload(entity)
+                return .send(.fetchAnswer("\(state.questionPayload.categoryId)_\(state.questionPayload.questionId)_\(Const.inviteCd)"))
+            case let .makeQuestionPayload(.failure(error)):
+                print(error.localizedDescription)
                 return .none
             }
         }
@@ -43,59 +74,15 @@ struct AnswerListView: View {
                         Text("2023.12.12")
                             .ssdamLabel()
                             .padding(.bottom, 19)
-                        Text("오늘부터 쓰담하며\n우리 가족의 목표는 무엇인가요?")
+                        Text(viewStore.questionPayload.quesContent)
                             .font(.pHeadline2)
                             .multilineTextAlignment(.center)
                             .padding(.bottom, 26)
                         
                         VStack(spacing: 16) {
-                            VStack(spacing: 0) {
-                                HStack {
-                                    Text("나의 답변")
-                                        .font(.pButton4)
-                                    Spacer()
-                                    HStack(spacing: 10) {
-                                        Text("2023.12.10")
-                                            .font(.pBody2)
-                                            .foregroundStyle(Color(.gray60))
-                                        Image(.checkmarkCircleMint)
-                                    }
-                                }
-                                .padding(.horizontal, 24)
-                                .padding(.vertical, 17)
-                                .background(Color(.mint20))
-                                .overlay(RoundedCorner(radius: 10, corners: viewStore.isExpended ? [.topLeft, .topRight] : .allCorners)
-                                    .stroke(Color(.mint50), lineWidth: 2)
-                                )
-                                .onTapGesture {
-                                    viewStore.send(.showDetails)
-                                }
-                                if viewStore.isExpended {
-                                    Text("하루도 빠지지 않고 쓰담 기록하기")
-                                        .font(.pBody)
-                                        .padding(.vertical, 48)
-                                        .padding(.horizontal, 52)
-                                        .frame(maxWidth: .infinity)
-                                        .background(Color.white)
-                                        .overlay(RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight])
-                                            .stroke(Color(.mint50), lineWidth: 2)
-                                        )
-                                        .transition(.move(edge: .top))
-                                }
+                            ForEach(viewStore.answerPayloads, id: \.self) { answer in
+                                HomeAnswerCard(payload: answer)
                             }
-                            HStack {
-                                Text("전주이씨 답변")
-                                    .font(.pButton4)
-                                    .foregroundStyle(Color(.gray20))
-                                Spacer()
-                                Image(.checkmarkCircle)
-                            }
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 17)
-                            .background(Color(.gray10))
-                            .overlay(RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color(.gray20), lineWidth: 2)
-                            )
                         }
                         .padding(.horizontal, 30)
                     }
@@ -103,6 +90,9 @@ struct AnswerListView: View {
                 .padding(.top, 142)
             }
             .ignoresSafeArea()
+            .onAppear {
+                viewStore.send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
+            }
         }
     }
 }

@@ -8,7 +8,7 @@
 
 import SwiftyJSON
 
-public struct AnswerFetchEntity {
+public struct AnswerFetchEntity: Equatable {
     public var result: String
     public var inviteCode: String
     public var memberId: Int

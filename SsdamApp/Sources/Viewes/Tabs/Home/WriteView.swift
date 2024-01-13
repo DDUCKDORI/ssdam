@@ -14,6 +14,7 @@ import Networking
 struct WriteReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
+        var question: String = ""
         var text: String = ""
     }
     
@@ -53,7 +54,7 @@ struct WriteView: View {
                     Text("2023.12.12")
                         .ssdamLabel()
                         .padding(.bottom, 19)
-                    Text("오늘부터 쓰담하며\n우리 가족의 목표는 무엇인가요?")
+                    Text(viewStore.question)
                         .font(.pHeadline2)
                         .multilineTextAlignment(.center)
                         .padding(.bottom, 28)

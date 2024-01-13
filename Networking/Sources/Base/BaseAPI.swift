@@ -13,7 +13,7 @@ import Moya
 public protocol BaseAPI: TargetType, AccessTokenAuthorizable {}
 
 public extension BaseAPI {
-    var apiURL: URL { URL(string: "https://test-ssdam.site/ssdam")! }
+    var apiURL: URL { URL(string: "https://test-ssdam.site")! }
 
     var headers: [String: String]? {
         ["Content-Type": "application/json"]

@@ -10,7 +10,7 @@ import Foundation
 import Domain
 import SwiftyJSON
 
-struct AnswerPayload: Equatable {
+struct RequestAnswerPayload: Equatable {
     var result : String
     var notAnswer : Int
     var completed : String
