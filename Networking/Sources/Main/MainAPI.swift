@@ -12,8 +12,8 @@ import Moya
 public enum MainAPI {
     case fetchQuestionByUser(String)
     case fetchAnswer(String)
-    case postQuestion(PostQuestionRequest)
-    case modifyAnswer(PostQuestionRequest)
+    case postQuestion(PostAnswerBody)
+    case modifyAnswer(PostAnswerBody)
     case fetchAnswerByDate(String, String)
     case fetchMember(String)
     

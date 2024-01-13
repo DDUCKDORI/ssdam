@@ -11,6 +11,7 @@ import SwiftUI
 import ComposableArchitecture
 import Domain
 import Utils
+import Networking
 
 public enum HomeViewType {
     case question
@@ -24,6 +25,7 @@ struct HomeReducer: Reducer {
         var writeState = WriteReducer.State()
         var viewType: HomeViewType = .question
         var questionPayload: QuestionPayload = .init()
+        var answerPayload: AnswerPayload = .init()
         @PresentationState var isPresented: PresentationState<Bool>?
     }
     
@@ -34,6 +36,8 @@ struct HomeReducer: Reducer {
         case presentSheet(PresentationAction<Bool>)
         case fetchQuestion(String)
         case makeQuestionPayload(TaskResult<QuestionFetchEntity>)
+        case requestAnswer(PostAnswerBody)
+        case requestAnswerResponse(TaskResult<AnswerRequestEntity>)
     }
     var body: some ReducerOf<Self> {
         Scope(state: \.writeState, action: /Action.writeAction) {
@@ -43,18 +47,6 @@ struct HomeReducer: Reducer {
             switch action {
             case .settingTapped:
                 screenRouter.routeTo(.setting)
-                return .none
-            case .presentSheet(.presented(true)):
-                state.isPresented = PresentationState(wrappedValue: true)
-                return .none
-            case .presentSheet(.dismiss):
-                state.isPresented = nil
-                return .none
-            case .writeAction(.answerButtonTapped):
-                screenRouter.dismiss()
-                return .send(.viewTypeChanged)
-            case .viewTypeChanged:
-                state.viewType = .list
                 return .none
             case let .fetchQuestion(id):
                 return .run { send in
@@ -69,6 +61,38 @@ struct HomeReducer: Reducer {
                 return .none
             case let .makeQuestionPayload(.failure(error)):
                 print(error.localizedDescription)
+                return .none
+            case .writeAction(.answerButtonTapped):
+                let body = PostAnswerBody(
+                    cateId: state.questionPayload.categoryId,
+                    qustId: state.questionPayload.questionId,
+                    memId: Const.memId,
+                    inviteCd: Const.inviteCd,
+                    ansCn: state.writeState.text)
+                return .send(.requestAnswer(body))
+            case let .requestAnswer(body):
+                return .run { send in
+                    let result = await TaskResult {
+                        let data = await mainUseCase.postAnswer(request: body)
+                        return data
+                    }
+                    await send(.requestAnswerResponse(result))
+                }
+            case let .requestAnswerResponse(.success(data)):
+                state.answerPayload = AnswerPayload(data)
+                screenRouter.dismiss()
+                return .send(.viewTypeChanged)
+            case let .requestAnswerResponse(.failure(error)):
+                print(error.localizedDescription)
+                return .none
+            case .viewTypeChanged:
+                state.viewType = .list
+                return .none
+            case .presentSheet(.presented(true)):
+                state.isPresented = PresentationState(wrappedValue: true)
+                return .none
+            case .presentSheet(.dismiss):
+                state.isPresented = nil
                 return .none
             default:
                 return .none

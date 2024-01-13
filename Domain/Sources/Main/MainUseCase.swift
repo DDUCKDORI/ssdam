@@ -12,8 +12,8 @@ import Networking
 public protocol MainUseCase {
     func fetchQuestionByUser(id: String) async -> QuestionFetchEntity
     func fetchAnswer(id: String) async -> AnswerFetchEntity
-    func postQuestion(request: PostQuestionRequest) async -> AnswerRequestEntity
-    func modifyAnswer(request: PostQuestionRequest) async -> AnswerRequestEntity
+    func postAnswer(request: PostAnswerBody) async -> AnswerRequestEntity
+    func modifyAnswer(request: PostAnswerBody) async -> AnswerRequestEntity
 }
 
 public final class MainUseCaseImpl: MainUseCase {
@@ -31,11 +31,11 @@ public final class MainUseCaseImpl: MainUseCase {
         return await AnswerFetchEntity(repository.fetchAnswer(id: id))
     }
     
-    public func postQuestion(request: PostQuestionRequest) async -> AnswerRequestEntity {
-        return await AnswerRequestEntity(repository.postQuestion(request: request))
+    public func postAnswer(request: PostAnswerBody) async -> AnswerRequestEntity {
+        return await AnswerRequestEntity(repository.postAnswer(request: request))
     }
     
-    public func modifyAnswer(request: PostQuestionRequest) async -> AnswerRequestEntity {
+    public func modifyAnswer(request: PostAnswerBody) async -> AnswerRequestEntity {
         return await AnswerRequestEntity(repository.modifyAnswer(request: request))
     }
 }

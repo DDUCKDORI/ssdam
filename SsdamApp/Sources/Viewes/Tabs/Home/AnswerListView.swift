@@ -10,6 +10,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct AnswerListReducer: Reducer {
+    @Dependency(\.mainUseCase) var mainUseCase
     struct State: Equatable {
         var isExpended: Bool = true
     }

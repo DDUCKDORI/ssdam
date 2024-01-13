@@ -8,12 +8,20 @@
 
 import Foundation
 
-public struct PostQuestionRequest: Encodable {
+public struct PostAnswerBody: Encodable, Equatable {
     public var cateId: Int
     public var qustId: Int
     public var memId: Int
     public var inviteCd: String
     public var ansCn: String
+    
+   public init(cateId: Int = -1, qustId: Int = -1, memId: Int = -1, inviteCd: String = "", ansCn: String = "") {
+        self.cateId = cateId
+        self.qustId = qustId
+        self.memId = memId
+        self.inviteCd = inviteCd
+        self.ansCn = ansCn
+    }
     
     func toParam() -> [String: Any] {
         guard let jsonData = try? JSONEncoder().encode(self),

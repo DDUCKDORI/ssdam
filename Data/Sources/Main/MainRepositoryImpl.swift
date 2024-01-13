@@ -33,7 +33,7 @@ public final class MainRepositoryImpl: MainRepository {
         return data ?? ""
     }
     
-    public func postQuestion(request: PostQuestionRequest) async -> JSON {
+    public func postAnswer(request: PostAnswerBody) async -> JSON {
         let data = try? await client.request(router: MainAPI.postQuestion(request))
             .map { try? JSON(data: $0.data) }
             .mapError(\.backendError)
@@ -41,7 +41,7 @@ public final class MainRepositoryImpl: MainRepository {
         return data ?? ""
     }
     
-    public func modifyAnswer(request: PostQuestionRequest) async -> JSON {
+    public func modifyAnswer(request: PostAnswerBody) async -> JSON {
         let data = try? await client.request(router: MainAPI.modifyAnswer(request))
             .map { try? JSON(data: $0.data) }
             .mapError(\.backendError)
