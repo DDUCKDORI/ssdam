@@ -9,6 +9,8 @@
 import Foundation
 import SwiftUI
 import ComposableArchitecture
+import Domain
+import Utils
 
 public enum HomeViewType {
     case question
@@ -21,6 +23,7 @@ struct HomeReducer: Reducer {
     struct State: Equatable {
         var writeState = WriteReducer.State()
         var viewType: HomeViewType = .question
+        var questionPayload: QuestionPayload = .init()
         @PresentationState var isPresented: PresentationState<Bool>?
     }
     
@@ -29,6 +32,8 @@ struct HomeReducer: Reducer {
         case viewTypeChanged
         case writeAction(WriteReducer.Action)
         case presentSheet(PresentationAction<Bool>)
+        case fetchQuestion(String)
+        case makeQuestionPayload(TaskResult<QuestionFetchEntity>)
     }
     var body: some ReducerOf<Self> {
         Scope(state: \.writeState, action: /Action.writeAction) {
@@ -51,6 +56,20 @@ struct HomeReducer: Reducer {
             case .viewTypeChanged:
                 state.viewType = .list
                 return .none
+            case let .fetchQuestion(id):
+                return .run { send in
+                    let result = await TaskResult {
+                        let data = await mainUseCase.fetchQuestionByUser(id: id)
+                        return data
+                    }
+                    await send(.makeQuestionPayload(result))
+                }
+            case let .makeQuestionPayload(.success(entity)):
+                state.questionPayload = QuestionPayload(entity)
+                return .none
+            case let .makeQuestionPayload(.failure(error)):
+                print(error.localizedDescription)
+                return .none
             default:
                 return .none
             }
@@ -64,7 +83,7 @@ struct HomeView: View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             ZStack {
                 if viewStore.viewType == .question {
-                    MainQuestionView()
+                    MainQuestionView(viewStore: viewStore)
                         .onTapGesture {
                             viewStore.send(.presentSheet(.presented(true)))
                         }
@@ -91,11 +110,14 @@ struct HomeView: View {
             .fullScreenCover(store: self.store.scope(state: \.$isPresented, action: HomeReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
                 WriteView(store: self.store.scope(state: \.writeState, action: HomeReducer.Action.writeAction))
             }
+            .onAppear {
+                viewStore.send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
+            }
         }
     }
     
     @ViewBuilder
-    private func MainQuestionView() -> some View {
+    private func MainQuestionView(viewStore: ViewStoreOf<HomeReducer>) -> some View {
         ZStack {
             Image(.tileMint)
                 .resizable(resizingMode: .tile)
@@ -104,7 +126,7 @@ struct HomeView: View {
                     .ssdamLabel()
                     .padding(.bottom, 12)
                 
-                Text("오늘부터 쓰담하며\n우리 가족의 목표는 무엇인가요?")
+                Text(viewStore.questionPayload.quesContent)
                     .font(.pHeadline2)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 30)

@@ -8,7 +8,7 @@
 
 import SwiftyJSON
 
-public struct QuestionFetchEntity {
+public struct QuestionFetchEntity: Equatable {
     public var result: String
     public var memberId: Int
     public var categoryId: Int
