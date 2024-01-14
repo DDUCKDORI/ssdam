@@ -16,6 +16,7 @@ struct WriteReducer: Reducer {
     struct State: Equatable {
         var question: String = ""
         var text: String = ""
+        var date: String = ""
     }
     
     enum Action: Equatable {
@@ -51,7 +52,7 @@ struct WriteView: View {
                 Image(.tileYellow)
                     .resizable(resizingMode: .tile)
                 VStack(spacing: 0) {
-                    Text("2023.12.12")
+                    Text(viewStore.date.convertToDotFormat())
                         .ssdamLabel()
                         .padding(.bottom, 19)
                     Text(viewStore.question)

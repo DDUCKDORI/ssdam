@@ -72,6 +72,7 @@ struct HomeReducer: Reducer {
                 return .none
             case .writeAction(.answerButtonTapped):
                 state.writeState.question = state.questionPayload.quesContent
+                state.writeState.date = state.questionPayload.createdAt
                 let body = PostAnswerBody(
                     cateId: state.questionPayload.categoryId,
                     qustId: state.questionPayload.questionId,
