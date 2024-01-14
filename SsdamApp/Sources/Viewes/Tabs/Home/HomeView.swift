@@ -37,9 +37,9 @@ struct HomeReducer: Reducer {
         case listAction(AnswerListReducer.Action)
         case presentSheet(PresentationAction<Bool>)
         case fetchQuestion(String)
-        case makeQuestionPayload(TaskResult<QuestionFetchEntity>)
+        case makeQuestionPayload(TaskResult<FetchQuestionEntity>)
         case requestAnswer(PostAnswerBody)
-        case requestAnswerResponse(TaskResult<AnswerRequestEntity>)
+        case requestAnswerResponse(TaskResult<RequestAnswerEntity>)
     }
     var body: some ReducerOf<Self> {
         Scope(state: \.writeState, action: /Action.writeAction) {

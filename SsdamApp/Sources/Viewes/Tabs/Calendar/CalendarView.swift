@@ -8,26 +8,37 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Domain
+import Utils
 
 struct CalendarReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
+    @Dependency(\.mainUseCase) var mainUseCase
     struct State: Equatable {
         var date: DateComponents? = nil
+        var answerPayload: AnswerByDatePayload = .init()
         @PresentationState var isPresented: PresentationState<Bool>?
     }
     
     enum Action: Equatable {
-        case datePicked(DateComponents)
+        case datePicked(DateComponents, String)
         case presentSheet(PresentationAction<Bool>)
         case settingTapped
+        case answerResponse(TaskResult<AnswerByDateEntity>)
     }
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case let .datePicked(date):
+            case let .datePicked(date, code):
                 state.date = date
-                return .send(.presentSheet(.presented(true)))
+                return .run { send in
+                    let result = await TaskResult {
+                        let data = await mainUseCase.fetchAnswerByDate(date: date.toYYYYMMDDString(), code: code)
+                        return data
+                    }
+                    await send(.answerResponse(result))
+                }
             case let .presentSheet(.presented(value)):
                 state.isPresented = PresentationState(wrappedValue: value)
                 return .none
@@ -37,6 +48,12 @@ struct CalendarReducer: Reducer {
             case .settingTapped:
                 screenRouter.routeTo(.setting)
                 return .none
+            case let .answerResponse(.success(entity)):
+                state.answerPayload = AnswerByDatePayload(entity)
+                return .send(.presentSheet(.presented(true)))
+            default:
+                return .none
+                
             }
         }
     }
@@ -49,7 +66,7 @@ struct CalendarView: View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             VStack {
                 CalendarViewRepresentable(selectedDate: viewStore.binding(get: \.date, send: { value in
-                        .datePicked((value ?? .init(Calendar.current.dateComponents([.day, .month, .year], from: .now))) ?? .init())
+                        .datePicked((value ?? .init(Calendar.current.dateComponents([.day, .month, .year], from: .now))) ?? .init(), Const.inviteCd)
                 }))
             }
             .sheet(store: self.store.scope(state: \.$isPresented, action: CalendarReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
@@ -63,7 +80,7 @@ struct CalendarView: View {
                                 .padding(.bottom, 12)
                                 .padding(.top, 30)
                             
-                            Text("오늘부터 쓰담하며\n우리 가족의 목표는 무엇인가요?")
+                            Text(viewStore.answerPayload.question)
                                 .font(.pHeadline2)
                                 .multilineTextAlignment(.center)
                                 .padding(.bottom, 16)

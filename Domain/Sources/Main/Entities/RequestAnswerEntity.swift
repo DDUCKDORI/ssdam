@@ -8,7 +8,7 @@
 
 import SwiftyJSON
 
-public struct AnswerRequestEntity: Equatable {
+public struct RequestAnswerEntity: Equatable {
     public var result: String
     public var notAnswer: Int
     public var completed: String

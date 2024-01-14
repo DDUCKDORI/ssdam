@@ -34,7 +34,7 @@ struct QuestionPayload: Equatable {
         self.notAnswer = notAnswer
     }
     
-    init(_ entity: QuestionFetchEntity) {
+    init(_ entity: FetchQuestionEntity) {
         self.result = entity.result
         self.memberId = entity.memberId
         self.categoryId = entity.categoryId

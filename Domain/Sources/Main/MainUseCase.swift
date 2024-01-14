@@ -10,11 +10,12 @@ import SwiftyJSON
 import Networking
 
 public protocol MainUseCase {
-    func fetchQuestionByUser(id: String) async -> QuestionFetchEntity
-    func fetchAnswer(id: String) async -> AnswerFetchEntity
-    func fetchAllAnswers(id: String) async -> [AnswerFetchEntity]
-    func postAnswer(request: PostAnswerBody) async -> AnswerRequestEntity
-    func modifyAnswer(request: PostAnswerBody) async -> AnswerRequestEntity
+    func fetchQuestionByUser(id: String) async -> FetchQuestionEntity
+    func fetchAnswer(id: String) async -> FetchAnswerEntity
+    func fetchAllAnswers(id: String) async -> [FetchAnswerEntity]
+    func fetchAnswerByDate(date: String, code: String) async -> AnswerByDateEntity
+    func postAnswer(request: PostAnswerBody) async -> RequestAnswerEntity
+    func modifyAnswer(request: PostAnswerBody) async -> RequestAnswerEntity
 }
 
 public final class MainUseCaseImpl: MainUseCase {
@@ -24,24 +25,28 @@ public final class MainUseCaseImpl: MainUseCase {
         self.repository = repository
     }
     
-    public func fetchQuestionByUser(id: String) async -> QuestionFetchEntity {
-        return await QuestionFetchEntity(repository.fetchQuestionByUser(id: id))
+    public func fetchQuestionByUser(id: String) async -> FetchQuestionEntity {
+        return await FetchQuestionEntity(repository.fetchQuestionByUser(id: id))
     }
     
-    public func fetchAnswer(id: String) async -> AnswerFetchEntity {
-        return await AnswerFetchEntity(repository.fetchAnswer(id: id))
+    public func fetchAnswer(id: String) async -> FetchAnswerEntity {
+        return await FetchAnswerEntity(repository.fetchAnswer(id: id))
     }
     
-    public func fetchAllAnswers(id: String) async -> [AnswerFetchEntity] {
-        return await [AnswerFetchEntity(repository.fetchAnswer(id: id))] 
+    public func fetchAllAnswers(id: String) async -> [FetchAnswerEntity] {
+        return await [FetchAnswerEntity(repository.fetchAnswer(id: id))] 
     }
     
-    public func postAnswer(request: PostAnswerBody) async -> AnswerRequestEntity {
-        return await AnswerRequestEntity(repository.postAnswer(request: request))
+    public func fetchAnswerByDate(date: String, code: String) async -> AnswerByDateEntity {
+        return await AnswerByDateEntity(repository.fetchAnswerByDate(date: date, code: code))
     }
     
-    public func modifyAnswer(request: PostAnswerBody) async -> AnswerRequestEntity {
-        return await AnswerRequestEntity(repository.modifyAnswer(request: request))
+    public func postAnswer(request: PostAnswerBody) async -> RequestAnswerEntity {
+        return await RequestAnswerEntity(repository.postAnswer(request: request))
+    }
+    
+    public func modifyAnswer(request: PostAnswerBody) async -> RequestAnswerEntity {
+        return await RequestAnswerEntity(repository.modifyAnswer(request: request))
     }
 }
 

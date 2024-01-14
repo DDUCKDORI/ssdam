@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 import Domain
 
 struct FetchAnswerPayload: Equatable, Hashable {
@@ -29,7 +28,7 @@ struct FetchAnswerPayload: Equatable, Hashable {
         self.createdAt = createdAt
     }
     
-    init(_ entity: AnswerFetchEntity) {
+    init(_ entity: FetchAnswerEntity) {
         self.result = entity.result
         self.invite_cd = entity.inviteCode
         self.memberId = entity.memberId

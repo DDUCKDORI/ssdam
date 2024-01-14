@@ -14,14 +14,22 @@ struct TabRouterReducer: Reducer {
         var tab: Tab = .home
         var homeState: HomeReducer.State = .init()
         var calendarState: CalendarReducer.State = .init()
-//        var shareState: ShareReducer.State = .init()
+        var shareState: ShareReducer.State = .init()
     }
     
     enum Action: Equatable {
         case tabChanged(Tab)
+        case calendarAction(CalendarReducer.Action)
+        case shareAction(ShareReducer.Action)
     }
     
     var body: some ReducerOf<Self> {
+        Scope(state: \.calendarState, action: /Action.calendarAction) {
+            CalendarReducer()
+        }
+        Scope(state: \.shareState, action: /Action.shareAction) {
+            ShareReducer()
+        }
         Reduce { state, action in
             switch action {
             case let .tabChanged(tab):
@@ -34,6 +42,8 @@ struct TabRouterReducer: Reducer {
                 case .share:
                     print("share")
                 }
+                return .none
+            default:
                 return .none
             }
         }
@@ -60,9 +70,7 @@ struct TabRouterView: View {
                             .tabChanged(value)
                     }), content: {
                         NavigationStack {
-                            CalendarView(store: .init(initialState: CalendarReducer.State(), reducer: {
-                                CalendarReducer()
-                            }))
+                            CalendarView(store: self.store.scope(state: \.calendarState, action: TabRouterReducer.Action.calendarAction))
                         }
                         .tag(TabRouterReducer.Tab.calendar)
                         NavigationStack {
@@ -72,9 +80,7 @@ struct TabRouterView: View {
                         }
                         .tag(TabRouterReducer.Tab.home)
                         NavigationStack {
-                            ShareView(store: .init(initialState: ShareReducer.State(), reducer: {
-                                ShareReducer()
-                            }))
+                            ShareView(store: self.store.scope(state: \.shareState, action: TabRouterReducer.Action.shareAction))
                         }
                         .tag(TabRouterReducer.Tab.share)
                     })

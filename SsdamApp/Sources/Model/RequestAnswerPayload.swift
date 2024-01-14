@@ -8,7 +8,6 @@
 
 import Foundation
 import Domain
-import SwiftyJSON
 
 struct RequestAnswerPayload: Equatable {
     var result : String
@@ -21,7 +20,7 @@ struct RequestAnswerPayload: Equatable {
         self.completed = completed
     }
     
-    init(_ entity: AnswerRequestEntity) {
+    init(_ entity: RequestAnswerEntity) {
         self.result = entity.result
         self.notAnswer = entity.notAnswer
         self.completed = entity.completed

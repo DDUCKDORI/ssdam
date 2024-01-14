@@ -20,9 +20,9 @@ struct AnswerListReducer: Reducer {
     
     enum Action: Equatable {
         case fetchAnswer(String)
-        case answerReponse(TaskResult<[AnswerFetchEntity]>)
+        case answerReponse(TaskResult<[FetchAnswerEntity]>)
         case fetchQuestion(String)
-        case makeQuestionPayload(TaskResult<QuestionFetchEntity>)
+        case makeQuestionPayload(TaskResult<FetchQuestionEntity>)
     }
     
     var body: some ReducerOf<Self> {
