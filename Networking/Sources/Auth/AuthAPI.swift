@@ -12,6 +12,7 @@ import Moya
 public enum AuthAPI {
     case issueAccessToken(String, String)
     case login([String: Any])
+    case fetchNumberOfFamily(String)
 }
 
 extension AuthAPI: TargetType {
@@ -25,11 +26,15 @@ extension AuthAPI: TargetType {
             return "/apple/login/callback"
         case . login:
             return "/login"
+        case let .fetchNumberOfFamily(code):
+            return "/family/\(code)"
         }
     }
     
     public var method: Moya.Method {
         switch self {
+        case .fetchNumberOfFamily:
+            return .get
         default:
             return .post
         }
@@ -37,6 +42,8 @@ extension AuthAPI: TargetType {
     
     public var task: Moya.Task {
         switch self {
+        case .fetchNumberOfFamily:
+            return .requestPlain
         default:
             return .requestParameters(parameters: parameter, encoding: encoding)
         }
@@ -51,6 +58,8 @@ extension AuthAPI: TargetType {
                 return [:]
             }
             return tokenInfo
+        default:
+            return [:]
         }
     }
     
@@ -63,6 +72,8 @@ extension AuthAPI: TargetType {
     
     public var encoding: ParameterEncoding {
         switch self {
+        case .fetchNumberOfFamily:
+            return URLEncoding.default
         default:
             return JSONEncoding.default
         }

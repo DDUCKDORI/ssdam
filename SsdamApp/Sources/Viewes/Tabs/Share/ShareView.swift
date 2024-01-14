@@ -8,13 +8,17 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Domain
+import Utils
 
 struct ShareReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
+    @Dependency(\.authUseCase) var authUseCase
     struct State: Equatable {
         var code: String = ""
         var isValid: Bool = false
         var toastState: ToastReducer.State = .init()
+        var NumberOfFamily: String = ""
     }
     
     enum Action: Equatable {
@@ -22,6 +26,8 @@ struct ShareReducer: Reducer {
         case codeValidation(String)
         case settingTapped
         case toast(ToastReducer.Action)
+        case fetchNumberOfFamily(String)
+        case fetchNumberOfFamilyResponse(TaskResult<NumberOfFamilyEntity>)
     }
     
     var body: some ReducerOf<Self> {
@@ -52,6 +58,20 @@ struct ShareReducer: Reducer {
                 return .none
             case .toast(.toastPresented(.dismiss)):
                 return .none
+            case let .fetchNumberOfFamily(code):
+                return .run { send in
+                    let result = await TaskResult {
+                        let data = await authUseCase.fetchNumberOfFamily(code: code)
+                        return data
+                    }
+                    await send(.fetchNumberOfFamilyResponse(result))
+                }
+            case let .fetchNumberOfFamilyResponse(.success(entity)):
+                state.NumberOfFamily = entity.count
+                return .none
+            case let .fetchNumberOfFamilyResponse(.failure(error)):
+                print(error.localizedDescription)
+                return .none
             }
         }
     }
@@ -62,7 +82,7 @@ struct ShareView: View {
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             VStack {
-                Text("김해김씨님 가족 현황")
+                Text(Const.nickname)
                     .font(.pHeadline2)
                     .padding(.bottom, 92)
                 
@@ -72,7 +92,7 @@ struct ShareView: View {
                     VStack(spacing: 5) {
                         Text("연결된 가족")
                             .font(.pBody2)
-                        Text("0명")
+                        Text("\(viewStore.NumberOfFamily)명")
                             .font(.pHeadline2)
                     }
                     .padding(.vertical, 36)
@@ -106,7 +126,7 @@ struct ShareView: View {
                     .padding(.vertical, 12)
                     .opacity(viewStore.code.count > 0 && !viewStore.isValid ? 1 : 0)
                 
-                ShareLink(item: "CODE1001") {
+                ShareLink(item: viewStore.code) {
                     Text("내 초대코드 복사하기")
                         .font(.pBody)
                         .underline()
@@ -127,6 +147,9 @@ struct ShareView: View {
                     })
                 }
             })
+            .onAppear {
+                viewStore.send(.fetchNumberOfFamily(Const.inviteCd))
+            }
             .toast(self.store.scope(state: \.toastState, action: ShareReducer.Action.toast)) {
                 Text("가족 연결이 완료되었습니다 🎉")
                     .foregroundStyle(Color.white)

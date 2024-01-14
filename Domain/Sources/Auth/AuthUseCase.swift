@@ -13,6 +13,7 @@ import Networking
 public protocol AuthUseCase {
     func issueAccessToken(_ code: String, _ token: String) async -> TokenEntity
     func login(tokenInfo: [String: Any]) async -> TokenEntity
+    func fetchNumberOfFamily(code: String) async -> NumberOfFamilyEntity
 }
 
 public final class AuthUseCaseImpl: AuthUseCase {
@@ -28,5 +29,9 @@ public final class AuthUseCaseImpl: AuthUseCase {
     
     public func login(tokenInfo: [String: Any]) async -> TokenEntity {
         return await TokenEntity(repository.login(tokenInfo: tokenInfo))
+    }
+    
+    public func fetchNumberOfFamily(code: String) async -> NumberOfFamilyEntity {
+        return await NumberOfFamilyEntity(repository.fetchNumberOfFamily(code: code))
     }
 }
