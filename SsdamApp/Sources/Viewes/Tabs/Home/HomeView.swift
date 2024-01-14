@@ -63,12 +63,15 @@ struct HomeReducer: Reducer {
                 }
             case let .makeQuestionPayload(.success(entity)):
                 state.questionPayload = QuestionPayload(entity)
-                state.writeState.question = state.questionPayload.quesContent
+                if state.questionPayload.isReplied == "Success" {
+                    return .send(.viewTypeChanged)
+                }
                 return .none
             case let .makeQuestionPayload(.failure(error)):
                 print(error.localizedDescription)
                 return .none
             case .writeAction(.answerButtonTapped):
+                state.writeState.question = state.questionPayload.quesContent
                 let body = PostAnswerBody(
                     cateId: state.questionPayload.categoryId,
                     qustId: state.questionPayload.questionId,
