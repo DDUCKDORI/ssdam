@@ -8,6 +8,7 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Utils
 
 struct TabRouterReducer: Reducer {
     struct State: Equatable {
@@ -87,8 +88,10 @@ struct TabRouterView: View {
                     .preferredColorScheme(.light)
                     
                 }
-                ToolTipView()
-                    .offset(x: -47)
+                if Const.isPioneer {
+                    ToolTipView()
+                        .offset(x: -47)
+                }
             }
             .safeAreaInset(edge: .bottom) {
                 VStack {
