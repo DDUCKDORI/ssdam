@@ -123,7 +123,7 @@ struct AnswerListView: View {
                     .resizable(resizingMode: .tile)
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
-                        Text(viewStore.questionPayload.createdAt)
+                        Text(viewStore.questionPayload.createdAt.convertToDotFormat())
                             .ssdamLabel()
                             .padding(.bottom, 19)
                         Text(viewStore.questionPayload.quesContent)
