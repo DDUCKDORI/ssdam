@@ -34,7 +34,7 @@ public final class MainUseCaseImpl: MainUseCase {
     }
     
     public func fetchAllAnswers(id: String) async -> [FetchAnswerEntity] {
-        return await [FetchAnswerEntity(repository.fetchAnswer(id: id))] 
+        return await repository.fetchAllAnswers(id: id).map { FetchAnswerEntity($0) }
     }
     
     public func fetchAnswerByDate(date: String, code: String) async -> AnswerByDateEntity {
