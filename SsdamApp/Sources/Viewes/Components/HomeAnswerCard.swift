@@ -13,18 +13,28 @@ struct HomeAnswerCardReducer: Reducer {
     struct State: Equatable {
         var isExpanded: Bool = false
         var payloads: [FetchAnswerPayload] = []
+        var expands: [Bool] {
+            var result = Array(repeating: false, count: payloads.count)
+            if payloads.count > 0 {
+                result[0] = true
+            }
+            return result
+        }
     }
     
     enum Action: Equatable {
-        case expand
+        case expand(Int)
+        case toggle(Bool)
         case editAnswer
     }
     
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .expand:
-                state.isExpanded.toggle()
+            case let .expand(index):
+                return .send(.toggle(state.expands[index]))
+            case var .toggle(boolean):
+                boolean.toggle()
                 return .none
             case .editAnswer:
                 return .none
@@ -37,33 +47,33 @@ struct HomeAnswerCard: View {
     let store: StoreOf<HomeAnswerCardReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            ForEach(viewStore.payloads, id: \.self) { payload in
+            ForEach(0 ..< viewStore.payloads.count, id: \.self) { index in
                 VStack(spacing: 0) {
                     HStack {
-                        Text("\(payload.memberId)의 답변")
+                        Text("\(viewStore.payloads[index].memberId)의 답변")
                             .font(.pButton4)
                         Spacer()
                         HStack(spacing: 10) {
-                            Text(!payload.answer.isEmpty ? "2023.12.10" : "")
+                            Text(!viewStore.payloads[index].answer.isEmpty ? "2023.12.10" : "")
                                 .font(.pBody2)
                                 .foregroundStyle(Color(.gray60))
-                            Image(!payload.answer.isEmpty ? .checkmarkCircleMint : .checkmarkCircle)
+                            Image(!viewStore.payloads[index].answer.isEmpty ? .checkmarkCircleMint : .checkmarkCircle)
                         }
                     }
                     .padding(.horizontal, 24)
                     .padding(.vertical, 17)
-                    .background(!payload.answer.isEmpty ? Color(.mint20) : Color(.gray10))
+                    .background(!viewStore.payloads[index].answer.isEmpty ? Color(.mint20) : Color(.gray10))
                     .overlay(RoundedCorner(radius: 10, corners: viewStore.isExpanded ? [.topLeft, .topRight] : .allCorners)
-                        .stroke(!payload.answer.isEmpty ? Color(.mint50) : Color(.gray20), lineWidth: 2)
+                        .stroke(!viewStore.payloads[index].answer.isEmpty ? Color(.mint50) : Color(.gray20), lineWidth: 2)
                     )
                     
                     .onTapGesture {
-                        if !payload.answer.isEmpty {
-                            viewStore.send(.expand)
+                        if !viewStore.payloads[index].answer.isEmpty {
+                            viewStore.send(.expand(index))
                         }
                     }
                     if viewStore.isExpanded {
-                        Text(payload.answer)
+                        Text(viewStore.payloads[index].answer)
                             .font(.pBody)
                             .padding(.vertical, 48)
                             .padding(.horizontal, 52)
