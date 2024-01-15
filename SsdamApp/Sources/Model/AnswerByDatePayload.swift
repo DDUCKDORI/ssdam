@@ -9,7 +9,7 @@
 import Foundation
 import Domain
 
-struct AnswerByDatePayload: Equatable {
+struct AnswerByDatePayload: Equatable, Hashable {
     public var result : String
     public var categoryId : Int
     public var questionId : Int
@@ -36,7 +36,7 @@ struct AnswerByDatePayload: Equatable {
     }
 }
 
-struct AnswerList: Equatable {
+struct AnswerList: Equatable, Hashable {
     public var nickname: String
     public var answer: String
     public var createdAt: String

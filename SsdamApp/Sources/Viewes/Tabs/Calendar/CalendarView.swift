@@ -21,7 +21,7 @@ struct CalendarReducer: Reducer {
     }
     
     enum Action: Equatable {
-        case datePicked(DateComponents, String)
+        case datePicked(DateComponents?, String)
         case presentSheet(PresentationAction<Bool>)
         case settingTapped
         case answerResponse(TaskResult<AnswerByDateEntity>)
@@ -31,6 +31,7 @@ struct CalendarReducer: Reducer {
         Reduce { state, action in
             switch action {
             case let .datePicked(date, code):
+                guard let date = date else { return .none }
                 state.date = date
                 return .run { send in
                     let result = await TaskResult {
@@ -49,11 +50,11 @@ struct CalendarReducer: Reducer {
                 screenRouter.routeTo(.setting)
                 return .none
             case let .answerResponse(.success(entity)):
+                if entity.answerList.isEmpty { return .none }
                 state.answerPayload = AnswerByDatePayload(entity)
                 return .send(.presentSheet(.presented(true)))
             default:
                 return .none
-                
             }
         }
     }
@@ -66,7 +67,7 @@ struct CalendarView: View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             VStack {
                 CalendarViewRepresentable(selectedDate: viewStore.binding(get: \.date, send: { value in
-                        .datePicked((value ?? .init(Calendar.current.dateComponents([.day, .month, .year], from: .now))) ?? .init(), Const.inviteCd)
+                        .datePicked(value, Const.inviteCd)
                 }))
             }
             .sheet(store: self.store.scope(state: \.$isPresented, action: CalendarReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
@@ -75,7 +76,7 @@ struct CalendarView: View {
                         .ignoresSafeArea()
                     ScrollView(showsIndicators: false) {
                         VStack(spacing: 0) {
-                            Text("2023.10.29")
+                            Text(viewStore.answerPayload.answerList.first?.createdAt.convertToDotFormat() ?? "")
                                 .ssdamLabel()
                                 .padding(.bottom, 12)
                                 .padding(.top, 30)
@@ -86,28 +87,30 @@ struct CalendarView: View {
                                 .padding(.bottom, 16)
                             
                             VStack(spacing: 16) {
-                                VStack(spacing: 0) {
-                                    HStack {
-                                        Text("나의 답변")
-                                            .font(.pButton4)
-                                        Spacer()
-                                        Text("2023.12.10")
-                                            .font(.pBody2)
-                                            .foregroundStyle(Color(.gray60))
-                                    }
-                                    .padding(.horizontal, 24)
-                                    .padding(.vertical, 17)
-                                    .background(Color(.gray10))
-                                    .clipShape(RoundedCorner(radius: 10, corners: [.topLeft, .topRight])
-                                    )
-                                    Text("하루도 빠지지 않고 쓰담 기록하기")
-                                        .font(.pBody)
-                                        .padding(.vertical, 48)
-                                        .padding(.horizontal, 52)
-                                        .frame(maxWidth: .infinity)
-                                        .background(Color.white)
-                                        .clipShape(RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight])
+                                ForEach(viewStore.answerPayload.answerList, id: \.self) { payload in
+                                    VStack(spacing: 0) {
+                                        HStack {
+                                            Text("\(payload.nickname)의 답변")
+                                                .font(.pButton4)
+                                            Spacer()
+                                            Text(payload.createdAt.convertToDotFormat())
+                                                .font(.pBody2)
+                                                .foregroundStyle(Color(.gray60))
+                                        }
+                                        .padding(.horizontal, 24)
+                                        .padding(.vertical, 17)
+                                        .background(Color(.gray10))
+                                        .clipShape(RoundedCorner(radius: 10, corners: [.topLeft, .topRight])
                                         )
+                                        Text(payload.answer)
+                                            .font(.pBody)
+                                            .padding(.vertical, 48)
+                                            .padding(.horizontal, 52)
+                                            .frame(maxWidth: .infinity)
+                                            .background(Color.white)
+                                            .clipShape(RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight])
+                                            )
+                                    }
                                 }
                             }
                             .padding(.horizontal, 30)
