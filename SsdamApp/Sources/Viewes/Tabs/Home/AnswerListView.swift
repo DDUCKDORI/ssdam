@@ -132,7 +132,7 @@ struct AnswerListView: View {
                             .padding(.bottom, 26)
                         
                         VStack(spacing: 16) {
-                                HomeAnswerCard(store: self.store.scope(state: \.cardState, action: AnswerListReducer.Action.cardAction))
+                                HomeAnswerCardView(store: self.store.scope(state: \.cardState, action: AnswerListReducer.Action.cardAction))
                         }
                         .padding(.horizontal, 30)
                     }

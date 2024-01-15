@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension String {
     func convertToDotFormat() -> String {
@@ -18,5 +19,12 @@ extension String {
         }
         dateFormatter.dateFormat = "yyyy.MM.dd"
         return dateFormatter.string(from: date)
+    }
+    
+    func withAttributed(_ font: Font) -> AttributedString {
+        var text = AttributedString(stringLiteral: self)
+        text.font = font
+        text.foregroundColor = Color(.mint50)
+        return text
     }
 }

@@ -82,7 +82,7 @@ struct ShareView: View {
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             VStack {
-                Text(Const.nickname)
+                Text(Const.nickname.withAttributed(.pHeadline2))
                     .font(.pHeadline2)
                     .padding(.bottom, 92)
                 

@@ -43,7 +43,7 @@ struct HomeAnswerCardReducer: Reducer {
     }
 }
 
-struct HomeAnswerCard: View {
+struct HomeAnswerCardView: View {
     let store: StoreOf<HomeAnswerCardReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in

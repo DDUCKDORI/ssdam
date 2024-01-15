@@ -90,7 +90,7 @@ struct CalendarView: View {
                                 ForEach(viewStore.answerPayload.answerList, id: \.self) { payload in
                                     VStack(spacing: 0) {
                                         HStack {
-                                            Text("\(payload.nickname)의 답변")
+                                            Text("\(payload.nickname.withAttributed(.pButton4))의 답변")
                                                 .font(.pButton4)
                                             Spacer()
                                             Text(payload.createdAt.convertToDotFormat())
