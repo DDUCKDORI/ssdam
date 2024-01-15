@@ -11,20 +11,12 @@ import ComposableArchitecture
 
 struct HomeAnswerCardReducer: Reducer {
     struct State: Equatable {
-        var isExpanded: Bool = false
         var payloads: [FetchAnswerPayload] = []
-        var expands: [Bool] {
-            var result = Array(repeating: false, count: payloads.count)
-            if payloads.count > 0 {
-                result[0] = true
-            }
-            return result
-        }
+        var expands: [Bool] = []
     }
     
     enum Action: Equatable {
         case expand(Int)
-        case toggle(Bool)
         case editAnswer
     }
     
@@ -32,9 +24,7 @@ struct HomeAnswerCardReducer: Reducer {
         Reduce { state, action in
             switch action {
             case let .expand(index):
-                return .send(.toggle(state.expands[index]))
-            case var .toggle(boolean):
-                boolean.toggle()
+                state.expands[index].toggle()
                 return .none
             case .editAnswer:
                 return .none
@@ -54,7 +44,7 @@ struct HomeAnswerCardView: View {
                             .font(.pButton4)
                         Spacer()
                         HStack(spacing: 10) {
-                            Text(!viewStore.payloads[index].answer.isEmpty ? "2023.12.10" : "")
+                            Text(!viewStore.payloads[index].answer.isEmpty ? viewStore.payloads[index].createdAt.convertToDotFormat() : "")
                                 .font(.pBody2)
                                 .foregroundStyle(Color(.gray60))
                             Image(!viewStore.payloads[index].answer.isEmpty ? .checkmarkCircleMint : .checkmarkCircle)
@@ -63,7 +53,7 @@ struct HomeAnswerCardView: View {
                     .padding(.horizontal, 24)
                     .padding(.vertical, 17)
                     .background(!viewStore.payloads[index].answer.isEmpty ? Color(.mint20) : Color(.gray10))
-                    .overlay(RoundedCorner(radius: 10, corners: viewStore.isExpanded ? [.topLeft, .topRight] : .allCorners)
+                    .overlay(RoundedCorner(radius: 10, corners: viewStore.expands[index] ? [.topLeft, .topRight] : .allCorners)
                         .stroke(!viewStore.payloads[index].answer.isEmpty ? Color(.mint50) : Color(.gray20), lineWidth: 2)
                     )
                     
@@ -72,7 +62,7 @@ struct HomeAnswerCardView: View {
                             viewStore.send(.expand(index))
                         }
                     }
-                    if viewStore.isExpanded {
+                    if viewStore.expands[index] == true {
                         Text(viewStore.payloads[index].answer)
                             .font(.pBody)
                             .padding(.vertical, 48)

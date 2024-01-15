@@ -33,6 +33,7 @@ struct AnswerListReducer: Reducer {
         case requestAnswerResponse(TaskResult<RequestAnswerEntity>)
         case presentSheet(PresentationAction<Bool>)
         case cardAction(HomeAnswerCardReducer.Action)
+        case setToggles
     }
     
     var body: some ReducerOf<Self> {
@@ -68,6 +69,12 @@ struct AnswerListReducer: Reducer {
                 }
             case let .answerReponse(.success(entity)):
                 state.cardState.payloads = entity.map { FetchAnswerPayload($0) }
+                return .send(.setToggles)
+            case .setToggles:
+                state.cardState.expands = Array(repeating: false, count: state.cardState.payloads.count)
+                if state.cardState.payloads.count > 0 {
+                    state.cardState.expands[0] = true
+                }
                 return .none
             case let .answerReponse(.failure(error)):
                 print(error.localizedDescription)
@@ -132,7 +139,7 @@ struct AnswerListView: View {
                             .padding(.bottom, 26)
                         
                         VStack(spacing: 16) {
-                                HomeAnswerCardView(store: self.store.scope(state: \.cardState, action: AnswerListReducer.Action.cardAction))
+                            HomeAnswerCardView(store: self.store.scope(state: \.cardState, action: AnswerListReducer.Action.cardAction))
                         }
                         .padding(.horizontal, 30)
                     }
