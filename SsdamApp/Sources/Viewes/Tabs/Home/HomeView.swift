@@ -63,7 +63,7 @@ struct HomeReducer: Reducer {
                 }
             case let .makeQuestionPayload(.success(entity)):
                 state.questionPayload = QuestionPayload(entity)
-                if state.questionPayload.isReplied == "Success" {
+                if state.questionPayload.isReplied == "TRUE" {
                     return .send(.viewTypeChanged)
                 }
                 return .none
@@ -71,8 +71,6 @@ struct HomeReducer: Reducer {
                 print(error.localizedDescription)
                 return .none
             case .writeAction(.answerButtonTapped):
-                state.writeState.question = state.questionPayload.quesContent
-                state.writeState.date = state.questionPayload.createdAt
                 let body = PostAnswerBody(
                     cateId: state.questionPayload.categoryId,
                     qustId: state.questionPayload.questionId,
@@ -99,6 +97,8 @@ struct HomeReducer: Reducer {
                 state.viewType = .list
                 return .none
             case .presentSheet(.presented(true)):
+                state.writeState.question = state.questionPayload.quesContent
+                state.writeState.date = state.questionPayload.createdAt
                 state.isPresented = PresentationState(wrappedValue: true)
                 return .none
             case .presentSheet(.dismiss):
