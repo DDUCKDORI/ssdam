@@ -18,6 +18,7 @@ struct AnswerListReducer: Reducer {
     struct State: Equatable {
         var questionPayload: QuestionPayload = .init()
         var writeState = WriteReducer.State()
+        var modalState = ModalReducer.State()
         var cardState = HomeAnswerCardReducer.State()
         var answerPayload: RequestAnswerPayload = .init()
         @PresentationState var isPresented: PresentationState<Bool>?
@@ -31,8 +32,9 @@ struct AnswerListReducer: Reducer {
         case writeAction(WriteReducer.Action)
         case requestAnswer(PostAnswerBody)
         case requestAnswerResponse(TaskResult<RequestAnswerEntity>)
-        case presentSheet(PresentationAction<Bool>)
         case cardAction(HomeAnswerCardReducer.Action)
+        case presentSheet(PresentationAction<Bool>)
+        case modalAction(ModalReducer.Action)
         case setToggles
     }
     
@@ -42,6 +44,9 @@ struct AnswerListReducer: Reducer {
         }
         Scope(state: \.cardState, action: /Action.cardAction) {
             HomeAnswerCardReducer()
+        }
+        Scope(state: \.modalState, action: /Action.modalAction) {
+            ModalReducer()
         }
         Reduce { state, action in
             switch action {
@@ -75,6 +80,9 @@ struct AnswerListReducer: Reducer {
                 if state.cardState.payloads.count > 0 {
                     state.cardState.expands[0] = true
                 }
+                if state.questionPayload.notAnswer == 0 {
+                    return .send(.modalAction(.modalPresented(.presented(true))))
+                }
                 return .none
             case let .answerReponse(.failure(error)):
                 print(error.localizedDescription)
@@ -97,13 +105,21 @@ struct AnswerListReducer: Reducer {
                 }
             case let .requestAnswerResponse(.success(data)):
                 state.answerPayload = RequestAnswerPayload(data)
-                screenRouter.dismiss()
+                return .send(.presentSheet(.dismiss))
+            case .modalAction(.modalPresented(.presented(true))):
+                state.modalState.isPresented?.wrappedValue = true
+                return .none
+            case .modalAction(.modalPresented(.dismiss)):
+                state.modalState.isPresented = nil
                 return .none
             case let .requestAnswerResponse(.failure(error)):
                 print(error.localizedDescription)
                 return .none
             case .cardAction(.editAnswer):
-                return .send(.presentSheet(.presented(true)))
+                if state.questionPayload.notAnswer > 0 {
+                    return .send(.presentSheet(.presented(true)))
+                }
+                return.none
             case .presentSheet(.presented(true)):
                 state.writeState.question = state.questionPayload.quesContent
                 state.writeState.text = state.questionPayload.ansContent
@@ -112,7 +128,7 @@ struct AnswerListReducer: Reducer {
                 return .none
             case .presentSheet(.dismiss):
                 state.isPresented = nil
-                return .none
+                return .send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
             default:
                 return .none
             }
@@ -150,6 +166,25 @@ struct AnswerListView: View {
             .fullScreenCover(store: self.store.scope(state: \.$isPresented, action: AnswerListReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
                 WriteView(store: self.store.scope(state: \.writeState, action: AnswerListReducer.Action.writeAction))
             }
+            .modal(self.store.scope(state: \.modalState, action: AnswerListReducer.Action.modalAction), content: {
+                VStack {
+                    Image(.checkmarkCircleMint)
+                        .padding(.bottom, 8)
+                        .padding(.top, 70)
+                    Text("모두의 답변이 완료됐어요")
+                        .font(.pHeadline2)
+                        .foregroundStyle(Color(.mint50))
+                        .padding(.bottom, 4)
+                    Text("내일 오전 9시 새로운 질문이 도착해요")
+                        .font(.pBody)
+                        .padding(.bottom, 40)
+                    Image(.completed)
+                        .padding(.bottom, 72)
+                }
+                .padding(.horizontal, 30)
+                .background()
+                .clipShape(RoundedRectangle(cornerRadius: 28))
+            })
             .onAppear {
                 viewStore.send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
             }

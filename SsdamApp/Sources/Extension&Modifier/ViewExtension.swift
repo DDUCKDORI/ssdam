@@ -34,4 +34,16 @@ extension View {
                 )
             )
     }
+    
+    @ViewBuilder
+    func modal(_ store: StoreOf<ModalReducer>, content: @escaping () -> some View) -> some View {
+        self
+            .modifier(
+                ModalViewModifier(
+                    viewStore: ViewStore(store, observe: { $0 }),
+                    modalContent: content
+                )
+            )
+    }
+
 }
