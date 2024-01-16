@@ -49,7 +49,7 @@ struct WriteView: View {
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             ZStack {
-                Image(.tileYellow)
+                Image(.tileMint)
                     .resizable(resizingMode: .tile)
                 VStack(spacing: 0) {
                     Text(viewStore.date.convertToDotFormat())

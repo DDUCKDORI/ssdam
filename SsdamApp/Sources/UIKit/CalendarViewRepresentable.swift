@@ -13,7 +13,7 @@ struct CalendarViewRepresentable: UIViewRepresentable {
     
     func makeUIView(context: Context) -> UICalendarView {
         let view = UICalendarView()
-        view.availableDateRange = DateInterval(start: .distantPast, end: .now)
+        view.availableDateRange = DateInterval(start: getStartDate(), end: .now)
         view.wantsDateDecorations = true
         view.tintColor = UIColor(Color(.mint50))
         view.delegate = context.coordinator
@@ -22,9 +22,18 @@ struct CalendarViewRepresentable: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: UICalendarView, context: Context) {
-        let calendar = Calendar.current
         guard let selectedDate = self.selectedDate else { return }
         uiView.reloadDecorations(forDateComponents: [selectedDate], animated: true)
+    }
+    
+    private func getStartDate() -> Date {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = 2024
+        components.month = 1
+        components.day = 1
+        let startDate = calendar.date(from: components)!
+        return startDate
     }
     
     func makeCoordinator() -> Coordinator {
