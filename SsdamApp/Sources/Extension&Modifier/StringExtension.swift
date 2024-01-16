@@ -21,7 +21,7 @@ extension String {
         return dateFormatter.string(from: date)
     }
     
-    func withAttributed(_ font: Font) -> AttributedString {
+    func withAttributed(_ font: Font = .pButton4) -> AttributedString {
         var text = AttributedString(stringLiteral: self)
         text.font = font
         text.foregroundColor = Color(.mint50)

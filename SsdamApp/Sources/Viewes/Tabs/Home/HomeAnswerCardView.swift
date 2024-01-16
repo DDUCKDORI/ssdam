@@ -40,7 +40,7 @@ struct HomeAnswerCardView: View {
             ForEach(0 ..< viewStore.payloads.count, id: \.self) { index in
                 VStack(spacing: 0) {
                     HStack {
-                        Text("\(viewStore.payloads[index].memberId)의 답변")
+                        Text("\(viewStore.payloads[index].nickname.withAttributed())의 답변")
                             .font(.pButton4)
                         Spacer()
                         HStack(spacing: 10) {

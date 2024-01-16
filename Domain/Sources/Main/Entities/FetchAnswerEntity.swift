@@ -12,6 +12,7 @@ public struct FetchAnswerEntity: Equatable {
     public var result: String
     public var inviteCode: String
     public var memberId: Int
+    public var nickname: String
     public var categoryId: Int
     public var questionId: Int
     public var ansContent: String
@@ -21,6 +22,7 @@ public struct FetchAnswerEntity: Equatable {
         self.result = json["result"].stringValue
         self.inviteCode = json["invite_cd"].stringValue
         self.memberId = json["mem_id"].intValue
+        self.nickname = json["nick_nm"].stringValue
         self.categoryId = json["cate_id"].intValue
         self.questionId = json["qust_id"].intValue
         self.ansContent = json["ans_cn"].stringValue
