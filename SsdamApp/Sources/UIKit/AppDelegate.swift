@@ -6,7 +6,7 @@
 //  Copyright © 2023 com.dduckdori. All rights reserved.
 //
 
-import FirebaseCore
+//import FirebaseCore
 import UIKit
 
 @main
@@ -15,7 +15,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     let screenRouter = ScreenRouter(factory: .init())
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        FirebaseApp.configure()
+//        FirebaseApp.configure()
         
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
@@ -26,14 +26,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         window.makeKeyAndVisible()
         
         
-        //        UNUserNotificationCenter.current().delegate = self
-        //
-        //        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-        //        UNUserNotificationCenter.current().requestAuthorization(
-        //            options: authOptions,
-        //            completionHandler: { _, _ in }
-        //        )
-        //
+                UNUserNotificationCenter.current().delegate = self
+        
+        
         //        application.registerForRemoteNotifications()
         
         //        Messaging.messaging().delegate = self
@@ -70,26 +65,26 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 //    }
 //}
 
-//extension AppDelegate: UNUserNotificationCenterDelegate {
-//    // 푸시메세지가 앱이 켜져 있을때 나올때
-//    func userNotificationCenter(_ center: UNUserNotificationCenter,
-//                                willPresent notification: UNNotification,
-//                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
-//    {
-//        let userInfo = notification.request.content.userInfo
-//
-//        print("willPresent: userInfo: ", userInfo)
-//
-//        completionHandler([.banner, .sound, .badge])
-//    }
-//
-//    // 푸시메세지를 받았을 때
-//    func userNotificationCenter(_ center: UNUserNotificationCenter,
-//                                didReceive response: UNNotificationResponse,
-//                                withCompletionHandler completionHandler: @escaping () -> Void)
-//    {
-//        let userInfo = response.notification.request.content.userInfo
-//        print("didReceive: userInfo: ", userInfo)
-//        completionHandler()
-//    }
-//}
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    // 푸시메세지가 앱이 켜져 있을때 나올때
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
+    {
+        let userInfo = notification.request.content.userInfo
+
+        print("willPresent: userInfo: ", userInfo)
+
+        completionHandler([.banner, .sound, .badge])
+    }
+
+    // 푸시메세지를 받았을 때
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void)
+    {
+        let userInfo = response.notification.request.content.userInfo
+        print("didReceive: userInfo: ", userInfo)
+        completionHandler()
+    }
+}
