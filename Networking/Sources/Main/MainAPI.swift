@@ -27,17 +27,17 @@ extension MainAPI: BaseAPI, TargetType {
     public var path: String {
         switch self {
         case let .fetchQuestionByUser(id):
-            return "/ssdam/question/\(id)"
+            return "/question/\(id)"
         case let .fetchAnswer(id):
-            return "/ssdam/answer/\(id)"
+            return "/answer/\(id)"
         case .postQuestion(_):
-            return "/ssdam/answer"
+            return "/answer"
         case .modifyAnswer(_):
-            return "/ssdam/answer"
+            return "/answer"
         case let .fetchAnswerByDate(date, code):
-            return "/ssdam/question/\(date)/\(code)"
+            return "/question/\(date)/\(code)"
         case let .fetchMember(code):
-            return "/ssdam/family/\(code)"
+            return "/family/\(code)"
         }
     }
     
@@ -55,6 +55,7 @@ extension MainAPI: BaseAPI, TargetType {
     public var task: Moya.Task {
         switch self {
         case let .postQuestion(request):
+            print("to param: \(request.toParam())")
             return .requestParameters(parameters: request.toParam(), encoding: encoding)
         case let .modifyAnswer(request):
             return .requestParameters(parameters: request.toParam(), encoding: encoding)
