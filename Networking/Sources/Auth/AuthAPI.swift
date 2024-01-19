@@ -8,16 +8,18 @@
 
 import Foundation
 import Moya
+import Utils
 
 public enum AuthAPI {
     case issueAccessToken(String, String)
     case login([String: Any])
     case fetchNumberOfFamily(String)
+    case join(FamilyJoinBody)
 }
 
-extension AuthAPI: TargetType {
+extension AuthAPI: BaseAPI, TargetType {
     public var baseURL: URL {
-        return URL(string:"https://test-ssdam.site/ssdam")!
+        self.apiURL
     }
     
     public var path: String {
@@ -28,6 +30,8 @@ extension AuthAPI: TargetType {
             return "/login"
         case let .fetchNumberOfFamily(code):
             return "/family/\(code)"
+        case .join:
+            return "/join"
         }
     }
     
@@ -35,6 +39,8 @@ extension AuthAPI: TargetType {
         switch self {
         case .fetchNumberOfFamily:
             return .get
+        case .join:
+            return .patch
         default:
             return .post
         }
@@ -58,6 +64,8 @@ extension AuthAPI: TargetType {
                 return [:]
             }
             return tokenInfo
+        case let .join(body):
+            return body.toParam()
         default:
             return [:]
         }

@@ -10,15 +10,21 @@ import SwiftUI
 import ComposableArchitecture
 import Domain
 import Utils
+import Networking
 
 struct ShareReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.authUseCase) var authUseCase
+    @Dependency(\.mainQueue) var mainQueue
+    
+    let throttleId: String = "1"
+
     struct State: Equatable {
         var code: String = ""
-        var isValid: Bool = false
+        var isValid: Bool = true
         var toastState: ToastReducer.State = .init()
         var NumberOfFamily: String = ""
+        var joinPayload: FamilyJoinPayload = .init()
     }
     
     enum Action: Equatable {
@@ -28,6 +34,8 @@ struct ShareReducer: Reducer {
         case toast(ToastReducer.Action)
         case fetchNumberOfFamily(String)
         case fetchNumberOfFamilyResponse(TaskResult<NumberOfFamilyEntity>)
+        case join(FamilyJoinBody)
+        case joinReseponse(TaskResult<FamilyJoinEntity>)
     }
     
     var body: some ReducerOf<Self> {
@@ -40,15 +48,18 @@ struct ShareReducer: Reducer {
                 state.code = newValue
                 return .none
             case let .codeValidation(newValue):
-                if newValue.count > 10 {
+                if newValue.count > 8 {
                     state.code.removeLast()
                     return .none
                 }
-                if newValue.count > 1 {
-                    state.isValid = true
-                    return .send(.toast(.toastPresented(.presented(true))))
+                if newValue.count == 8 {
+                    if isValidCode(newValue) && Const.inviteCd != newValue {
+                        state.isValid = true
+                        return .send(.join(FamilyJoinBody(newCode: newValue, oldCode: Const.inviteCd, memId: Const.memId)))
+                            .debounce(id: throttleId, for: .seconds(0.5), scheduler: self.mainQueue)
+                    }
+                    state.isValid = false
                 }
-                state.isValid = false
                 return .none
             case .settingTapped:
                 screenRouter.routeTo(.setting)
@@ -57,7 +68,7 @@ struct ShareReducer: Reducer {
                 state.toastState.isPresented?.wrappedValue = true
                 return .none
             case .toast(.toastPresented(.dismiss)):
-                return .none
+                return .send(.fetchNumberOfFamily(Const.inviteCd))
             case let .fetchNumberOfFamily(code):
                 return .run { send in
                     let result = await TaskResult {
@@ -72,7 +83,40 @@ struct ShareReducer: Reducer {
             case let .fetchNumberOfFamilyResponse(.failure(error)):
                 print(error.localizedDescription)
                 return .none
+            case let .join(body):
+                return .run { send in
+                    let result = await TaskResult {
+                        let data = await authUseCase.join(body: body)
+                        return data
+                    }
+                    await send(.joinReseponse(result))
+                }
+            case let .joinReseponse(.success(entity)):
+                state.joinPayload = FamilyJoinPayload(entity)
+                if state.joinPayload.result == "Success" {
+                    Const.inviteCd = state.code
+                    Const.memId = state.joinPayload.memId
+                    return .send(.toast(.toastPresented(.presented(true))))
+                }
+                return .none
+            case let .joinReseponse(.failure(error)):
+                print(error.localizedDescription)
+                return .none
             }
+        }
+    }
+    
+    func isValidCode(_ code: String) -> Bool {
+        let pattern = "^[A-Z]{4}\\d{4}$"
+        
+        do {
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
+            let range = NSRange(location: 0, length: code.utf16.count)
+            let matches = regex.numberOfMatches(in: code, options: [], range: range)
+            
+            return matches == 1
+        } catch {
+            return false // Invalid regular expression
         }
     }
 }
@@ -114,17 +158,17 @@ struct ShareView: View {
                         viewStore.send(.codeValidation(newValue))
                         
                     }
-                    if viewStore.isValid {
-                        Image(.checkmarkCircleMint)
-                            .padding(.vertical, 16)
-                            .padding(.horizontal, 24)
-                    }
+//                    if viewStore.isValid {
+//                        Image(.checkmarkCircleMint)
+//                            .padding(.vertical, 16)
+//                            .padding(.horizontal, 24)
+//                    }
                 }
                 Text("*인증코드를 다시 확인해주세요")
                     .font(.pCaption)
                     .foregroundStyle(Color(.systemRed))
                     .padding(.vertical, 12)
-                    .opacity(viewStore.code.count > 0 && !viewStore.isValid ? 1 : 0)
+                    .opacity(!viewStore.isValid ? 1 : 0)
                 
                 ShareLink(item: viewStore.code) {
                     Text("내 초대코드 복사하기")

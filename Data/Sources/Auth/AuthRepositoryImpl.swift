@@ -41,4 +41,12 @@ public final class AuthRepositoryImpl: AuthRepository {
             .get()
         return data ?? ""
     }
+    
+    public func join(body: FamilyJoinBody) async -> JSON {
+        let data = try? await client.request(router: AuthAPI.join(body))
+            .map { try? JSON(data: $0.data) }
+            .mapError(\.backendError)
+            .get()
+        return data ?? ""
+    }
 }
