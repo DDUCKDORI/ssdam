@@ -24,9 +24,11 @@ public struct PostAnswerBody: Encodable, Equatable {
     }
     
     func toParam() -> [String: Any] {
-        guard let jsonData = try? JSONEncoder().encode(self),
-              let param = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any]
-        else { return [:] }
+        let param: [String: Any] = ["cate_id": self.cateId,
+                                   "qust_id": self.qustId,
+                                   "mem_id": self.memId,
+                                   "invite_cd": self.inviteCd,
+                                   "ans_cn": self.ansCn]
         return param
     }
 }
