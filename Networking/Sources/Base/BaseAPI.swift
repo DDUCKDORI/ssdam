@@ -7,19 +7,19 @@
 //
 
 import Foundation
-
+import Utils
 import Moya
 
 public protocol BaseAPI: TargetType, AccessTokenAuthorizable {}
 
 public extension BaseAPI {
-    var apiURL: URL { URL(string: "http://172.30.1.87:8080/ssdam")! }
-
+    var apiURL: URL { URL(string: Bundle.main.infoDictionary!["BASE_URL"] as! String)! }
+    
     var headers: [String: String]? {
         ["Content-Type": "application/json"]
     }
-
+    
     var authorizationType: AuthorizationType? { .bearer }
-
+    
     var validationType: ValidationType { .successCodes }
 }
