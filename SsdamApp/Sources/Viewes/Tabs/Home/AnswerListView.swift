@@ -80,7 +80,7 @@ struct AnswerListReducer: Reducer {
                 if state.cardState.payloads.count > 0 {
                     state.cardState.expands[0] = true
                 }
-                if state.questionPayload.notAnswer > 0 {
+                if state.questionPayload.notAnswer == 0 {
                     return .send(.modalAction(.modalPresented(.presented(true))))
                 }
                 return .none
