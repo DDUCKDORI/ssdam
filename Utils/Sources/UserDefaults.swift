@@ -55,6 +55,6 @@ public enum Const {
     @UserDefault(key: "memSub", defaultValue: "")
     public static var memSub: String
     
-    @UserDefault(key: "isPioneer", defaultValue: false)
+    @UserDefault(key: "isPioneer", defaultValue: true)
     public static var isPioneer: Bool
 }

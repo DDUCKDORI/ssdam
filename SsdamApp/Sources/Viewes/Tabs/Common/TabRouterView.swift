@@ -90,7 +90,10 @@ struct TabRouterView: View {
                 }
                 if Const.isPioneer {
                     ToolTipView()
-                        .offset(x: -47)
+                        .offset(x: -45)
+                        .onTapGesture {
+                            Const.isPioneer = false
+                        }
                 }
             }
             .safeAreaInset(edge: .bottom) {
