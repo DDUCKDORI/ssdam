@@ -163,7 +163,7 @@ struct ShareView: View {
                         .multilineTextAlignment(.center)
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.mint50), lineWidth: 2))
                         .focused($focusedField)
-                        .onChange(of: viewStore.code){ _, newValue in
+                        .onChange(of: viewStore.code){ newValue in
                             viewStore.send(.codeValidation(newValue))
                             
                         }

@@ -89,7 +89,7 @@ struct NicknameView: View {
     
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            ZStack {
+            ZStack(alignment: .top) {
                 Color.white
                 VStack(spacing: 16) {
                     viewStore.isValid ?
@@ -111,7 +111,7 @@ struct NicknameView: View {
                         .multilineTextAlignment(.center)
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.mint50), lineWidth: 2))
                         .focused($focusedField)
-                        .onChange(of: viewStore.nickname){ _, newValue in
+                        .onChange(of: viewStore.nickname){ newValue in
                             viewStore.send(.nicknameValidation(newValue))
                             
                         }
@@ -198,7 +198,6 @@ struct NicknameView: View {
                     }
                 }
                 .padding(.horizontal, 30)
-                Spacer()
             }
             .onTapGesture {
                 self.focusedField = false

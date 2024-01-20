@@ -72,7 +72,7 @@ struct WriteView: View {
                     .padding(.horizontal, 30)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 28)
-                    .onChange(of: viewStore.text){ _, newValue in
+                    .onChange(of: viewStore.text){ newValue in
                         viewStore.send(.textValidation(newValue))
                     }
                     
