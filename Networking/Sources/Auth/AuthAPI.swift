@@ -26,7 +26,7 @@ extension AuthAPI: BaseAPI, TargetType {
         switch self {
         case .issueAccessToken:
             return "/apple/login/callback"
-        case . login:
+        case .login:
             return "/login"
         case let .fetchNumberOfFamily(code):
             return "/family/\(code)"

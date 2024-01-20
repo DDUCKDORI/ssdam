@@ -20,8 +20,8 @@ struct LoginReducer: Reducer {
     }
     
     enum Action: Equatable {
-        case issueToken(String, String, String)
-        case issueTokenResponse(TaskResult<TokenEntity>, String)
+        case issueToken(String, String)
+        case issueTokenResponse(TaskResult<TokenEntity>)
         case navigate
         case routeToHome
         case routeToSignup
@@ -31,15 +31,15 @@ struct LoginReducer: Reducer {
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case let .issueToken(code, token, email):
+            case let .issueToken(code, token):
                 return .run { send in
                     let result = await TaskResult{
                         let data = await authUseCase.issueAccessToken(code, token)
                         return data
                     }
-                    await send(.issueTokenResponse(result, email))
+                    await send(.issueTokenResponse(result))
                 }
-            case let .issueTokenResponse(.success(entity), email):
+            case let .issueTokenResponse(.success(entity)):
                 state.tokenInfo = TokenPayload(entity)
                 
                 Const.accessToken = state.tokenInfo.accessToken
@@ -47,13 +47,13 @@ struct LoginReducer: Reducer {
                 Const.isUser = state.tokenInfo.isUser
                 Const.nickname = state.tokenInfo.nickname ?? ""
                 Const.inviteCd = state.tokenInfo.inviteCd ?? ""
-                Const.email = email
+                Const.email = state.tokenInfo.email ?? ""
                 Const.userType = state.tokenInfo.fmDvcd ?? ""
                 Const.memId = state.tokenInfo.memId
                 Const.memSub = state.tokenInfo.memSub
                 
                 return .send(.navigate)
-            case let .issueTokenResponse(.failure(error), _):
+            case let .issueTokenResponse(.failure(error)):
                 print(error.localizedDescription)
                 return .none
             case .navigate:
@@ -103,7 +103,7 @@ struct LoginView: View {
                             
                             guard let code = authorizationCode, let token = identityToken else { return }
                             print(code, token)
-                            viewStore.send(.issueToken(code, token, email ?? ""))
+                            viewStore.send(.issueToken(code, token))
                             
                             break
                             

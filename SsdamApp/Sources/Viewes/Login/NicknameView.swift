@@ -69,8 +69,9 @@ struct NicknameReducer: Reducer {
                     }
                     await send(.loginResponse(result))
                 }
-            case .loginResponse(.success):
+            case let .loginResponse(.success(entity)):
                 Const.nickname = state.nickname
+                Const.inviteCd = entity.inviteCd
                 screenRouter.routeTo(.signUpSuccess(state.nickname))
                 return .none
             case .loginResponse(.failure(_)):
