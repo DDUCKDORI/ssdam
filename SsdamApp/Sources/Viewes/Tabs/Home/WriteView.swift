@@ -17,15 +17,18 @@ struct WriteReducer: Reducer {
         var question: String = ""
         var text: String = ""
         var date: String = ""
+        @BindingState var focusedField: Bool = false
     }
     
-    enum Action: Equatable {
+    enum Action: BindableAction, Equatable {
         case textChanged(String)
         case textValidation(String)
         case answerButtonTapped
+        case binding(BindingAction<State>)
     }
     
     var body: some ReducerOf<Self> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
             case let .textChanged(text):
@@ -41,14 +44,21 @@ struct WriteReducer: Reducer {
                 return .none
             case .answerButtonTapped:
                 return .none
+            case .binding:
+                return .none
             }
         }
+    }
+    
+    private func isOnlyWhitespaceAndLineBreaks(_ text: String) -> Bool {
+        return text.allSatisfy { $0.isWhitespace || $0.isNewline }
     }
 }
 
 
 struct WriteView: View {
     let store: StoreOf<WriteReducer>
+    @FocusState var focusedField: Bool
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             ZStack {
@@ -75,29 +85,34 @@ struct WriteView: View {
                     .padding(.horizontal, 30)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 28)
+                    .focused($focusedField)
                     .onChange(of: viewStore.text){ newValue in
                         viewStore.send(.textValidation(newValue))
                     }
+                    .bind(viewStore.$focusedField, to: self.$focusedField)
                     
                     Button(action: {
-                        viewStore.send(.answerButtonTapped)
-
+                            viewStore.send(.answerButtonTapped)
                     }, label: {
                         Text("답변하기")
                             .font(.pButton)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(viewStore.text.isEmpty ? Color(.gray20) : .white)
                             .padding(.vertical, 16)
                             .frame(maxWidth: .infinity)
-                            .background(Color(.mint50))
+                            .background(viewStore.text.isEmpty ? Color(.gray10) : Color(.mint50))
                             .clipShape(RoundedRectangle(cornerRadius: 100))
                             .padding(.horizontal, 80)
                     })
+                    .disabled(viewStore.text.isEmpty ? true : false)
                     
                     Spacer()
                 }
                 .padding(.top, 142)
             }
             .ignoresSafeArea()
+            .onTapGesture {
+                self.focusedField = false
+            }
         }
     }
 }
