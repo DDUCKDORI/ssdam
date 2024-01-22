@@ -32,8 +32,11 @@ struct WriteReducer: Reducer {
                 state.text = text
                 return .none
             case let .textValidation(text):
+                if isOnlyWhitespaceAndLineBreaks(text) {
+                    state.text = ""
+                }
                 if text.count > 50 {
-                    state.text.removeLast()
+                    state.text = String(state.text.prefix(50))
                 }
                 return .none
             case .answerButtonTapped:
