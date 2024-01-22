@@ -166,6 +166,7 @@ struct HomeView: View {
                     .font(.pHeadline2)
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 30)
+                    .padding(.horizontal, 62)
                 
                 Image(.characterMain)
                     .padding(.bottom, 12)

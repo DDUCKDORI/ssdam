@@ -72,6 +72,7 @@ struct WriteView: View {
                         .font(.pHeadline2)
                         .multilineTextAlignment(.center)
                         .padding(.bottom, 28)
+                        .padding(.horizontal, 62)
                     
                     TextField("1~50자 이내 작성", text: viewStore.binding(get: \.text, send: { value in
                             .textChanged(value)
