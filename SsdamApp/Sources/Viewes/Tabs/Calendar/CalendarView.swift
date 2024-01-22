@@ -35,7 +35,7 @@ struct CalendarReducer: Reducer {
                 state.date = date
                 return .run { send in
                     let result = await TaskResult {
-                        let data = await mainUseCase.fetchAnswerByDate(date: date.toYYYYMMDDString(), code: code)
+                        let data = await mainUseCase.fetchAnswerByDate(date: date.toString(.withoutDash), code: code)
                         return data
                     }
                     await send(.answerResponse(result))
@@ -76,7 +76,7 @@ struct CalendarView: View {
                         .ignoresSafeArea()
                     ScrollView(showsIndicators: false) {
                         VStack(spacing: 0) {
-                            Text(viewStore.answerPayload.answerList.first?.createdAt.convertToDotFormat() ?? "")
+                            Text(viewStore.answerPayload.answerList.first?.createdAt.convertToDotFormat(.dot) ?? "")
                                 .ssdamLabel()
                                 .padding(.bottom, 12)
                                 .padding(.top, 30)
@@ -93,7 +93,7 @@ struct CalendarView: View {
                                             Text("\(payload.nickname.withAttributed())의 답변")
                                                 .font(.pButton4)
                                             Spacer()
-                                            Text(payload.createdAt.convertToDotFormat())
+                                            Text(payload.createdAt.convertToDotFormat(.dot))
                                                 .font(.pBody2)
                                                 .foregroundStyle(Color(.gray60))
                                         }
@@ -108,8 +108,7 @@ struct CalendarView: View {
                                             .padding(.horizontal, 52)
                                             .frame(maxWidth: .infinity)
                                             .background(Color.white)
-                                            .clipShape(RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight])
-                                            )
+                                            .clipShape(RoundedCorner(radius: 10, corners: [.bottomLeft, .bottomRight]))
                                     }
                                 }
                             }
@@ -118,6 +117,10 @@ struct CalendarView: View {
                     }
                 }
                 .presentationDetents([.fraction(0.4) , .large])
+            }
+            .onAppear {
+                //                viewStore.send(.searchDateChaged("\(Date.now.converToYYYYMM)"))
+                //                viewStore.send(.fetchCompletedDates)
             }
             .toolbar(content: {
                 ToolbarItem(placement: .navigationBarLeading) {

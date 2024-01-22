@@ -10,14 +10,14 @@ import Foundation
 import SwiftUI
 
 extension String {
-    func convertToDotFormat() -> String {
+    func convertToDotFormat(_ format: DateFormatType) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
         
         guard let date = dateFormatter.date(from: self) else {
             return ""
         }
-        dateFormatter.dateFormat = "yyyy.MM.dd"
+        dateFormatter.dateFormat = format.rawValue
         return dateFormatter.string(from: date)
     }
     

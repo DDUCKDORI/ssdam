@@ -45,7 +45,7 @@ struct HomeAnswerCardView: View {
                             .font(.pButton4)
                         Spacer()
                         HStack(spacing: 10) {
-                            Text(!viewStore.payloads[index].answer.isEmpty ? viewStore.payloads[index].createdAt.convertToDotFormat() : "")
+                            Text(!viewStore.payloads[index].answer.isEmpty ? viewStore.payloads[index].createdAt.convertToDotFormat(.dot) : "")
                                 .font(.pBody2)
                                 .foregroundStyle(Color(.gray60))
                             Image(!viewStore.payloads[index].answer.isEmpty ? .checkmarkCircleMint : .checkmarkCircle)

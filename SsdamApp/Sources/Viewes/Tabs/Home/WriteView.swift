@@ -65,7 +65,7 @@ struct WriteView: View {
                 Image(.tileMint)
                     .resizable(resizingMode: .tile)
                 VStack(spacing: 0) {
-                    Text(viewStore.date.convertToDotFormat())
+                    Text(viewStore.date.convertToDotFormat(.dot))
                         .ssdamLabel()
                         .padding(.bottom, 19)
                     Text(viewStore.question)
