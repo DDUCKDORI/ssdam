@@ -74,6 +74,10 @@ struct AnswerListReducer: Reducer {
                 }
             case let .answerReponse(.success(entity)):
                 state.cardState.payloads = entity.map { FetchAnswerPayload($0) }
+                if let myIndex = state.cardState.payloads.firstIndex(where: { $0.memberId == Const.memId }) {
+                    let myAnswer = state.cardState.payloads.remove(at: myIndex)
+                    state.cardState.payloads.insert(myAnswer, at: 0)
+                }
                 return .send(.setToggles)
             case .setToggles:
                 state.cardState.expands = Array(repeating: false, count: state.cardState.payloads.count)
@@ -153,6 +157,7 @@ struct AnswerListView: View {
                             .font(.pHeadline2)
                             .multilineTextAlignment(.center)
                             .padding(.bottom, 26)
+                            .padding(.horizontal, 62)
                         
                         VStack(spacing: 16) {
                             HomeAnswerCardView(store: self.store.scope(state: \.cardState, action: AnswerListReducer.Action.cardAction))
