@@ -99,7 +99,7 @@ struct HomeReducer: Reducer {
                 return .none
             case .presentSheet(.presented(true)):
                 state.writeState.question = state.questionPayload.quesContent
-                state.writeState.date = state.questionPayload.createdAt
+                state.writeState.date = state.questionPayload.questionCreatedAt
                 state.isPresented = PresentationState(wrappedValue: true)
                 return .none
             case .presentSheet(.dismiss):

@@ -129,7 +129,7 @@ struct AnswerListReducer: Reducer {
             case .presentSheet(.presented(true)):
                 state.writeState.question = state.questionPayload.quesContent
                 state.writeState.text = state.questionPayload.ansContent
-                state.writeState.date = state.questionPayload.createdAt
+                state.writeState.date = state.questionPayload.questionCreatedAt
                 state.isPresented = PresentationState(wrappedValue: true)
                 return .none
             case .presentSheet(.dismiss):
@@ -157,7 +157,7 @@ struct AnswerListView: View {
                     .resizable(resizingMode: .tile)
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
-                        Text(viewStore.questionPayload.createdAt.convertToDotFormat(.dot))
+                        Text(viewStore.questionPayload.questionCreatedAt.convertToDotFormat(.dot))
                             .ssdamLabel()
                             .padding(.bottom, 19)
                         Text(viewStore.questionPayload.quesContent)

@@ -16,19 +16,21 @@ struct QuestionPayload: Equatable {
     var questionId: Int
     var quesContent: String
     var ansContent: String
-    var createdAt: String
+    var questionCreatedAt: String
+    var answerCreatedAt: String
     var isReplied: String
     var inviteCode: String
     var notAnswer: Int
     
-    init(result: String = "", memberId: Int = -1, categoryId: Int = -1, questionId: Int = -1, quesContent: String = "", ansContent: String = "", createdAt: String = "", isReplied: String = "", inviteCode: String = "", notAnswer: Int = -1) {
+    init(result: String = "", memberId: Int = -1, categoryId: Int = -1, questionId: Int = -1, quesContent: String = "", ansContent: String = "", questionCreatedAt: String = "", answerCreatedAt: String = "", isReplied: String = "", inviteCode: String = "", notAnswer: Int = -1) {
         self.result = result
         self.memberId = memberId
         self.categoryId = categoryId
         self.questionId = questionId
         self.quesContent = quesContent
         self.ansContent = ansContent
-        self.createdAt = createdAt
+        self.questionCreatedAt = questionCreatedAt
+        self.answerCreatedAt = answerCreatedAt
         self.isReplied = isReplied
         self.inviteCode = inviteCode
         self.notAnswer = notAnswer
@@ -41,7 +43,8 @@ struct QuestionPayload: Equatable {
         self.questionId = entity.questionId
         self.quesContent = entity.quesContent
         self.ansContent = entity.ansContent
-        self.createdAt = entity.createdAt
+        self.questionCreatedAt = entity.questionCreatedAt
+        self.answerCreatedAt = entity.answerCreatedAt
         self.isReplied = entity.isReplied
         self.inviteCode = entity.inviteCode
         self.notAnswer = entity.notAnswer
