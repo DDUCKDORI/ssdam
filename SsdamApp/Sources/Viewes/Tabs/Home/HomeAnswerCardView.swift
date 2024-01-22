@@ -8,6 +8,7 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Utils
 
 struct HomeAnswerCardReducer: Reducer {
     struct State: Equatable {
@@ -74,7 +75,9 @@ struct HomeAnswerCardView: View {
                             )
                             .transition(.move(edge: .top))
                             .onTapGesture {
-                                viewStore.send(.editAnswer)
+                                if viewStore.payloads[index].memberId == Const.memId {
+                                    viewStore.send(.editAnswer)
+                                }
                             }
                     }
                 }
