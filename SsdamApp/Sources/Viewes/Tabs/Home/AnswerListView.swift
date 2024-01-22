@@ -11,6 +11,7 @@ import ComposableArchitecture
 import Domain
 import Utils
 import Networking
+import CoreData
 
 struct AnswerListReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
@@ -36,6 +37,7 @@ struct AnswerListReducer: Reducer {
         case presentSheet(PresentationAction<Bool>)
         case modalAction(ModalReducer.Action)
         case setToggles
+        case storeDates(Date)
     }
     
     var body: some ReducerOf<Self> {
@@ -112,7 +114,7 @@ struct AnswerListReducer: Reducer {
                 return .send(.presentSheet(.dismiss))
             case .modalAction(.modalPresented(.presented(true))):
                 state.modalState.isPresented?.wrappedValue = true
-                return .none
+                return .send(.storeDates(Date.now))
             case .modalAction(.modalPresented(.dismiss)):
                 state.modalState.isPresented = nil
                 return .none
@@ -133,6 +135,11 @@ struct AnswerListReducer: Reducer {
             case .presentSheet(.dismiss):
                 state.isPresented = nil
                 return .send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
+            case let .storeDates(date):
+                let container = PersistenceController.shared.container
+                let entity = NSEntityDescription.entity(forEntityName: "Dates", in: container.viewContext)
+                entity?.setValue(date, forKey: "completedAt")
+                return .none
             default:
                 return .none
             }
@@ -150,7 +157,7 @@ struct AnswerListView: View {
                     .resizable(resizingMode: .tile)
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
-                        Text(viewStore.questionPayload.createdAt.convertToDotFormat())
+                        Text(viewStore.questionPayload.createdAt.convertToDotFormat(.dot))
                             .ssdamLabel()
                             .padding(.bottom, 19)
                         Text(viewStore.questionPayload.quesContent)

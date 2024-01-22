@@ -7,9 +7,15 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct CalendarViewRepresentable: UIViewRepresentable {
     @Binding var selectedDate: DateComponents?
+    var decorateFor: [DateComponents] {
+        let container = PersistenceController.shared.container
+        let dates = try! container.viewContext.fetch(Dates.fetchRequest())
+        return Array(Set(dates.compactMap { $0.completedAt?.dateToComponents }))
+    }
     
     func makeUIView(context: Context) -> UICalendarView {
         let view = UICalendarView()
@@ -18,12 +24,12 @@ struct CalendarViewRepresentable: UIViewRepresentable {
         view.tintColor = UIColor(Color(.mint50))
         view.delegate = context.coordinator
         view.selectionBehavior = UICalendarSelectionSingleDate(delegate: context.coordinator)
+        
         return view
     }
     
     func updateUIView(_ uiView: UICalendarView, context: Context) {
-        guard let selectedDate = self.selectedDate else { return }
-        uiView.reloadDecorations(forDateComponents: [selectedDate], animated: true)
+//        uiView.reloadDecorations(forDateComponents: decorateFor, animated: true)
     }
     
     private func getStartDate() -> Date {
@@ -49,7 +55,8 @@ struct CalendarViewRepresentable: UIViewRepresentable {
         
         @MainActor
         func calendarView(_ calendarView: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
-            if self.parent.selectedDate == dateComponents {
+            
+            if self.parent.decorateFor.contains(where: { $0.isEqual(to: dateComponents) }) {
                 return UICalendarView.Decoration.default(color: UIColor(Color(.mint50)), size: .small)
             }
             return nil
@@ -63,10 +70,10 @@ struct CalendarViewRepresentable: UIViewRepresentable {
         func dateSelection(_ selection: UICalendarSelectionSingleDate, canSelectDate dateComponents: DateComponents?) -> Bool {
             return true
         }
-        
     }
 }
 
-#Preview {
-    CalendarViewRepresentable(selectedDate: .constant(.init()))
-}
+
+//#Preview {
+//    CalendarViewRepresentable(selectedDate: .constant(.init()))
+//}

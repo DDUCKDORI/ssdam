@@ -8,6 +8,7 @@
 
 //import FirebaseCore
 import UIKit
+import CoreData
 
 @main
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -16,7 +17,17 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 //        FirebaseApp.configure()
-        
+//        let container = PersistenceController.shared.container
+//        let entity = NSEntityDescription.entity(forEntityName: "Dates", in: container.viewContext)
+//        let date = NSManagedObject(entity: entity!, insertInto: container.viewContext)
+//        date.setValue(Date.now, forKey: "completedAt")
+//        
+//        do {
+//            try container.viewContext.save()
+//        } catch {
+//            print(error.localizedDescription)
+//        }
+
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
         let launchView = LaunchView(store: .init(initialState: LaunchReducer.State(), reducer: {
@@ -26,7 +37,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         window.makeKeyAndVisible()
         
         
-                UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().delegate = self
         
         
         //        application.registerForRemoteNotifications()
@@ -72,12 +83,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
     {
         let userInfo = notification.request.content.userInfo
-
+        
         print("willPresent: userInfo: ", userInfo)
-
+        
         completionHandler([.banner, .sound, .badge])
     }
-
+    
     // 푸시메세지를 받았을 때
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
