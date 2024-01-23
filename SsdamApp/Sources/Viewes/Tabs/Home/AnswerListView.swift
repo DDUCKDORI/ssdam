@@ -86,7 +86,7 @@ struct AnswerListReducer: Reducer {
                 if state.cardState.payloads.count > 0 {
                     state.cardState.expands[0] = true
                 }
-                if state.questionPayload.notAnswer == 0 {
+                if state.questionPayload.notAnswer == 0, !Const.isModalPresented {
                     return .send(.modalAction(.modalPresented(.presented(true))))
                 }
                 return .none
@@ -136,9 +136,13 @@ struct AnswerListReducer: Reducer {
                 state.isPresented = nil
                 return .send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
             case let .storeDates(date):
-                let container = PersistenceController.shared.container
-                let entity = NSEntityDescription.entity(forEntityName: "Dates", in: container.viewContext)
-                entity?.setValue(date, forKey: "completedAt")
+                if Const.isModalPresented == false {
+                    let container = PersistenceController.shared.container
+                    let entity = NSEntityDescription.entity(forEntityName: "Dates", in: container.viewContext)
+                    let dates = NSManagedObject(entity: entity!, insertInto: container.viewContext)
+                    dates.setValue(date, forKey: "completedAt")
+                }
+                Const.isModalPresented = true
                 return .none
             default:
                 return .none

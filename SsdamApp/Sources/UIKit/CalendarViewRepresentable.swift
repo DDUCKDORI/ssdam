@@ -14,7 +14,7 @@ struct CalendarViewRepresentable: UIViewRepresentable {
     var decorateFor: [DateComponents] {
         let container = PersistenceController.shared.container
         let dates = try! container.viewContext.fetch(Dates.fetchRequest())
-        return Array(Set(dates.compactMap { $0.completedAt?.dateToComponents }))
+        return dates.compactMap { $0.completedAt?.dateToComponents }
     }
     
     func makeUIView(context: Context) -> UICalendarView {
