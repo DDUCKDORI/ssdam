@@ -67,7 +67,7 @@ struct HomeReducer: Reducer {
                 if state.questionPayload.isReplied == "True" {
                     return .send(.viewTypeChanged)
                 }
-                Const.isModalPresented = false
+                Const.alreadySaved = true
                 return .send(.setAuthorization)
             case let .makeQuestionPayload(.failure(error)):
                 print(error.localizedDescription)
