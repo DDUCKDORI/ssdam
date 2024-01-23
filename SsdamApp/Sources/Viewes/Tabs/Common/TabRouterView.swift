@@ -62,39 +62,38 @@ struct TabRouterView: View {
     let store: StoreOf<TabRouterReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            ZStack(alignment: .bottomTrailing) {
-                Image(.tileMint)
-                    .resizable(resizingMode: .tile)
-                    .ignoresSafeArea()
-                VStack {
-                    TabView(selection: viewStore.binding(get: \.tab, send: { value in
-                            .tabChanged(value)
-                    }), content: {
-                        NavigationStack {
+            ZStack(alignment: .top) {
+                ZStack(alignment: .bottomTrailing) {
+                    Image(.tileMint)
+                        .resizable(resizingMode: .tile)
+                        .ignoresSafeArea()
+                    VStack {
+                        TabView(selection: viewStore.binding(get: \.tab, send: { value in
+                                .tabChanged(value)
+                        }), content: {
                             CalendarView(store: self.store.scope(state: \.calendarState, action: TabRouterReducer.Action.calendarAction))
-                        }
-                        .tag(TabRouterReducer.Tab.calendar)
-                        NavigationStack {
+                                .tag(TabRouterReducer.Tab.calendar)
                             HomeView(store: .init(initialState: HomeReducer.State(), reducer: {
                                 HomeReducer()
                             }))
-                        }
-                        .tag(TabRouterReducer.Tab.home)
-                        NavigationStack {
+                            .tag(TabRouterReducer.Tab.home)
                             ShareView(store: self.store.scope(state: \.shareState, action: TabRouterReducer.Action.shareAction))
-                        }
-                        .tag(TabRouterReducer.Tab.share)
-                    })
-                    .preferredColorScheme(.light)
-                    
+                                .tag(TabRouterReducer.Tab.share)
+                        })
+                        .preferredColorScheme(.light)
+                        
+                    }
+                    if Const.isPioneer {
+                        ToolTipView()
+                            .offset(x: -45)
+                            .onTapGesture {
+                                Const.isPioneer = false
+                            }
+                    }
                 }
-                if Const.isPioneer {
-                    ToolTipView()
-                        .offset(x: -45)
-                        .onTapGesture {
-                            Const.isPioneer = false
-                        }
-                }
+                HeaderView(store: .init(initialState: HeaderReducer.State(), reducer: {
+                    HeaderReducer()
+                }))
             }
             .safeAreaInset(edge: .bottom) {
                 VStack {

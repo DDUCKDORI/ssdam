@@ -129,18 +129,6 @@ struct HomeView: View {
                 }
             }
             .ignoresSafeArea()
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Image(.logo)
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        viewStore.send(.settingTapped)
-                    }, label: {
-                        Image(.setting)
-                    })
-                }
-            })
             .fullScreenCover(store: self.store.scope(state: \.$isPresented, action: HomeReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
                 WriteView(store: self.store.scope(state: \.writeState, action: HomeReducer.Action.writeAction))
             }

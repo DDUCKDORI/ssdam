@@ -118,22 +118,6 @@ struct CalendarView: View {
                 }
                 .presentationDetents([.fraction(0.4) , .large])
             }
-            .onAppear {
-                //                viewStore.send(.searchDateChaged("\(Date.now.converToYYYYMM)"))
-                //                viewStore.send(.fetchCompletedDates)
-            }
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Image(.logo)
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        viewStore.send(.settingTapped)
-                    }, label: {
-                        Image(.setting)
-                    })
-                }
-            })
         }
     }
 }

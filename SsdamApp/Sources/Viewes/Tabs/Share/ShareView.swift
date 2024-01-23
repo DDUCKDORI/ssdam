@@ -193,18 +193,6 @@ struct ShareView: View {
             .onTapGesture {
                 self.focusedField = false
             }
-            .toolbar(content: {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Image(.logo)
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        viewStore.send(.settingTapped)
-                    }, label: {
-                        Image(.setting)
-                    })
-                }
-            })
             .onAppear {
                 viewStore.send(.fetchNumberOfFamily(Const.inviteCd))
             }
