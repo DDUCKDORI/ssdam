@@ -58,6 +58,6 @@ public enum Const {
     @UserDefault(key: "isPioneer", defaultValue: true)
     public static var isPioneer: Bool
     
-    @UserDefault(key: "alreadySaved", defaultValue: false)
-    public static var alreadySaved: Bool
+    @UserDefault(key: "modalPresented", defaultValue: false)
+    public static var modalPresented: Bool
 }

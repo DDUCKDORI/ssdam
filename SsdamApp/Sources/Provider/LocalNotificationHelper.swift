@@ -53,16 +53,17 @@ final public class LocalNotificationHelper {
     }
     
     private func getNotiTimeInterval() -> TimeInterval {
-        let currentDate = Date()
-         var dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: currentDate)
-         dateComponents.hour = 9
-         dateComponents.minute = 1
-         dateComponents.second = 0
-         
-        let triggerDate = Calendar.current.date(from: dateComponents)
-         
-        let timeInterval = triggerDate!.timeIntervalSinceNow
+        let now = Date()
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: now)
+        components.day! += 1  // Add one day to get tomorrow
+        components.hour = 9
+        components.minute = 0
+        components.second = 0
+
+        guard let tomorrowAtNine = Calendar.current.date(from: components) else {
+            fatalError("Could not create date for tomorrow at 9 AM")
+        }
         
-        return timeInterval
+        return tomorrowAtNine.timeIntervalSinceNow
     }
 }
