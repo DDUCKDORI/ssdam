@@ -24,6 +24,7 @@ struct WriteReducer: Reducer {
         case textChanged(String)
         case textValidation(String)
         case answerButtonTapped
+        case cancel
         case binding(BindingAction<State>)
     }
     
@@ -44,6 +45,9 @@ struct WriteReducer: Reducer {
                 return .none
             case .answerButtonTapped:
                 return .none
+            case .cancel:
+                screenRouter.dismiss()
+                return .none
             case .binding:
                 return .none
             }
@@ -61,58 +65,65 @@ struct WriteView: View {
     @FocusState var focusedField: Bool
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            ZStack {
-                Image(.tileMint)
-                    .resizable(resizingMode: .tile)
-                VStack(spacing: 0) {
-                    Text(viewStore.date.convertToDotFormat(.dot))
-                        .ssdamLabel()
-                        .padding(.bottom, 19)
-                    Text(viewStore.question)
-                        .font(.pHeadline2)
+            ZStack(alignment: .topTrailing) {
+                ZStack {
+                    Image(.tileMint)
+                        .resizable(resizingMode: .tile)
+                    VStack(spacing: 0) {
+                        Text(viewStore.date.convertToDotFormat(.dot))
+                            .ssdamLabel()
+                            .padding(.bottom, 19)
+                        Text(viewStore.question)
+                            .font(.pHeadline2)
+                            .multilineTextAlignment(.center)
+                            .padding(.bottom, 28)
+                            .padding(.horizontal, 62)
+                        
+                        TextField("1~50자 이내 작성", text: viewStore.binding(get: \.text, send: { value in
+                                .textChanged(value)
+                        }), axis: .vertical)
+                        .font(.pBody)
+                        .padding(.horizontal, 52)
+                        .padding(.vertical, 94)
+                        .background()
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .overlay( RoundedRectangle(cornerRadius: 20) .stroke(Color(.mint50), lineWidth: 2))
+                        .padding(.horizontal, 30)
                         .multilineTextAlignment(.center)
                         .padding(.bottom, 28)
-                        .padding(.horizontal, 62)
-                    
-                    TextField("1~50자 이내 작성", text: viewStore.binding(get: \.text, send: { value in
-                            .textChanged(value)
-                    }), axis: .vertical)
-                    .font(.pBody)
-                    .padding(.horizontal, 52)
-                    .padding(.vertical, 94)
-                    .background()
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .overlay( RoundedRectangle(cornerRadius: 20) .stroke(Color(.mint50), lineWidth: 2))
-                    .padding(.horizontal, 30)
-                    .multilineTextAlignment(.center)
-                    .padding(.bottom, 28)
-                    .focused($focusedField)
-                    .onChange(of: viewStore.text){ newValue in
-                        viewStore.send(.textValidation(newValue))
-                    }
-                    .bind(viewStore.$focusedField, to: self.$focusedField)
-                    
-                    Button(action: {
+                        .focused($focusedField)
+                        .onChange(of: viewStore.text){ newValue in
+                            viewStore.send(.textValidation(newValue))
+                        }
+                        .bind(viewStore.$focusedField, to: self.$focusedField)
+                        
+                        Button(action: {
                             viewStore.send(.answerButtonTapped)
-                    }, label: {
-                        Text("답변하기")
-                            .font(.pButton)
-                            .foregroundStyle(viewStore.text.isEmpty ? Color(.gray20) : .white)
-                            .padding(.vertical, 16)
-                            .frame(maxWidth: .infinity)
-                            .background(viewStore.text.isEmpty ? Color(.gray10) : Color(.mint50))
-                            .clipShape(RoundedRectangle(cornerRadius: 100))
-                            .padding(.horizontal, 80)
-                    })
-                    .disabled(viewStore.text.isEmpty ? true : false)
-                    
-                    Spacer()
+                        }, label: {
+                            Text("답변하기")
+                                .font(.pButton)
+                                .foregroundStyle(viewStore.text.isEmpty ? Color(.gray20) : .white)
+                                .padding(.vertical, 16)
+                                .frame(maxWidth: .infinity)
+                                .background(viewStore.text.isEmpty ? Color(.gray10) : Color(.mint50))
+                                .clipShape(RoundedRectangle(cornerRadius: 100))
+                                .padding(.horizontal, 80)
+                        })
+                        .disabled(viewStore.text.isEmpty ? true : false)
+                        
+                        Spacer()
+                    }
+                    .padding(.top, 142)
                 }
-                .padding(.top, 142)
-            }
-            .ignoresSafeArea()
-            .onTapGesture {
-                self.focusedField = false
+                .ignoresSafeArea()
+                .onTapGesture {
+                    self.focusedField = false
+                }
+                Image(.cancel)
+                    .padding(.trailing, 30)
+                    .onTapGesture {
+                        viewStore.send(.cancel)
+                    }
             }
         }
     }
