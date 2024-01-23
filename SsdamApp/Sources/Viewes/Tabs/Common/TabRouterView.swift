@@ -42,6 +42,7 @@ struct TabRouterReducer: Reducer {
                     print("home")
                 case .share:
                     print("share")
+                    Const.isPioneer = false
                 }
                 return .none
             default:
@@ -86,9 +87,6 @@ struct TabRouterView: View {
                     if Const.isPioneer {
                         ToolTipView()
                             .offset(x: -45)
-                            .onTapGesture {
-                                Const.isPioneer = false
-                            }
                     }
                 }
                 HeaderView(store: .init(initialState: HeaderReducer.State(), reducer: {
