@@ -34,8 +34,6 @@ public enum ScreenRoute: ScreenProtocol {
     
    public var title: String {
         switch self {
-        case .setting:
-            return "설정"
         default:
             return ""
         }

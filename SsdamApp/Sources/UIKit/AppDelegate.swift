@@ -27,7 +27,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 //        } catch {
 //            print(error.localizedDescription)
 //        }
-
+        navigationBarConfigure()
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
         let launchView = LaunchView(store: .init(initialState: LaunchReducer.State(), reducer: {
@@ -52,6 +52,22 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         
         return true
+    }
+    
+    private func navigationBarConfigure() {
+        let backButtonImage = UIImage(named: "chevron.left")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+
+        let standardAppearance = UINavigationBarAppearance()
+        standardAppearance.backgroundColor = .white
+        standardAppearance.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)
+
+        let compactAppearance = UINavigationBarAppearance()
+        compactAppearance.backgroundColor = .white
+        compactAppearance.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)
+
+        UINavigationBar.appearance().tintColor = .black
+        UINavigationBar.appearance().standardAppearance = standardAppearance
+        UINavigationBar.appearance().compactAppearance = compactAppearance
     }
     
     //    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

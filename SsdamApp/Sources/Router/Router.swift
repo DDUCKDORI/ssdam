@@ -119,7 +119,7 @@ private extension UINavigationController {
     
     func hideNavigationByOS() {
         if #available(iOS 16.0, *) {
-            self.isHiddenNavigation(true)
+            self.setToolbarHidden(true, animated: false)
         } else {
             self.hideNaviagationBar()
         }
