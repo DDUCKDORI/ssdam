@@ -37,9 +37,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         window.makeKeyAndVisible()
         
         
-        UNUserNotificationCenter.current().delegate = self
-        
-        
+        UNUserNotificationCenter.current().delegate = self        
         //        application.registerForRemoteNotifications()
         
         //        Messaging.messaging().delegate = self

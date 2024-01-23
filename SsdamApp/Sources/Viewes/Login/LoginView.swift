@@ -25,7 +25,6 @@ struct LoginReducer: Reducer {
         case navigate
         case routeToHome
         case routeToSignup
-        case setAuthorization
     }
     
     var body: some ReducerOf<Self> {
@@ -70,9 +69,6 @@ struct LoginReducer: Reducer {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     screenRouter.change(root: .signUp)
                 }
-                return .none
-            case .setAuthorization:
-//                LocalNotificationHelper.shared.setAuthorization()
                 return .none
             }
             
@@ -121,9 +117,6 @@ struct LoginView: View {
                 .offset(y: 238)
             }
             .ignoresSafeArea()
-            .onAppear {
-                viewStore.send(.setAuthorization)
-            }
         }
     }
 }

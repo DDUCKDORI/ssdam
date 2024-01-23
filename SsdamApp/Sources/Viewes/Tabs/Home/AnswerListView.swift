@@ -141,6 +141,7 @@ struct AnswerListReducer: Reducer {
                     let entity = NSEntityDescription.entity(forEntityName: "Dates", in: container.viewContext)
                     let dates = NSManagedObject(entity: entity!, insertInto: container.viewContext)
                     dates.setValue(date, forKey: "completedAt")
+                    LocalNotificationHelper.shared.pushNotification()
                 }
                 Const.alreadySaved = true
                 return .none

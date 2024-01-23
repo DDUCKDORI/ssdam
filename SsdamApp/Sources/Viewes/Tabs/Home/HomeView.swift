@@ -40,7 +40,6 @@ struct HomeReducer: Reducer {
         case makeQuestionPayload(TaskResult<FetchQuestionEntity>)
         case requestAnswer(PostAnswerBody)
         case requestAnswerResponse(TaskResult<RequestAnswerEntity>)
-        case setAuthorization
     }
     var body: some ReducerOf<Self> {
         Scope(state: \.writeState, action: /Action.writeAction) {
@@ -55,6 +54,7 @@ struct HomeReducer: Reducer {
                 screenRouter.routeTo(.setting)
                 return .none
             case let .fetchQuestion(id):
+                LocalNotificationHelper.shared.setAuthorization()
                 return .run { send in
                     let result = await TaskResult {
                         let data = await mainUseCase.fetchQuestionByUser(id: id)
@@ -68,7 +68,7 @@ struct HomeReducer: Reducer {
                     return .send(.viewTypeChanged)
                 }
                 Const.alreadySaved = true
-                return .send(.setAuthorization)
+                return .none
             case let .makeQuestionPayload(.failure(error)):
                 print(error.localizedDescription)
                 return .none
@@ -105,9 +105,6 @@ struct HomeReducer: Reducer {
                 return .none
             case .presentSheet(.dismiss):
                 state.isPresented = nil
-                return .none
-            case .setAuthorization:
-//                LocalNotificationHelper.shared.setAuthorization()
                 return .none
             default:
                 return .none
