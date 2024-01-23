@@ -99,6 +99,7 @@ struct ShareReducer: Reducer {
                 if state.joinPayload.result == "Success" {
                     Const.inviteCd = state.code
                     Const.memId = state.joinPayload.memId
+                    state.code = ""
                     return .send(.toast(.toastPresented(.presented(true))))
                 }
                 return .none
