@@ -24,7 +24,7 @@ struct LaunchReducer: Reducer {
         Reduce { state, action in
             switch action {
             case .onAppear:
-                if Const.memId != 0 {
+                if Const.isUser == "yes" {
                     screenRouter.change(root: .home)
                     return .none
                 }
