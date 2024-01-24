@@ -35,4 +35,10 @@ struct PersistenceController {
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
+    
+    func saveDate(date: Date) {
+        let entity = NSEntityDescription.entity(forEntityName: "Dates", in: self.container.viewContext)
+        let dates = NSManagedObject(entity: entity!, insertInto: self.container.viewContext)
+        dates.setValue(date, forKey: "completedAt")
+    }
 }

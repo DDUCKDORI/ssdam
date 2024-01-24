@@ -11,7 +11,7 @@ import MessageUI
 import SwiftUI
 
 struct MailComposeViewController: UIViewControllerRepresentable {
-    let recipient: String = "k00bum784@gmail.com"
+    let recipient: String = "ssdami9345@gmail.com"
     let subject: String = "[쓰담] - 이메일 문의"
     let messageBody: String = ""
 

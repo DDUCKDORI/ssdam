@@ -49,7 +49,7 @@ public enum Const {
     @UserDefault(key: "nickname", defaultValue: "")
     public static var nickname: String
     
-    @UserDefault(key: "memId", defaultValue: -1)
+    @UserDefault(key: "memId", defaultValue: 0)
     public static var memId: Int
     
     @UserDefault(key: "memSub", defaultValue: "")

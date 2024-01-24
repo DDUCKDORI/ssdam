@@ -136,10 +136,7 @@ struct AnswerListReducer: Reducer {
                 state.isPresented = nil
                 return .send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
             case let .storeDates(date):
-                let container = PersistenceController.shared.container
-                let entity = NSEntityDescription.entity(forEntityName: "Dates", in: container.viewContext)
-                let dates = NSManagedObject(entity: entity!, insertInto: container.viewContext)
-                dates.setValue(date, forKey: "completedAt")
+                PersistenceController.shared.saveDate(date: date)
                 LocalNotificationHelper.shared.pushNotification()
                 Const.modalPresented = true
                 return .none
