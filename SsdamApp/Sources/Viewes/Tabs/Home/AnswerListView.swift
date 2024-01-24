@@ -173,6 +173,7 @@ struct AnswerListView: View {
                             HomeAnswerCardView(store: self.store.scope(state: \.cardState, action: AnswerListReducer.Action.cardAction))
                         }
                         .padding(.horizontal, 30)
+                        .padding(.bottom, UIApplication.shared.getSafeAreaBottom() + 56)
                     }
                 }
                 .padding(.top, 142)
