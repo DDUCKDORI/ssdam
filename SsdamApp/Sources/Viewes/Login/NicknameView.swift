@@ -19,6 +19,7 @@ struct NicknameReducer: Reducer {
         var isValid: Bool = false
         var serviceAgreement: Bool = false
         var privacyAgreement: Bool = false
+        @PresentationState var sheet: PresentationState<SheetType>?
         @BindingState var focusedField: Bool = false
     }
     
@@ -30,6 +31,7 @@ struct NicknameReducer: Reducer {
         case privacyAgreementToggled(Bool)
         case login([String: String])
         case loginResponse(TaskResult<TokenEntity>)
+        case sheet(PresentationAction<SheetType>)
         case binding(BindingAction<State>)
     }
     
@@ -72,9 +74,16 @@ struct NicknameReducer: Reducer {
             case let .loginResponse(.success(entity)):
                 Const.nickname = state.nickname
                 Const.inviteCd = entity.inviteCd
+                Const.memId = entity.memId
                 screenRouter.routeTo(.signUpSuccess(state.nickname))
                 return .none
             case .loginResponse(.failure(_)):
+                return .none
+            case let .sheet(.presented(type)):
+                state.sheet = PresentationState(wrappedValue: type)
+                return .none
+            case .sheet(.dismiss):
+                state.sheet = nil
                 return .none
             case .binding:
                 return .none
@@ -153,27 +162,35 @@ struct NicknameView: View {
                             Text("(필수) 서비스 이용약관")
                                 .font(.pBody)
                                 .foregroundStyle(Color(.systemBlack))
+                                .underline()
                             Spacer()
                             Image(viewStore.serviceAgreement ? .checkmarkCircleFill : .checkmarkCircle )
+                                .onTapGesture {
+                                    viewStore.send(.serviceAgreementToggled(viewStore.serviceAgreement))
+                                }
                         }
                         .padding(.vertical, -3)
                         .padding(.horizontal, 24)
                         .onTapGesture {
-                            viewStore.send(.serviceAgreementToggled(viewStore.serviceAgreement))
+                            viewStore.send(.sheet(.presented(.service)))
                         }
                         
                         HStack {
                             Text("(필수) 개인정보 처리방침")
                                 .font(.pBody)
                                 .foregroundStyle(Color(.systemBlack))
+                                .underline()
                             Spacer()
                             Image(viewStore.privacyAgreement ? .checkmarkCircleFill : .checkmarkCircle )
+                                .onTapGesture {
+                                    viewStore.send(.privacyAgreementToggled(viewStore.serviceAgreement))
+                                }
                         }
                         .padding(.horizontal, 24)
-                        .onTapGesture {
-                            viewStore.send(.privacyAgreementToggled(viewStore.serviceAgreement))
-                        }
                         .padding(.bottom, 106)
+                        .onTapGesture {
+                            viewStore.send(.sheet(.presented(.privacy)))
+                        }
                     }
                     
                     if viewStore.isValid, viewStore.serviceAgreement, viewStore.privacyAgreement {
@@ -201,6 +218,16 @@ struct NicknameView: View {
             }
             .onTapGesture {
                 self.focusedField = false
+            }
+            .sheet(store: self.store.scope(state: \.$sheet, action: NicknameReducer.Action.sheet), onDismiss: { viewStore.send(.sheet(.dismiss)) }) { store in
+                switch viewStore.sheet?.wrappedValue {
+                case .service:
+                    WebViewRepresentable(urlString: SheetType.service.urlString)
+                case .privacy:
+                    WebViewRepresentable(urlString: SheetType.privacy.urlString)
+                default:
+                    EmptyView()
+                }
             }
         }
     }
