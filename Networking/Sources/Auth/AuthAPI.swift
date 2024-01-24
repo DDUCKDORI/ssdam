@@ -15,6 +15,7 @@ public enum AuthAPI {
     case login([String: Any])
     case fetchNumberOfFamily(String)
     case join(FamilyJoinBody)
+    case withdraw(WithdrawBody)
 }
 
 extension AuthAPI: BaseAPI, TargetType {
@@ -32,6 +33,8 @@ extension AuthAPI: BaseAPI, TargetType {
             return "/family/\(code)"
         case .join:
             return "/join"
+        case .withdraw:
+            return "/logut"
         }
     }
     
@@ -65,6 +68,8 @@ extension AuthAPI: BaseAPI, TargetType {
             }
             return tokenInfo
         case let .join(body):
+            return body.toParam()
+        case let .withdraw(body):
             return body.toParam()
         default:
             return [:]

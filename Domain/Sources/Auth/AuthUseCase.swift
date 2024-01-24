@@ -15,6 +15,7 @@ public protocol AuthUseCase {
     func login(tokenInfo: [String: Any]) async -> TokenEntity
     func fetchNumberOfFamily(code: String) async -> NumberOfFamilyEntity
     func join(body: FamilyJoinBody) async -> FamilyJoinEntity
+    func withdraw(body: WithdrawBody) async -> WithdrawEntity
 }
 
 public final class AuthUseCaseImpl: AuthUseCase {
@@ -40,4 +41,7 @@ public final class AuthUseCaseImpl: AuthUseCase {
         return await FamilyJoinEntity(repository.join(body: body))
     }
     
+    public func withdraw(body: WithdrawBody) async -> WithdrawEntity {
+        return await WithdrawEntity(repository.withdraw(body: body))
+    }
 }

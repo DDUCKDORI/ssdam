@@ -49,4 +49,12 @@ public final class AuthRepositoryImpl: AuthRepository {
             .get()
         return data ?? ""
     }
+    
+    public func withdraw(body: WithdrawBody) async -> JSON {
+        let data = try? await client.request(router: AuthAPI.withdraw(body))
+            .map { try? JSON(data: $0.data) }
+            .mapError(\.backendError)
+            .get()
+        return data ?? ""
+    }
 }

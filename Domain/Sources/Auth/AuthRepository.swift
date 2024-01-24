@@ -16,4 +16,5 @@ public protocol AuthRepository: AnyObject {
     func login(tokenInfo: [String: Any]) async -> JSON
     func fetchNumberOfFamily(code: String) async -> JSON
     func join(body: FamilyJoinBody) async -> JSON
+    func withdraw(body: WithdrawBody) async -> JSON
 }
