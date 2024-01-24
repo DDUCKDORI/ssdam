@@ -9,16 +9,15 @@
 import Foundation
 import UIKit
 
-extension UIApplication {
+public extension UIApplication {
     func getSafeAreaBottom()->CGFloat{
-        let keyWindow = UIApplication.shared.connectedScenes
+        guard let keyWindow = UIApplication.shared.connectedScenes
             .filter({$0.activationState == .foregroundActive})
             .map({$0 as? UIWindowScene})
             .compactMap({$0})
             .first?.windows
-            .filter({$0.isKeyWindow}).first
+            .filter({$0.isKeyWindow}).first else { return 0 }
         
-        return (keyWindow?.safeAreaInsets.bottom)!
-        
+        return keyWindow.safeAreaInsets.bottom
     }
 }
