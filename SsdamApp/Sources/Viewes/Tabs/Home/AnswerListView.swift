@@ -114,7 +114,8 @@ struct AnswerListReducer: Reducer {
                 return .send(.presentSheet(.dismiss))
             case .modalAction(.modalPresented(.presented(true))):
                 state.modalState.isPresented?.wrappedValue = true
-                return .send(.storeDates(Date.now))
+                guard let date = state.questionPayload.questionCreatedAt.toDate else { return .none }
+                return .send(.storeDates(date))
             case .modalAction(.modalPresented(.dismiss)):
                 state.modalState.isPresented = nil
                 return .none
