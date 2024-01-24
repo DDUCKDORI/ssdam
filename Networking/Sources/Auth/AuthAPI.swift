@@ -34,7 +34,7 @@ extension AuthAPI: BaseAPI, TargetType {
         case .join:
             return "/join"
         case .withdraw:
-            return "/logut"
+            return "/logout"
         }
     }
     

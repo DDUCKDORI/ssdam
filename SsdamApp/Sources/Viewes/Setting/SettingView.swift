@@ -9,6 +9,8 @@
 import SwiftUI
 import ComposableArchitecture
 import Utils
+import Networking
+import Domain
 
 enum SheetType: Equatable {
     case service
@@ -32,10 +34,12 @@ enum AlertActionType: Equatable {
     case logout
     case withdraw
     case deleteUserInfo
+    case withdrawAction(WithdrawBody)
 }
 
 struct SettingReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
+    @Dependency(\.authUseCase) var authUseCase
     struct State: Equatable {
         @PresentationState var alert: AlertState<AlertActionType>?
         @PresentationState var sheet: PresentationState<SheetType>?
@@ -44,6 +48,7 @@ struct SettingReducer: Reducer {
     enum Action: Equatable {
         case alert(PresentationAction<AlertActionType>)
         case sheet(PresentationAction<SheetType>)
+        case withdrawResponse(TaskResult<WithdrawEntity>)
     }
     
     var body: some ReducerOf<Self> {
@@ -69,15 +74,23 @@ struct SettingReducer: Reducer {
                     state.alert = AlertState(
                         title: TextState("회원탈퇴 확인"),
                         message: TextState("회원을 탈퇴하면 모든\n데이터가 삭제됩니다.\n탈퇴하시겠어요?"),
-                        primaryButton: .destructive(TextState("탈퇴하기"), action: .send(.none)),
+                        primaryButton: .destructive(TextState("탈퇴하기"), action: .send(.withdrawAction(WithdrawBody(invite_cd: Const.inviteCd , mem_id: Const.memId)))),
                         secondaryButton: .cancel(TextState("취소"))
                     )
                 case .deleteUserInfo:
-                    Const.refreshToken = ""
+                    UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         screenRouter.change(root: .launch)
                     }
                     return .none
+                case let .withdrawAction(body):
+                    return .run { send in
+                        let result = await TaskResult {
+                            let data = await authUseCase.withdraw(body: body)
+                            return data
+                        }
+                        await send(.withdrawResponse(result))
+                    }
                 }
                 return .none
             case .alert(.dismiss):
@@ -88,6 +101,18 @@ struct SettingReducer: Reducer {
                 return .none
             case .sheet(.dismiss):
                 state.sheet = nil
+                return .none
+            case let .withdrawResponse(.success(entity)):
+                if entity.result == "Success" {
+                    UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        screenRouter.change(root: .login)
+                    }
+                    return .none
+                }
+                return .none
+            case let .withdrawResponse(.failure(error)):
+                print(error.localizedDescription)
                 return .none
             }
         }
