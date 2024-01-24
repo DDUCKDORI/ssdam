@@ -23,7 +23,7 @@ struct ShareReducer: Reducer {
         var code: String = ""
         var isValid: Bool = true
         var toastState: ToastReducer.State = .init()
-        var NumberOfFamily: String = ""
+        var NumberOfFamily: Int = 0
         var joinPayload: FamilyJoinPayload = .init()
         @BindingState var focusedField: Bool = false
     }
@@ -81,7 +81,7 @@ struct ShareReducer: Reducer {
                     await send(.fetchNumberOfFamilyResponse(result))
                 }
             case let .fetchNumberOfFamilyResponse(.success(entity)):
-                state.NumberOfFamily = entity.count
+                state.NumberOfFamily = Int(entity.count) ?? 0
                 return .none
             case let .fetchNumberOfFamilyResponse(.failure(error)):
                 print(error.localizedDescription)
@@ -154,26 +154,28 @@ struct ShareView: View {
                         .cornerRadius(10)
                     }
                     
-                    ZStack(alignment: .trailing) {
-                        TextField("초대코드 입력하기", text: viewStore.binding(get: \.code, send: { value in
-                                .codeChanged(value)
-                        }))
-                        .font(.pButton)
-                        .foregroundStyle(Color(.systemBlack))
-                        .padding(.vertical, 16)
-                        .multilineTextAlignment(.center)
-                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.mint50), lineWidth: 2))
-                        .focused($focusedField)
-                        .onChange(of: viewStore.code){ newValue in
-                            viewStore.send(.codeValidation(newValue))
-                            
+                    if viewStore.NumberOfFamily <= 0 {
+                        ZStack(alignment: .trailing) {
+                            TextField("초대코드 입력하기", text: viewStore.binding(get: \.code, send: { value in
+                                    .codeChanged(value)
+                            }))
+                            .font(.pButton)
+                            .foregroundStyle(Color(.systemBlack))
+                            .padding(.vertical, 16)
+                            .multilineTextAlignment(.center)
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.mint50), lineWidth: 2))
+                            .focused($focusedField)
+                            .onChange(of: viewStore.code){ newValue in
+                                viewStore.send(.codeValidation(newValue))
+                                
+                            }
+                            .bind(viewStore.$focusedField, to: self.$focusedField)
+                            //                    if viewStore.isValid {
+                            //                        Image(.checkmarkCircleMint)
+                            //                            .padding(.vertical, 16)
+                            //                            .padding(.horizontal, 24)
+                            //                    }
                         }
-                        .bind(viewStore.$focusedField, to: self.$focusedField)
-                        //                    if viewStore.isValid {
-                        //                        Image(.checkmarkCircleMint)
-                        //                            .padding(.vertical, 16)
-                        //                            .padding(.horizontal, 24)
-                        //                    }
                     }
                     Text("*인증코드를 다시 확인해주세요")
                         .font(.pCaption)
