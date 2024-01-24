@@ -11,6 +11,7 @@ import ComposableArchitecture
 import Utils
 import Networking
 import Domain
+import MessageUI
 
 enum SheetType: Equatable {
     case service
@@ -30,7 +31,7 @@ enum SheetType: Equatable {
 }
 
 enum AlertActionType: Equatable {
-//    case disconnect
+    //    case disconnect
     case logout
     case withdraw
     case deleteUserInfo
@@ -56,13 +57,13 @@ struct SettingReducer: Reducer {
             switch action {
             case let .alert(.presented(type)):
                 switch type {
-//                case .disconnect:
-//                    state.alert = AlertState(
-//                        title: TextState("가족 연결 해제"),
-//                        message: TextState("모든 가족 구성원이 연결을 해제하면\n데이터가 삭제됩니다.\n연결을 해제하시겠어요?"),
-//                        primaryButton: .default(TextState("연결 끊기"), action: .send(.none)),
-//                        secondaryButton: .cancel(TextState("취소"))
-//                    )
+                    //                case .disconnect:
+                    //                    state.alert = AlertState(
+                    //                        title: TextState("가족 연결 해제"),
+                    //                        message: TextState("모든 가족 구성원이 연결을 해제하면\n데이터가 삭제됩니다.\n연결을 해제하시겠어요?"),
+                    //                        primaryButton: .default(TextState("연결 끊기"), action: .send(.none)),
+                    //                        secondaryButton: .cancel(TextState("취소"))
+                    //                    )
                 case .logout:
                     state.alert = AlertState(
                         title: TextState("로그아웃 확인"),
@@ -137,7 +138,13 @@ struct SettingView: View {
                                 }
                             Text("이메일 문의")
                                 .onTapGesture {
-                                    viewStore.send(.sheet(.presented(.mail)))
+                                    if MFMailComposeViewController.canSendMail() {
+                                        viewStore.send(.sheet(.presented(.mail)))
+                                    }
+                                    else {
+                                        let url = URL(string: "mailto:ssdami9345@gmail.com")!
+                                        UIApplication.shared.open(url)
+                                    }
                                 }
                         }
                     } header: {
@@ -151,10 +158,10 @@ struct SettingView: View {
                     
                     Section {
                         Group {
-//                            Text("가족 연결해제")
-//                                .onTapGesture {
-//                                    viewStore.send(.alert(.presented(.disconnect)))
-//                                }
+                            //                            Text("가족 연결해제")
+                            //                                .onTapGesture {
+                            //                                    viewStore.send(.alert(.presented(.disconnect)))
+                            //                                }
                             Text("로그아웃")
                                 .onTapGesture {
                                     viewStore.send(.alert(.presented(.logout)))
