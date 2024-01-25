@@ -214,6 +214,11 @@ struct SettingView: View {
                 }
             }
             .alert(store: self.store.scope(state: \.$alert, action: SettingReducer.Action.alert))
+            .safeAreaInset(edge: .bottom) {
+                Text("Designed by Shinhye")
+                    .font(.caption)
+                    .foregroundStyle(Color(.gray30))
+            }
         }
     }
 }

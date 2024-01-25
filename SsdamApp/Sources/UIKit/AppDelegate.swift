@@ -109,7 +109,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         NetworkMonitor.shared.startNetworkMonitoring { status in
             if status == .notReachable {
                 if let vc = UIApplication.shared.firstKeyWindow?.visibleViewController as? UIViewController {
-                    let alert = UIAlertController(title: "네트워크 오류", message: "연결이 불안정합니다 동훈 개발자가 원인을 찾고 있습니다🤔", preferredStyle:UIAlertController.Style.alert)
+                    let alert = UIAlertController(title: "네트워크 오류", message: "연결이 불안정합니다\n개발자 이동훈(이)가 원인을 찾고 있습니다🤔", preferredStyle:UIAlertController.Style.alert)
                     let action1 = UIAlertAction(title:"확인", style: .default) { action in
                     }
                     alert.addAction(action1)
