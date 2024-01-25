@@ -26,6 +26,16 @@ extension String {
         return dateFormatter.string(from: date)
     }
     
+    func toDateComponents(_ format: DateFormatType) -> DateComponents? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format.rawValue
+
+        guard let date = dateFormatter.date(from: self) else { return nil }
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day], from: date)
+        return components
+    }
+    
     var toDate: Date? {
         var string = ""
         let formatter = DateFormatter()

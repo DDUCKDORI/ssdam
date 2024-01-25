@@ -41,6 +41,14 @@ public final class MainRepositoryImpl: MainRepository {
         return data ?? []
     }
     
+    public func fetchCompletedDates(code: String) async -> [JSON] {
+        let data = try? await client.request(router: MainAPI.fetchCompletedDates(code))
+            .map { try? JSON(data: $0.data)["date"].arrayValue }
+            .mapError(\.backendError)
+            .get()
+        return data ?? []
+    }
+    
     public func fetchAnswerByDate(date: String, code: String) async -> JSON {
         let data = try? await client.request(router: MainAPI.fetchAnswerByDate(date, code))
             .map { try? JSON(data: $0.data) }

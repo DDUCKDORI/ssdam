@@ -11,12 +11,28 @@ import ComposableArchitecture
 import Domain
 import Utils
 
+final class CompletedDateManager: ObservableObject {
+    @Dependency(\.mainUseCase) var mainUseCase
+    
+    @Published var completedDates: [DateComponents] = []
+    
+    public static let shared = CompletedDateManager()
+    private init() {}
+
+    func fetchCompletedDates(code: String) async {
+        let dates = await mainUseCase.fetchCompletedDates(code: code)
+        let dateComponents = dates.compactMap { $0.toDateComponents(.withoutDash) }
+        self.completedDates = dateComponents
+    }
+}
+
 struct CalendarReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.mainUseCase) var mainUseCase
     struct State: Equatable {
         var date: DateComponents? = nil
         var answerPayload: AnswerByDatePayload = .init()
+        var completedDates: [DateComponents] = []
         @PresentationState var isPresented: PresentationState<Bool>?
     }
     
@@ -25,6 +41,8 @@ struct CalendarReducer: Reducer {
         case presentSheet(PresentationAction<Bool>)
         case settingTapped
         case answerResponse(TaskResult<AnswerByDateEntity>)
+        case fetchCompletedDates(String)
+        case completedDatesResponse(TaskResult<[String]>)
     }
     
     var body: some ReducerOf<Self> {
@@ -53,6 +71,20 @@ struct CalendarReducer: Reducer {
                 if entity.answerList.isEmpty { return .none }
                 state.answerPayload = AnswerByDatePayload(entity)
                 return .send(.presentSheet(.presented(true)))
+            case let .fetchCompletedDates(code):
+                return .run { send in
+                    let result = await TaskResult {
+                        let data = await mainUseCase.fetchCompletedDates(code: code)
+                        return data
+                    }
+                    await send(.completedDatesResponse(result))
+                }
+            case let .completedDatesResponse(.success(dates)):
+                state.completedDates = dates.compactMap { $0.toDateComponents(.withoutDash)}
+                return .none
+            case let .completedDatesResponse(.failure(error)):
+                print(error.localizedDescription)
+                return .none
             default:
                 return .none
             }
@@ -69,6 +101,11 @@ struct CalendarView: View {
                 CalendarViewRepresentable(selectedDate: viewStore.binding(get: \.date, send: { value in
                         .datePicked(value, Const.inviteCd)
                 }))
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 35)
+                .padding(.horizontal, 20)
+                Spacer()
+                    
             }
             .sheet(store: self.store.scope(state: \.$isPresented, action: CalendarReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
                 ZStack {
@@ -117,6 +154,12 @@ struct CalendarView: View {
                     }
                 }
                 .presentationDetents([.fraction(0.4) , .large])
+            }
+            .onAppear {
+                viewStore.send(.fetchCompletedDates(Const.inviteCd))
+            }
+            .task {
+                await CompletedDateManager.shared.fetchCompletedDates(code: Const.inviteCd)
             }
         }
     }

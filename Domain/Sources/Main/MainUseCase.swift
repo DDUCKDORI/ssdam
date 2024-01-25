@@ -16,6 +16,7 @@ public protocol MainUseCase {
     func fetchAnswerByDate(date: String, code: String) async -> AnswerByDateEntity
     func postAnswer(request: PostAnswerBody) async -> RequestAnswerEntity
     func modifyAnswer(request: PostAnswerBody) async -> RequestAnswerEntity
+    func fetchCompletedDates(code: String) async -> [String]
 }
 
 public final class MainUseCaseImpl: MainUseCase {
@@ -35,6 +36,10 @@ public final class MainUseCaseImpl: MainUseCase {
     
     public func fetchAllAnswers(id: String) async -> [FetchAnswerEntity] {
         return await repository.fetchAllAnswers(id: id).map { FetchAnswerEntity($0) }
+    }
+    
+    public func fetchCompletedDates(code: String) async -> [String] {
+        return await repository.fetchCompletedDates(code: code).map { $0.stringValue }
     }
     
     public func fetchAnswerByDate(date: String, code: String) async -> AnswerByDateEntity {

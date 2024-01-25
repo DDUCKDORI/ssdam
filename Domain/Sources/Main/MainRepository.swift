@@ -18,4 +18,5 @@ public protocol MainRepository: AnyObject {
     func fetchAnswerByDate(date: String, code: String) async -> JSON
     func postAnswer(request: PostAnswerBody) async -> JSON
     func modifyAnswer(request: PostAnswerBody) async -> JSON
+    func fetchCompletedDates(code: String) async -> [JSON]
 }

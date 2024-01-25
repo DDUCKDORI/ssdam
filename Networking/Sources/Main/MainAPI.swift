@@ -16,6 +16,7 @@ public enum MainAPI {
     case modifyAnswer(PostAnswerBody)
     case fetchAnswerByDate(String, String)
     case fetchMember(String)
+    case fetchCompletedDates(String)
     
 }
 
@@ -38,6 +39,8 @@ extension MainAPI: BaseAPI, TargetType {
             return "/question/\(date)/\(code)"
         case let .fetchMember(code):
             return "/family/\(code)"
+        case let .fetchCompletedDates(code):
+            return "/answer/complete/\(code)"
         }
     }
     
@@ -55,7 +58,6 @@ extension MainAPI: BaseAPI, TargetType {
     public var task: Moya.Task {
         switch self {
         case let .postQuestion(request):
-            print("to param: \(request.toParam())")
             return .requestParameters(parameters: request.toParam(), encoding: encoding)
         case let .modifyAnswer(request):
             return .requestParameters(parameters: request.toParam(), encoding: encoding)

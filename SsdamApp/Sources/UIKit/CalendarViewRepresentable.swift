@@ -8,13 +8,12 @@
 
 import SwiftUI
 import CoreData
+import Utils
 
 struct CalendarViewRepresentable: UIViewRepresentable {
     @Binding var selectedDate: DateComponents?
-    var decorateFor: [DateComponents] {
-        let container = PersistenceController.shared.container
-        let dates = try! container.viewContext.fetch(Dates.fetchRequest())
-        return dates.compactMap { $0.completedAt?.dateToComponents }
+    private var decorateFor: [DateComponents] {
+        CompletedDateManager.shared.completedDates
     }
     
     func makeUIView(context: Context) -> UICalendarView {
@@ -24,12 +23,15 @@ struct CalendarViewRepresentable: UIViewRepresentable {
         view.tintColor = UIColor(Color(.mint50))
         view.delegate = context.coordinator
         view.selectionBehavior = UICalendarSelectionSingleDate(delegate: context.coordinator)
-        
+        view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+        view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+//        view.reloadDecorations(forDateComponents: decorateFor, animated: true)
+
         return view
     }
     
     func updateUIView(_ uiView: UICalendarView, context: Context) {
-//        uiView.reloadDecorations(forDateComponents: decorateFor, animated: true)
+        uiView.reloadDecorations(forDateComponents: decorateFor, animated: true)
     }
     
     private func getStartDate() -> Date {
