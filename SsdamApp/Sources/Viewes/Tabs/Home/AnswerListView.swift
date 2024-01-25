@@ -37,7 +37,7 @@ struct AnswerListReducer: Reducer {
         case presentSheet(PresentationAction<Bool>)
         case modalAction(ModalReducer.Action)
         case setToggles
-        case storeDates(Date)
+        case sendNotification
     }
     
     var body: some ReducerOf<Self> {
@@ -114,8 +114,7 @@ struct AnswerListReducer: Reducer {
                 return .send(.presentSheet(.dismiss))
             case .modalAction(.modalPresented(.presented(true))):
                 state.modalState.isPresented?.wrappedValue = true
-                guard let date = state.questionPayload.questionCreatedAt.toDate else { return .none }
-                return .send(.storeDates(date))
+                return .send(.sendNotification)
             case .modalAction(.modalPresented(.dismiss)):
                 state.modalState.isPresented = nil
                 return .none
@@ -136,8 +135,7 @@ struct AnswerListReducer: Reducer {
             case .presentSheet(.dismiss):
                 state.isPresented = nil
                 return .send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
-            case let .storeDates(date):
-                PersistenceController.shared.saveDate(date: date)
+            case .sendNotification:
                 LocalNotificationHelper.shared.pushNotification()
                 Const.modalPresented = true
                 return .none
