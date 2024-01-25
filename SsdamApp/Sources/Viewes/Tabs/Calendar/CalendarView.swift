@@ -113,7 +113,7 @@ struct CalendarView: View {
                         .ignoresSafeArea()
                     ScrollView(showsIndicators: false) {
                         VStack(spacing: 0) {
-                            Text(viewStore.answerPayload.answerList.first?.createdAt.convertToDotFormat(.dot) ?? "")
+                            Text(viewStore.answerPayload.questionCreatedAt.convertToDotFormat(.dot))
                                 .ssdamLabel()
                                 .padding(.bottom, 12)
                                 .padding(.top, 30)

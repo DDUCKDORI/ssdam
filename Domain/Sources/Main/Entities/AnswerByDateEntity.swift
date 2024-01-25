@@ -14,6 +14,7 @@ public struct AnswerByDateEntity: Equatable {
     public var categoryId : Int
     public var questionId : Int
     public var question : String
+    public var questionCreatedAt: String
     public var inviteCode : String
     public var answerList : [AnswerListEntity]
     
@@ -22,6 +23,7 @@ public struct AnswerByDateEntity: Equatable {
         self.categoryId = json["cate_id"].intValue
         self.questionId = json["qust_id"].intValue
         self.question = json["qust_cn"].stringValue
+        self.questionCreatedAt = json["qus_dtm"].stringValue
         self.inviteCode = json["invite_cd"].stringValue
         self.answerList = json["ans_list"].arrayValue.map { AnswerListEntity($0) }
     }

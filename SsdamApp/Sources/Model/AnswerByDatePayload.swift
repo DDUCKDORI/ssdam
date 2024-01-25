@@ -14,14 +14,16 @@ struct AnswerByDatePayload: Equatable, Hashable {
     public var categoryId : Int
     public var questionId : Int
     public var question : String
+    public var questionCreatedAt: String
     public var inviteCode : String
     public var answerList : [AnswerList]
     
-    init(result: String = "", categoryId: Int = -1, questionId: Int = -1, question: String = "", inviteCode: String = "", answerList: [AnswerList] = []) {
+    init(result: String = "", categoryId: Int = -1, questionId: Int = -1, question: String = "", questionCreatedAt: String = "", inviteCode: String = "", answerList: [AnswerList] = []) {
         self.result = result
         self.categoryId = categoryId
         self.questionId = questionId
         self.question = question
+        self.questionCreatedAt = questionCreatedAt
         self.inviteCode = inviteCode
         self.answerList = answerList
     }
@@ -31,6 +33,7 @@ struct AnswerByDatePayload: Equatable, Hashable {
         self.categoryId = entity.categoryId
         self.questionId = entity.questionId
         self.question = entity.question
+        self.questionCreatedAt = entity.questionCreatedAt
         self.inviteCode = entity.inviteCode
         self.answerList = entity.answerList.map { AnswerList($0) }
     }
