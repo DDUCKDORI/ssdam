@@ -45,7 +45,7 @@ extension Project {
                 bundleId: "com.dduckdori.\(name)",
                 infoPlist: .default,
                 sources: ["Targets/\(name)/Sources/**"],
-                resources: [],
+                resources: ["Resources/LaunchScreen.storyboard"],
                 entitlements: .relativeToRoot("\(Module.app.name)/Entitlements/Ssdam.entitlements"),
                 dependencies: [])
         let tests = Target(name: "\(name)Tests",
@@ -74,6 +74,7 @@ extension Project {
             platform: platform,
             product: .app,
             bundleId: "com.dduckdori.\(name)",
+            deploymentTarget: .iOS(targetVersion: "16.4", devices: [.iphone, .ipad]),
             infoPlist: "Config/Ssdam-Info.plist",
             sources: ["Sources/**"],
             resources: ["Resources/**"],
