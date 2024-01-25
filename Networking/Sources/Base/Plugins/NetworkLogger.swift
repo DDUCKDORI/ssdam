@@ -79,6 +79,7 @@ final class NetworkLogger: PluginType {
         switch statusCode {
         case 401:
             reissueAccessToken(request: TokenInfo(accessToken: Const.accessToken, refreshToken: Const.refreshToken))
+//        case 400, 404:
             
         default:
             return
@@ -120,6 +121,40 @@ extension NetworkLogger {
                     //                    UserDefaults.standard.removeObject(forKey: Const.userID)
                     print("error - statusCode: \(statusCode)")
                 }
+            }
+        }
+    }
+}
+
+public extension UIApplication {
+    var firstKeyWindow: UIWindow? {
+        let windowScenes = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+        let activeScene = windowScenes
+            .filter { $0.activationState == .foregroundActive }
+        let firstActiveScene = activeScene.first
+        let keyWindow = firstActiveScene?.keyWindow
+        
+        return keyWindow
+    }
+}
+
+public extension UIWindow {
+    
+    var visibleViewController: UIViewController? {
+        return self.visibleViewControllerFrom(vc: self.rootViewController)
+    }
+    
+    func visibleViewControllerFrom(vc: UIViewController? = UIApplication.shared.firstKeyWindow?.rootViewController) -> UIViewController? {
+        if let nc = vc as? UINavigationController {
+            return self.visibleViewControllerFrom(vc: nc.visibleViewController)
+        } else if let tc = vc as? UITabBarController {
+            return self.visibleViewControllerFrom(vc: tc.selectedViewController)
+        } else {
+            if let pvc = vc?.presentedViewController {
+                return self.visibleViewControllerFrom(vc: pvc)
+            } else {
+                return vc
             }
         }
     }

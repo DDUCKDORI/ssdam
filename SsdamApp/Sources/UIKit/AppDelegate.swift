@@ -9,6 +9,7 @@
 //import FirebaseCore
 import UIKit
 import CoreData
+import Networking
 
 @main
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -16,17 +17,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     let screenRouter = ScreenRouter(factory: .init())
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-//        FirebaseApp.configure()
-//        let container = PersistenceController.shared.container
-//        let entity = NSEntityDescription.entity(forEntityName: "Dates", in: container.viewContext)
-//        let date = NSManagedObject(entity: entity!, insertInto: container.viewContext)
-//        date.setValue(Date.now, forKey: "completedAt")
-//        
-//        do {
-//            try container.viewContext.save()
-//        } catch {
-//            print(error.localizedDescription)
-//        }
+        //        FirebaseApp.configure()
+        
         navigationBarConfigure()
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
@@ -37,7 +29,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         window.makeKeyAndVisible()
         
         
-        UNUserNotificationCenter.current().delegate = self        
+        UNUserNotificationCenter.current().delegate = self
         //        application.registerForRemoteNotifications()
         
         //        Messaging.messaging().delegate = self
@@ -56,15 +48,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     
     private func navigationBarConfigure() {
         let backButtonImage = UIImage(named: "chevron.left")?.withTintColor(.black, renderingMode: .alwaysOriginal)
-
+        
         let standardAppearance = UINavigationBarAppearance()
         standardAppearance.backgroundColor = .white
         standardAppearance.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)
-
+        
         let compactAppearance = UINavigationBarAppearance()
         compactAppearance.backgroundColor = .white
         compactAppearance.setBackIndicatorImage(backButtonImage, transitionMaskImage: backButtonImage)
-
+        
         UINavigationBar.appearance().tintColor = .black
         UINavigationBar.appearance().standardAppearance = standardAppearance
         UINavigationBar.appearance().compactAppearance = compactAppearance
@@ -111,5 +103,25 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo
         print("didReceive: userInfo: ", userInfo)
         completionHandler()
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        NetworkMonitor.shared.startNetworkMonitoring { status in
+            if status == .notReachable {
+                if let vc = UIApplication.shared.firstKeyWindow?.visibleViewController as? UIViewController {
+                    let alert = UIAlertController(title: "네트워크 오류", message: "연결이 불안정합니다 동훈 개발자가 원인을 찾고 있습니다🤔", preferredStyle:UIAlertController.Style.alert)
+                    let action1 = UIAlertAction(title:"확인", style: .default) { action in
+                    }
+                    alert.addAction(action1)
+                    vc.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        NetworkMonitor.shared.stopNetworkMonitoring { status in
+            print(status)
+        }
     }
 }
