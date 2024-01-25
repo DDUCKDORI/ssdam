@@ -35,7 +35,7 @@ enum AlertActionType: Equatable {
     case logout
     case withdraw
     case deleteUserInfo
-    case withdrawAction(WithdrawBody)
+    case issueAccessToken(String, String)
 }
 
 struct SettingReducer: Reducer {
@@ -44,12 +44,15 @@ struct SettingReducer: Reducer {
     struct State: Equatable {
         @PresentationState var alert: AlertState<AlertActionType>?
         @PresentationState var sheet: PresentationState<SheetType>?
+        var accessToken: String = ""
     }
     
     enum Action: Equatable {
         case alert(PresentationAction<AlertActionType>)
         case sheet(PresentationAction<SheetType>)
         case withdrawResponse(TaskResult<WithdrawEntity>)
+        case issueAccessTokenResponse(TaskResult<TokenEntity>)
+        case withdrawAction(WithdrawBody)
     }
     
     var body: some ReducerOf<Self> {
@@ -75,7 +78,7 @@ struct SettingReducer: Reducer {
                     state.alert = AlertState(
                         title: TextState("회원탈퇴 확인"),
                         message: TextState("회원을 탈퇴하면 모든\n데이터가 삭제됩니다.\n탈퇴하시겠어요?"),
-                        primaryButton: .destructive(TextState("탈퇴하기"), action: .send(.withdrawAction(WithdrawBody(invite_cd: Const.inviteCd , mem_id: Const.memId)))),
+                        primaryButton: .destructive(TextState("탈퇴하기"), action: .send(.issueAccessToken(Const.authorizationCode, Const.identityToken))),
                         secondaryButton: .cancel(TextState("취소"))
                     )
                 case .deleteUserInfo:
@@ -84,14 +87,15 @@ struct SettingReducer: Reducer {
                         screenRouter.change(root: .launch)
                     }
                     return .none
-                case let .withdrawAction(body):
+                case let .issueAccessToken(code, token):
                     return .run { send in
-                        let result = await TaskResult {
-                            let data = await authUseCase.withdraw(body: body)
+                        let result = await TaskResult{
+                            let data = await authUseCase.issueAccessToken(code, token)
                             return data
                         }
-                        await send(.withdrawResponse(result))
+                        await send(.issueAccessTokenResponse(result))
                     }
+                    
                 }
                 return .none
             case .alert(.dismiss):
@@ -103,6 +107,20 @@ struct SettingReducer: Reducer {
             case .sheet(.dismiss):
                 state.sheet = nil
                 return .none
+            case let .issueAccessTokenResponse(.success(entity)):
+                state.accessToken = entity.accessToken
+                return .send(.withdrawAction(WithdrawBody(authorization_code: state.accessToken, invite_cd: Const.inviteCd, mem_id: Const.memId)))
+            case let .issueAccessTokenResponse(.failure(error)):
+                print(error.localizedDescription)
+                return .none
+            case let .withdrawAction(body):
+                return .run { send in
+                    let result = await TaskResult {
+                        let data = await authUseCase.withdraw(body: body)
+                        return data
+                    }
+                    await send(.withdrawResponse(result))
+                }
             case let .withdrawResponse(.success(entity)):
                 if entity.result == "Success" {
                     UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)

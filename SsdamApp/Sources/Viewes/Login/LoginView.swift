@@ -31,6 +31,8 @@ struct LoginReducer: Reducer {
         Reduce { state, action in
             switch action {
             case let .issueToken(code, token):
+                Const.authorizationCode = code
+                Const.identityToken = token
                 return .run { send in
                     let result = await TaskResult{
                         let data = await authUseCase.issueAccessToken(code, token)

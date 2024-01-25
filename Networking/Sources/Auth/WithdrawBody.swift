@@ -9,10 +9,12 @@
 import Foundation
 
 public struct WithdrawBody: Equatable, Encodable {
+    public var authorization_code: String
     public var invite_cd: String
     public var mem_id: Int
     
-    public init(invite_cd: String, mem_id: Int) {
+    public init(authorization_code: String, invite_cd: String, mem_id: Int) {
+        self.authorization_code = authorization_code
         self.invite_cd = invite_cd
         self.mem_id = mem_id
     }

@@ -60,4 +60,10 @@ public enum Const {
     
     @UserDefault(key: "modalPresented", defaultValue: false)
     public static var modalPresented: Bool
+    
+    @UserDefault(key: "authorizationCode", defaultValue: "")
+    public static var authorizationCode: String
+    
+    @UserDefault(key: "identityToken", defaultValue: "")
+    public static var identityToken: String
 }
