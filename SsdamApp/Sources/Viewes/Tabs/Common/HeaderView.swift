@@ -40,6 +40,8 @@ struct HeaderView: View {
                     viewStore.send(.settingTapped)
                 }, label: {
                     Image(.setting)
+                        .frame(width: 32, height: 32)
+                        .contentShape(Circle())
                 })
             }
             .padding(.horizontal, 30)

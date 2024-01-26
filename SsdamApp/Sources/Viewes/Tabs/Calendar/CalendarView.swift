@@ -101,7 +101,7 @@ struct CalendarView: View {
                 CalendarViewRepresentable(selectedDate: viewStore.binding(get: \.date, send: { value in
                         .datePicked(value, Const.inviteCd)
                 }))
-                .fixedSize(horizontal: false, vertical: true)
+                .fixedSize(horizontal: false, vertical: UIDevice.current.userInterfaceIdiom == .phone ? true : false)
                 .padding(.top, 35)
                 .padding(.horizontal, 20)
                 Spacer()
