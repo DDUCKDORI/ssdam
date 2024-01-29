@@ -25,12 +25,12 @@ struct CalendarViewRepresentable: UIViewRepresentable {
         view.selectionBehavior = UICalendarSelectionSingleDate(delegate: context.coordinator)
         view.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-//        view.reloadDecorations(forDateComponents: decorateFor, animated: true)
 
         return view
     }
     
     func updateUIView(_ uiView: UICalendarView, context: Context) {
+        uiView.availableDateRange.end = .now
         uiView.reloadDecorations(forDateComponents: decorateFor, animated: true)
     }
     
