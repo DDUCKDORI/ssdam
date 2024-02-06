@@ -17,6 +17,7 @@ public extension TargetDependency {
     static let firebaseDynamicLinks: TargetDependency = .external(name: "FirebaseDynamicLinks")
     static let firebaseCrashlytics: TargetDependency = .external(name: "FirebaseCrashlytics")
     static let tca: TargetDependency = .external(name: "ComposableArchitecture")
+    static let googleMobileAds: TargetDependency = .external(name: "GoogleMobileAds")
 }
 
 extension Project {

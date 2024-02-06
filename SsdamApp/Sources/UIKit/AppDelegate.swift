@@ -10,6 +10,9 @@
 import UIKit
 import CoreData
 import Networking
+import GoogleMobileAds
+import Firebase
+import AppTrackingTransparency
 
 @main
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -17,9 +20,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     let screenRouter = ScreenRouter(factory: .init())
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        //        FirebaseApp.configure()
         
+        FirebaseApp.configure()
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+           ATTrackingManager.requestTrackingAuthorization(completionHandler: { _ in })
+//         }
+
         navigationBarConfigure()
+        
         let window = UIWindow(frame: UIScreen.main.bounds)
         self.window = window
         let launchView = LaunchView(store: .init(initialState: LaunchReducer.State(), reducer: {

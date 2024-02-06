@@ -17,5 +17,6 @@ let project = Project.app(
         .firebaseCrashlytics,
         .firebaseDynamicLinks,
         .firebaseRemoteConfig,
-        .tca
+        .tca,
+        .googleMobileAds
     ] + [Module.data, Module.domain, Module.network, Module.utils].map(\.project), additionalTargets: [])

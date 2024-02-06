@@ -14,7 +14,8 @@ let dependencies = Dependencies(
         .swiftyJSON,
         .kingfisher,
         .firebaseSdk,
-        .tca
+        .tca,
+        .googleMobileAds
     ]),
     platforms: [.iOS]
 )
@@ -25,4 +26,5 @@ public extension Package {
     static let kingfisher: Package = .remote(url: "https://github.com/onevcat/Kingfisher.git", requirement: .branch("master"))
     static let firebaseSdk: Package = .remote(url: "https://github.com/firebase/firebase-ios-sdk.git", requirement: .upToNextMajor(from: "10.9.0"))
     static let tca: Package = .remote(url: "https://github.com/pointfreeco/swift-composable-architecture.git", requirement: .branch("main"))
+    static let googleMobileAds: Package = .remote(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", requirement: .branch("main"))
 }
