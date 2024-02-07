@@ -12,6 +12,8 @@ import ComposableArchitecture
 import Domain
 import Utils
 import Networking
+import AppTrackingTransparency
+import AdSupport
 
 public enum HomeViewType {
     case question
@@ -28,6 +30,8 @@ struct HomeReducer: Reducer {
         var questionPayload: QuestionPayload = .init()
         var answerPayload: RequestAnswerPayload = .init()
         @PresentationState var isPresented: PresentationState<Bool>?
+        var adViewControllerRepresentable = AdViewControllerRepresentable()
+        var coordinator = InterstitialAdCoordinator()
     }
     
     enum Action: Equatable {
@@ -40,6 +44,8 @@ struct HomeReducer: Reducer {
         case makeQuestionPayload(TaskResult<FetchQuestionEntity>)
         case requestAnswer(PostAnswerBody)
         case requestAnswerResponse(TaskResult<RequestAnswerEntity>)
+        case loadAd
+        case showAd
     }
     var body: some ReducerOf<Self> {
         Scope(state: \.writeState, action: /Action.writeAction) {
@@ -55,6 +61,9 @@ struct HomeReducer: Reducer {
                 return .none
             case let .fetchQuestion(id):
                 LocalNotificationHelper.shared.setAuthorization()
+                    ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
+                        print(ASIdentifierManager.shared().advertisingIdentifier)
+                    })
                 return .run { send in
                     let result = await TaskResult {
                         let data = await mainUseCase.fetchQuestionByUser(id: id)
@@ -105,6 +114,12 @@ struct HomeReducer: Reducer {
                 return .none
             case .presentSheet(.dismiss):
                 state.isPresented = nil
+                return .send(.showAd)
+            case .loadAd:
+                state.coordinator.loadAd()
+                return .none
+            case .showAd:
+                state.coordinator.showAd(from: state.adViewControllerRepresentable.viewController)
                 return .none
             default:
                 return .none
@@ -134,7 +149,9 @@ struct HomeView: View {
             }
             .onAppear {
                 viewStore.send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
+                viewStore.send(.loadAd)
             }
+            .background(viewStore.adViewControllerRepresentable)
         }
     }
     

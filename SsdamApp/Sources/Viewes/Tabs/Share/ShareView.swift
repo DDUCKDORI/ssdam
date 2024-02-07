@@ -11,6 +11,7 @@ import ComposableArchitecture
 import Domain
 import Utils
 import Networking
+import GoogleMobileAds
 
 struct ShareReducer: Reducer {
     @Dependency(\.screenRouter) var screenRouter
@@ -134,6 +135,9 @@ struct ShareView: View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
             ZStack {
                 Color.white
+                    .safeAreaInset(edge: .bottom) {
+                        AdBannerView()
+                    }
                 VStack {
                     Text("\(Const.nickname.withAttributed(.pHeadline2))님 가족현황")
                         .font(.pHeadline2)

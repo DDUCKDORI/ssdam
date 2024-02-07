@@ -10,6 +10,7 @@ import SwiftUI
 import ComposableArchitecture
 import Domain
 import Utils
+import GoogleMobileAds
 
 final class CompletedDateManager: ObservableObject {
     @Dependency(\.mainUseCase) var mainUseCase
@@ -161,6 +162,9 @@ struct CalendarView: View {
             .task {
                 await CompletedDateManager.shared.fetchCompletedDates(code: Const.inviteCd)
             }
+        }
+        .safeAreaInset(edge: .bottom) {
+            AdBannerView()
         }
     }
 }
