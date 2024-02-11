@@ -12,7 +12,7 @@ import GoogleMobileAds
 struct AdBannerView: UIViewControllerRepresentable {
     @State private var viewWidth: CGFloat = .zero
     private let bannerView = GADBannerView()
-    private let adUnitID = "ca-app-pub-3940256099942544/2435281174"
+    private let adUnitID = "ca-app-pub-2415988675881853/9154608703"
     
     func makeUIViewController(context: Context) -> some UIViewController {
         let bannerViewController = BannerViewController()

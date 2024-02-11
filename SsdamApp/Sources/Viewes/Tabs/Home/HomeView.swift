@@ -44,6 +44,7 @@ struct HomeReducer: Reducer {
         case makeQuestionPayload(TaskResult<FetchQuestionEntity>)
         case requestAnswer(PostAnswerBody)
         case requestAnswerResponse(TaskResult<RequestAnswerEntity>)
+        case backgroundThreadWork
         case loadAd
         case showAd
     }
@@ -115,6 +116,10 @@ struct HomeReducer: Reducer {
             case .presentSheet(.dismiss):
                 state.isPresented = nil
                 return .send(.showAd)
+            case .backgroundThreadWork:
+                return .run(priority: .background) { send in
+                    await send(.loadAd)
+                }
             case .loadAd:
                 state.coordinator.loadAd()
                 return .none
@@ -149,7 +154,7 @@ struct HomeView: View {
             }
             .onAppear {
                 viewStore.send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))
-                viewStore.send(.loadAd)
+                viewStore.send(.backgroundThreadWork)
             }
             .background(viewStore.adViewControllerRepresentable)
         }
