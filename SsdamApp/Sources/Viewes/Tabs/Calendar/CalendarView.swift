@@ -19,7 +19,7 @@ final class CompletedDateManager: ObservableObject {
     
     public static let shared = CompletedDateManager()
     private init() {}
-
+    
     func fetchCompletedDates(code: String) async {
         let dates = await mainUseCase.fetchCompletedDates(code: code)
         let dateComponents = dates.compactMap { $0.toDateComponents(.withoutDash) }
@@ -105,8 +105,8 @@ struct CalendarView: View {
                 .fixedSize(horizontal: false, vertical: UIDevice.current.userInterfaceIdiom == .phone ? true : false)
                 .padding(.top, 35)
                 .padding(.horizontal, 20)
-                Spacer()
-                    
+//                Spacer()
+                AdBannerView()
             }
             .sheet(store: self.store.scope(state: \.$isPresented, action: CalendarReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
                 ZStack {
@@ -162,9 +162,6 @@ struct CalendarView: View {
             .task {
                 await CompletedDateManager.shared.fetchCompletedDates(code: Const.inviteCd)
             }
-        }
-        .safeAreaInset(edge: .bottom) {
-            AdBannerView()
         }
     }
 }
