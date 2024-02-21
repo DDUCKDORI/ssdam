@@ -20,7 +20,7 @@ public final class MainRepositoryImpl: MainRepository {
     public func fetchQuestionByUser(id: String) async -> JSON {
         let data = try? await client.request(router: MainAPI.fetchQuestionByUser(id))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
@@ -28,7 +28,7 @@ public final class MainRepositoryImpl: MainRepository {
     public func fetchAnswer(id: String) async -> JSON {
         let data = try? await client.request(router: MainAPI.fetchAnswer(id))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
@@ -36,7 +36,7 @@ public final class MainRepositoryImpl: MainRepository {
     public func fetchAllAnswers(id: String) async -> [JSON] {
         let data = try? await client.request(router: MainAPI.fetchAnswer(id))
             .map { try? JSON(data: $0.data).arrayValue }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? []
     }
@@ -44,7 +44,7 @@ public final class MainRepositoryImpl: MainRepository {
     public func fetchCompletedDates(code: String) async -> [JSON] {
         let data = try? await client.request(router: MainAPI.fetchCompletedDates(code))
             .map { try? JSON(data: $0.data)["date"].arrayValue }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? []
     }
@@ -52,7 +52,7 @@ public final class MainRepositoryImpl: MainRepository {
     public func fetchAnswerByDate(date: String, code: String) async -> JSON {
         let data = try? await client.request(router: MainAPI.fetchAnswerByDate(date, code))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
@@ -60,7 +60,7 @@ public final class MainRepositoryImpl: MainRepository {
     public func postAnswer(request: PostAnswerBody) async -> JSON {
         let data = try? await client.request(router: MainAPI.postQuestion(request))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
@@ -68,7 +68,7 @@ public final class MainRepositoryImpl: MainRepository {
     public func modifyAnswer(request: PostAnswerBody) async -> JSON {
         let data = try? await client.request(router: MainAPI.modifyAnswer(request))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }

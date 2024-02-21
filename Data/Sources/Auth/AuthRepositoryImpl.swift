@@ -21,7 +21,7 @@ public final class AuthRepositoryImpl: AuthRepository {
     public func issueAccessToken(_ code: String, _ token: String) async -> JSON {
         let data = try? await client.request(router: AuthAPI.issueAccessToken(code, token))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
@@ -29,7 +29,7 @@ public final class AuthRepositoryImpl: AuthRepository {
     public func login(tokenInfo: [String: Any]) async -> JSON {
         let data = try? await client.request(router: AuthAPI.login(tokenInfo))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
@@ -37,7 +37,7 @@ public final class AuthRepositoryImpl: AuthRepository {
     public func fetchNumberOfFamily(code: String) async -> SwiftyJSON.JSON {
         let data = try? await client.request(router: AuthAPI.fetchNumberOfFamily(code))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
@@ -45,7 +45,7 @@ public final class AuthRepositoryImpl: AuthRepository {
     public func join(body: FamilyJoinBody) async -> JSON {
         let data = try? await client.request(router: AuthAPI.join(body))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }
@@ -53,7 +53,7 @@ public final class AuthRepositoryImpl: AuthRepository {
     public func withdraw(body: WithdrawBody) async -> JSON {
         let data = try? await client.request(router: AuthAPI.withdraw(body))
             .map { try? JSON(data: $0.data) }
-            .mapError(\.backendError)
+//            .mapError(\.backendError)
             .get()
         return data ?? ""
     }

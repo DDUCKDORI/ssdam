@@ -11,20 +11,19 @@ public extension TargetDependency {
     static let moya: TargetDependency = .external(name: "Moya")
     static let combineMoya: TargetDependency = .external(name: "CombineMoya")
     static let swiftyJSON: TargetDependency = .external(name: "SwiftyJSON")
-    static let kingfisher: TargetDependency = .external(name: "Kingfisher")
-    static let firebaseRemoteConfig: TargetDependency = .external(name: "FirebaseRemoteConfig")
+//    static let firebaseRemoteConfig: TargetDependency = .external(name: "FirebaseRemoteConfig")
     static let firebaseAnalytics: TargetDependency = .external(name: "FirebaseAnalytics")
-    static let firebaseDynamicLinks: TargetDependency = .external(name: "FirebaseDynamicLinks")
-    static let firebaseCrashlytics: TargetDependency = .external(name: "FirebaseCrashlytics")
+//    static let firebaseDynamicLinks: TargetDependency = .external(name: "FirebaseDynamicLinks")
+//    static let firebaseCrashlytics: TargetDependency = .external(name: "FirebaseCrashlytics")
     static let tca: TargetDependency = .external(name: "ComposableArchitecture")
     static let googleMobileAds: TargetDependency = .external(name: "GoogleMobileAds")
 }
 
 extension Project {
     /// Helper function to create the Project for this ExampleApp
-    public static func app(name: String, platform: Platform, dependencies: [TargetDependency], additionalTargets: [String]) -> Project {
-        var targets = makeAppTargets(name: name,
-                                     platform: platform,
+    public static func app(name: String, destinations: Destinations, dependencies: [TargetDependency], additionalTargets: [String]) -> Project {
+        let targets = makeAppTargets(name: name,
+                                     destinations: destinations,
                                      dependencies: dependencies)
         
         return Project(name: name,
@@ -36,33 +35,9 @@ extension Project {
                        targets: targets)
     }
 
-    // MARK: - Private
-
-    /// Helper function to create a framework target and an associated unit test target
-    private static func makeFrameworkTargets(name: String, platform: Platform) -> [Target] {
-        let sources = Target(name: name,
-                platform: platform,
-                product: .framework,
-                bundleId: "com.dduckdori.\(name)",
-                infoPlist: .default,
-                sources: ["Targets/\(name)/Sources/**"],
-                resources: ["Resources/LaunchScreen.storyboard"],
-                entitlements: .relativeToRoot("\(Module.app.name)/Entitlements/Ssdam.entitlements"),
-                dependencies: [])
-        let tests = Target(name: "\(name)Tests",
-                platform: platform,
-                product: .unitTests,
-                bundleId: "com.dduckdori.\(name)Tests",
-                infoPlist: "Config/SsdamTest-Info.plist",
-                sources: ["Tests/**"],
-                resources: [],
-                dependencies: [.target(name: name)])
-        return [sources, tests]
-    }
-
     /// Helper function to create the application target and the unit test target.
-    private static func makeAppTargets(name: String, platform: Platform, dependencies: [TargetDependency]) -> [Target] {
-        let platform: Platform = platform
+    private static func makeAppTargets(name: String, destinations: Destinations, dependencies: [TargetDependency]) -> [Target] {
+        let destinations: Destinations = destinations
 //        let infoPlist: [String: InfoPlist.Value] = [
 //            "CFBundleShortVersionString": "1.0",
 //            "CFBundleVersion": "1",
@@ -70,22 +45,22 @@ extension Project {
 //            "UILaunchStoryboardName": "LaunchScreen"
 //            ]
 
-        let mainTarget = Target(
+        let mainTarget = Target.target(
             name: name,
-            platform: platform,
+            destinations: destinations,
             product: .app,
             bundleId: "com.dduckdori.\(name)",
-            deploymentTarget: .iOS(targetVersion: "16.4", devices: [.iphone, .ipad]),
+            deploymentTargets: .iOS("16.4"),
             infoPlist: "Config/Ssdam-Info.plist",
             sources: ["Sources/**"],
             resources: ["Resources/**"],
-            entitlements: .relativeToRoot("\(Module.app.name)/Entitlements/Ssdam.entitlements"),
+            entitlements: "Entitlements/Ssdam.entitlements",
             dependencies: dependencies
         )
 
-        let testTarget = Target(
+        let testTarget = Target.target(
             name: "\(name)Tests",
-            platform: platform,
+            destinations: destinations,
             product: .unitTests,
             bundleId: "com.dduckdori.\(name)Tests",
             infoPlist: "Config/SsdamTest-Info.plist",
@@ -110,13 +85,12 @@ public extension Project {
 //        let settings: Settings = makeAppSettings()
 
         let targets: [Target] = [
-            Target(
+            Target.target(
                 name: name,
-                platform: .iOS,
+                destinations: [.iPhone, .iPad],
                 product: .framework,
                 bundleId: "\(organizationName).\(name)",
-                deploymentTarget: .iOS(targetVersion: "15.0",
-                                       devices: [.iphone]),
+                deploymentTargets: .iOS("16.4"),
                 infoPlist: .default,
                 sources: ["Sources/**"],
                 resources: resources,

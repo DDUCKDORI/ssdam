@@ -63,9 +63,6 @@ extension AuthAPI: BaseAPI, TargetType {
         case let .issueAccessToken(code, token):
             return ["code": code, "id_token": token]
         case let .login(tokenInfo):
-            guard let jsonData = try? JSONSerialization.data(withJSONObject: tokenInfo, options: []) else {
-                return [:]
-            }
             return tokenInfo
         case let .join(body):
             return body.toParam()

@@ -15,14 +15,14 @@ import Moya
 public final class APIClient: MoyaProvider<MultiTarget> {
     public init() {
         let plugins = NetworkAuthPlugins.shared.fetchPlugins()
-        let responseCacher = ResponseCacher(behavior: .modify { _, response in
-            let userInfo = ["date": Date()]
-            return CachedURLResponse(
-                response: response.response,
-                data: response.data,
-                userInfo: userInfo,
-                storagePolicy: .allowed)
-        })
+//        let responseCacher = ResponseCacher(behavior: .modify { _, response in
+//            let userInfo = ["date": Date()]
+//            return CachedURLResponse(
+//                response: response.response,
+//                data: response.data,
+//                userInfo: userInfo,
+//                storagePolicy: .allowed)
+//        })
 
         let sessionConfig = URLSessionConfiguration.default
         sessionConfig.timeoutIntervalForRequest = 5

@@ -10,25 +10,25 @@ import Foundation
 import Moya
 import SwiftyJSON
 
-public struct BackendError: Decodable, Error {
-    public var status: String
-    public var message: String
-
-    public init() {
-        status = ""
-        message = ""
-    }
-
-    public init(json: JSON) {
-        status = json["result"].stringValue
-        message = json["message"].stringValue
-    }
-}
-
-public extension MoyaError {
-    var backendError: BackendError {
-        response
-            .flatMap { try? JSON(data: $0.data) }
-            .map { BackendError(json: $0) } ?? BackendError()
-    }
-}
+//public struct BackendError: Decodable, Error {
+//    public var status: String
+//    public var message: String
+//
+//    public init() {
+//        status = ""
+//        message = ""
+//    }
+//
+//    public init(json: JSON) {
+//        status = json["result"].stringValue
+//        message = json["message"].stringValue
+//    }
+//}
+//
+//public extension MoyaError {
+//    var backendError: BackendError {
+//        response
+//            .flatMap { try? JSON(data: $0.data) }
+//            .map { BackendError(json: $0) } ?? BackendError()
+//    }
+//}

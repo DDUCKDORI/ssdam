@@ -10,13 +10,13 @@ import ProjectDescriptionHelpers
 
 let project = Project.app(
     name: "Ssdam",
-    platform: .iOS,
+    destinations: [.iPhone, .iPad],
     dependencies: [
-        .kingfisher,
+//        .kingfisher,
         .firebaseAnalytics,
-        .firebaseCrashlytics,
-        .firebaseDynamicLinks,
-        .firebaseRemoteConfig,
+//        .firebaseCrashlytics,
+//        .firebaseDynamicLinks,
+//        .firebaseRemoteConfig,
         .tca,
         .googleMobileAds
     ] + [Module.data, Module.domain, Module.network, Module.utils].map(\.project), additionalTargets: [])
