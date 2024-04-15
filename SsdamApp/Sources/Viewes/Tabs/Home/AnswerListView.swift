@@ -167,7 +167,7 @@ struct AnswerListView: View {
                             .padding(.horizontal, 62)
                         
                         VStack(spacing: 16) {
-                            HomeAnswerCardView(store: self.store.scope(state: \.cardState, action: AnswerListReducer.Action.cardAction))
+                            HomeAnswerCardView(store: self.store.scope(state: \.cardState, action: \.cardAction))
                         }
                         .padding(.horizontal, 30)
                         .padding(.bottom, UIApplication.shared.getSafeAreaBottom() + 56)
@@ -176,10 +176,10 @@ struct AnswerListView: View {
                 .padding(.top, 142)
             }
             .ignoresSafeArea()
-            .fullScreenCover(store: self.store.scope(state: \.$isPresented, action: AnswerListReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
-                WriteView(store: self.store.scope(state: \.writeState, action: AnswerListReducer.Action.writeAction))
+            .fullScreenCover(store: self.store.scope(state: \.$isPresented, action: \.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
+                WriteView(store: self.store.scope(state: \.writeState, action: \.writeAction))
             }
-            .modal(self.store.scope(state: \.modalState, action: AnswerListReducer.Action.modalAction), content: {
+            .modal(self.store.scope(state: \.modalState, action: \.modalAction), content: {
                 VStack {
                     Image(.checkmarkCircleMint)
                         .padding(.bottom, 8)

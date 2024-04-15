@@ -202,7 +202,7 @@ struct SettingView: View {
                 }
                 .listStyle(.insetGrouped)
             }
-            .sheet(store: self.store.scope(state: \.$sheet, action: SettingReducer.Action.sheet), onDismiss: { viewStore.send(.sheet(.dismiss)) }) { store in
+            .sheet(store: self.store.scope(state: \.$sheet, action: \.sheet), onDismiss: { viewStore.send(.sheet(.dismiss)) }) { store in
                 switch viewStore.sheet?.wrappedValue {
                 case .service:
                     WebViewRepresentable(urlString: SheetType.service.urlString)
@@ -214,7 +214,7 @@ struct SettingView: View {
                     EmptyView()
                 }
             }
-            .alert(store: self.store.scope(state: \.$alert, action: SettingReducer.Action.alert))
+            .alert(store: self.store.scope(state: \.$alert, action: \.alert))
             .safeAreaInset(edge: .bottom) {
                 Text("Designed by Shinhye")
                     .font(.caption)

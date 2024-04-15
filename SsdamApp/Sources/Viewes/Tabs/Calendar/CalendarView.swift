@@ -109,7 +109,7 @@ struct CalendarView: View {
 //                Spacer()
                 AdBannerView()
             }
-            .sheet(store: self.store.scope(state: \.$isPresented, action: CalendarReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
+            .sheet(store: self.store.scope(state: \.$isPresented, action: \.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
                 ZStack {
                     Color(.yellow20)
                         .ignoresSafeArea()

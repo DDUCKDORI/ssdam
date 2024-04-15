@@ -73,13 +73,13 @@ struct TabRouterView: View {
                         TabView(selection: viewStore.binding(get: \.tab, send: { value in
                                 .tabChanged(value)
                         }), content: {
-                            CalendarView(store: self.store.scope(state: \.calendarState, action: TabRouterReducer.Action.calendarAction))
+                            CalendarView(store: self.store.scope(state: \.calendarState, action: \.calendarAction))
                                 .tag(TabRouterReducer.Tab.calendar)
                             HomeView(store: .init(initialState: HomeReducer.State(), reducer: {
                                 HomeReducer()
                             }))
                             .tag(TabRouterReducer.Tab.home)
-                            ShareView(store: self.store.scope(state: \.shareState, action: TabRouterReducer.Action.shareAction))
+                            ShareView(store: self.store.scope(state: \.shareState, action: \.shareAction))
                                 .tag(TabRouterReducer.Tab.share)
                         })
                         .preferredColorScheme(.light)

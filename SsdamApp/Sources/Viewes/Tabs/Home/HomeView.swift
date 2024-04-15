@@ -146,12 +146,12 @@ struct HomeView: View {
                         }
                     
                 } else {
-                    AnswerListView(store: self.store.scope(state: \.listState, action: HomeReducer.Action.listAction))
+                    AnswerListView(store: self.store.scope(state: \.listState, action: \.listAction))
                 }
             }
             .ignoresSafeArea()
-            .fullScreenCover(store: self.store.scope(state: \.$isPresented, action: HomeReducer.Action.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
-                WriteView(store: self.store.scope(state: \.writeState, action: HomeReducer.Action.writeAction))
+            .fullScreenCover(store: self.store.scope(state: \.$isPresented, action: \.presentSheet), onDismiss: { viewStore.send(.presentSheet(.dismiss)) }) { store in
+                WriteView(store: self.store.scope(state: \.writeState, action: \.writeAction))
             }
             .onAppear {
                 viewStore.send(.fetchQuestion("\(Const.inviteCd)_\(Const.memId)"))

@@ -27,7 +27,6 @@ public final class InterstitialAdCoordinator: NSObject, GADFullScreenContentDele
         GADInterstitialAd.load(withAdUnitID: "ca-app-pub-2415988675881853/7670422053", request: GADRequest()) { ad, error in
             self.interstitial = ad
             self.interstitial?.fullScreenContentDelegate = self
-            print("Error: \(error)")
         }
     }
     

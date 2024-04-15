@@ -204,7 +204,7 @@ struct ShareView: View {
             .onAppear {
                 viewStore.send(.fetchNumberOfFamily(Const.inviteCd))
             }
-            .toast(self.store.scope(state: \.toastState, action: ShareReducer.Action.toast)) {
+            .toast(self.store.scope(state: \.toastState, action: \.toast)) {
                 Text("가족 연결이 완료되었습니다 🎉")
                     .foregroundStyle(Color.white)
                     .padding(.vertical, 17)

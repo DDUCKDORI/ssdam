@@ -220,7 +220,7 @@ struct NicknameView: View {
             .onTapGesture {
                 self.focusedField = false
             }
-            .sheet(store: self.store.scope(state: \.$sheet, action: NicknameReducer.Action.sheet), onDismiss: { viewStore.send(.sheet(.dismiss)) }) { store in
+            .sheet(store: self.store.scope(state: \.$sheet, action: \.sheet), onDismiss: { viewStore.send(.sheet(.dismiss)) }) { store in
                 switch viewStore.sheet?.wrappedValue {
                 case .service:
                     WebViewRepresentable(urlString: SheetType.service.urlString)
