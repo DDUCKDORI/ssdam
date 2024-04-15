@@ -35,16 +35,16 @@ struct HomeReducer {
         var coordinator = InterstitialAdCoordinator()
     }
     
-    enum Action: Equatable {
+    enum Action {
         case settingTapped
         case viewTypeChanged
         case writeAction(WriteReducer.Action)
         case listAction(AnswerListReducer.Action)
         case presentSheet(PresentationAction<Bool>)
         case fetchQuestion(String)
-        case makeQuestionPayload(TaskResult<FetchQuestionEntity>)
+        case makeQuestionPayload(Result<FetchQuestionEntity, Error>)
         case requestAnswer(PostAnswerBody)
-        case requestAnswerResponse(TaskResult<RequestAnswerEntity>)
+        case requestAnswerResponse(Result<RequestAnswerEntity, Error>)
         case backgroundThreadWork
         case loadAd
         case showAd
@@ -67,7 +67,7 @@ struct HomeReducer {
                         print(ASIdentifierManager.shared().advertisingIdentifier)
                     })
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await mainUseCase.fetchQuestionByUser(id: id)
                         return data
                     }
@@ -93,7 +93,7 @@ struct HomeReducer {
                 return .send(.requestAnswer(body))
             case let .requestAnswer(body):
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await mainUseCase.postAnswer(request: body)
                         return data
                     }

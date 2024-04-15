@@ -24,14 +24,14 @@ struct NicknameReducer {
         @BindingState var focusedField: Bool = false
     }
     
-    enum Action: BindableAction, Equatable {
+    enum Action: BindableAction {
         case nicknameChanged(String)
         case nicknameValidation(String)
         case agreeAllToggled(Bool)
         case serviceAgreementToggled(Bool)
         case privacyAgreementToggled(Bool)
         case login([String: String])
-        case loginResponse(TaskResult<TokenEntity>)
+        case loginResponse(Result<TokenEntity, Error>)
         case sheet(PresentationAction<SheetType>)
         case binding(BindingAction<State>)
     }
@@ -66,7 +66,7 @@ struct NicknameReducer {
                 return .none
             case let .login(body):
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await authUseCase.login(tokenInfo: body)
                         return data
                     }

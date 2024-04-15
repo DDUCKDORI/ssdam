@@ -48,11 +48,11 @@ struct SettingReducer {
         var accessToken: String = ""
     }
     
-    enum Action: Equatable {
+    enum Action {
         case alert(PresentationAction<AlertActionType>)
         case sheet(PresentationAction<SheetType>)
-        case withdrawResponse(TaskResult<WithdrawEntity>)
-        case issueAccessTokenResponse(TaskResult<TokenEntity>)
+        case withdrawResponse(Result<WithdrawEntity, Error>)
+        case issueAccessTokenResponse(Result<TokenEntity, Error>)
         case withdrawAction(WithdrawBody)
     }
     
@@ -90,7 +90,7 @@ struct SettingReducer {
                     return .none
                 case let .issueAccessToken(code, token):
                     return .run { send in
-                        let result = await TaskResult{
+                        let result = await Result{
                             let data = await authUseCase.issueAccessToken(code, token)
                             return data
                         }
@@ -116,7 +116,7 @@ struct SettingReducer {
                 return .none
             case let .withdrawAction(body):
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await authUseCase.withdraw(body: body)
                         return data
                     }

@@ -20,9 +20,9 @@ struct LoginReducer {
         var tokenInfo: TokenPayload = .init()
     }
     
-    enum Action: Equatable {
+    enum Action {
         case issueToken(String, String)
-        case issueTokenResponse(TaskResult<TokenEntity>)
+        case issueTokenResponse(Result<TokenEntity, Error>)
         case navigate
         case routeToHome
         case routeToSignup
@@ -35,7 +35,7 @@ struct LoginReducer {
                 Const.authorizationCode = code
                 Const.identityToken = token
                 return .run { send in
-                    let result = await TaskResult{
+                    let result = await Result{
                         let data = await authUseCase.issueAccessToken(code, token)
                         return data
                     }
@@ -96,7 +96,7 @@ struct LoginView: View {
                         switch authResults.credential{
                         case let appleIDCredential as ASAuthorizationAppleIDCredential:
                             //                            let UserIdentifier = appleIDCredential.user
-                            let email = appleIDCredential.email
+//                            let email = appleIDCredential.email
                             let identityToken = String(data: appleIDCredential.identityToken!, encoding: .utf8)
                             let authorizationCode = String(data: appleIDCredential.authorizationCode!, encoding: .utf8)
                             

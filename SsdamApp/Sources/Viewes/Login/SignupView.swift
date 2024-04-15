@@ -17,7 +17,7 @@ struct SignupReducer {
         var page: Int = 0
     }
     
-    enum Action: Equatable {
+    enum Action {
         case userType(UserTypeReducer.Action)
         case nickname(NicknameReducer.Action)
         case pageChanged

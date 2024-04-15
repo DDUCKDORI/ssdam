@@ -26,14 +26,14 @@ struct AnswerListReducer {
         @PresentationState var isPresented: PresentationState<Bool>?
     }
     
-    enum Action: Equatable {
+    enum Action {
         case fetchAnswer(String)
-        case answerReponse(TaskResult<[FetchAnswerEntity]>)
+        case answerReponse(Result<[FetchAnswerEntity], Error>)
         case fetchQuestion(String)
-        case makeQuestionPayload(TaskResult<FetchQuestionEntity>)
+        case makeQuestionPayload(Result<FetchQuestionEntity, Error>)
         case writeAction(WriteReducer.Action)
         case requestAnswer(PostAnswerBody)
-        case requestAnswerResponse(TaskResult<RequestAnswerEntity>)
+        case requestAnswerResponse(Result<RequestAnswerEntity, Error>)
         case cardAction(HomeAnswerCardReducer.Action)
         case presentSheet(PresentationAction<Bool>)
         case modalAction(ModalReducer.Action)
@@ -55,7 +55,7 @@ struct AnswerListReducer {
             switch action {
             case let .fetchQuestion(id):
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await mainUseCase.fetchQuestionByUser(id: id)
                         return data
                     }
@@ -69,7 +69,7 @@ struct AnswerListReducer {
                 return .none
             case let .fetchAnswer(id):
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await mainUseCase.fetchAllAnswers(id: id)
                         return data
                     }
@@ -104,7 +104,7 @@ struct AnswerListReducer {
                 return .send(.requestAnswer(body))
             case let .requestAnswer(body):
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await mainUseCase.modifyAnswer(request: body)
                         return data
                     }

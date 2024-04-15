@@ -30,15 +30,15 @@ struct ShareReducer {
         @BindingState var focusedField: Bool = false
     }
     
-    enum Action: BindableAction, Equatable {
+    enum Action: BindableAction {
         case codeChanged(String)
         case codeValidation(String)
         case settingTapped
         case toast(ToastReducer.Action)
         case fetchNumberOfFamily(String)
-        case fetchNumberOfFamilyResponse(TaskResult<NumberOfFamilyEntity>)
+        case fetchNumberOfFamilyResponse(Result<NumberOfFamilyEntity, Error>)
         case join(FamilyJoinBody)
-        case joinReseponse(TaskResult<FamilyJoinEntity>)
+        case joinReseponse(Result<FamilyJoinEntity, Error>)
         case binding(BindingAction<State>)
     }
     
@@ -76,7 +76,7 @@ struct ShareReducer {
                 return .send(.fetchNumberOfFamily(Const.inviteCd))
             case let .fetchNumberOfFamily(code):
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await authUseCase.fetchNumberOfFamily(code: code)
                         return data
                     }
@@ -90,7 +90,7 @@ struct ShareReducer {
                 return .none
             case let .join(body):
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await authUseCase.join(body: body)
                         return data
                     }

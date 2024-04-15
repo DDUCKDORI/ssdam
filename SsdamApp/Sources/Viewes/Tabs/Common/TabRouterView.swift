@@ -19,7 +19,7 @@ struct TabRouterReducer {
         var shareState: ShareReducer.State = .init()
     }
     
-    enum Action: Equatable {
+    enum Action {
         case tabChanged(Tab)
         case calendarAction(CalendarReducer.Action)
         case shareAction(ShareReducer.Action)

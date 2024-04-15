@@ -38,13 +38,13 @@ struct CalendarReducer {
         @PresentationState var isPresented: PresentationState<Bool>?
     }
     
-    enum Action: Equatable {
+    enum Action {
         case datePicked(DateComponents?, String)
         case presentSheet(PresentationAction<Bool>)
         case settingTapped
-        case answerResponse(TaskResult<AnswerByDateEntity>)
+        case answerResponse(Result<AnswerByDateEntity, Error>)
         case fetchCompletedDates(String)
-        case completedDatesResponse(TaskResult<[String]>)
+        case completedDatesResponse(Result<[String], Error>)
     }
     
     var body: some ReducerOf<Self> {
@@ -54,7 +54,7 @@ struct CalendarReducer {
                 guard let date = date else { return .none }
                 state.date = date
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await mainUseCase.fetchAnswerByDate(date: date.toString(.withoutDash), code: code)
                         return data
                     }
@@ -75,7 +75,7 @@ struct CalendarReducer {
                 return .send(.presentSheet(.presented(true)))
             case let .fetchCompletedDates(code):
                 return .run { send in
-                    let result = await TaskResult {
+                    let result = await Result {
                         let data = await mainUseCase.fetchCompletedDates(code: code)
                         return data
                     }
