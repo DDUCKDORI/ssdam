@@ -9,7 +9,8 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct SignUpSuccessReducer: Reducer {
+@Reducer
+struct SignUpSuccessReducer {
     @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
         var titles: [String] = [

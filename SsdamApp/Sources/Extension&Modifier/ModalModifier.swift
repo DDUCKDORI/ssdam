@@ -9,7 +9,8 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct ModalReducer: Reducer {
+@Reducer
+struct ModalReducer {
     
     public struct State: Equatable {
         @PresentationState var isPresented: PresentationState<Bool>? = .init(wrappedValue: false)

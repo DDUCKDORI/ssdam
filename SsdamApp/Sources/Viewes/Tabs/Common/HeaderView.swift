@@ -9,7 +9,8 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct HeaderReducer: Reducer {
+@Reducer
+struct HeaderReducer {
     @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
     }

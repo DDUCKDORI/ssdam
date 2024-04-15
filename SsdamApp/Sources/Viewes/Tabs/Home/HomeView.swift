@@ -20,7 +20,8 @@ public enum HomeViewType {
     case list
 }
 
-struct HomeReducer: Reducer {
+@Reducer
+struct HomeReducer {
     @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.mainUseCase) var mainUseCase
     struct State: Equatable {

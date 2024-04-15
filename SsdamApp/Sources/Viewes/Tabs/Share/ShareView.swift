@@ -13,7 +13,8 @@ import Utils
 import Networking
 import GoogleMobileAds
 
-struct ShareReducer: Reducer {
+@Reducer
+struct ShareReducer {
     @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.authUseCase) var authUseCase
     @Dependency(\.mainQueue) var mainQueue

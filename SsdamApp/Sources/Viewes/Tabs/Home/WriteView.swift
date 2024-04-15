@@ -11,7 +11,8 @@ import ComposableArchitecture
 import Domain
 import Networking
 
-struct WriteReducer: Reducer {
+@Reducer
+struct WriteReducer {
     @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
         var question: String = ""

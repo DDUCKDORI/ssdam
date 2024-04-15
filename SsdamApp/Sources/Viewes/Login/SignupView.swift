@@ -9,7 +9,8 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct SignupReducer: Reducer {
+@Reducer
+struct SignupReducer {
     struct State: Equatable {
         var userType: UserTypeReducer.State = .init()
         var nickname: NicknameReducer.State = .init()

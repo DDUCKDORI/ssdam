@@ -38,7 +38,8 @@ enum AlertActionType: Equatable {
     case issueAccessToken(String, String)
 }
 
-struct SettingReducer: Reducer {
+@Reducer
+struct SettingReducer {
     @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.authUseCase) var authUseCase
     struct State: Equatable {

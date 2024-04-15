@@ -11,7 +11,8 @@ import ComposableArchitecture
 import Domain
 import Utils
 
-struct NicknameReducer: Reducer {
+@Reducer
+struct NicknameReducer {
     @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.authUseCase) var authUseCase
     struct State: Equatable {

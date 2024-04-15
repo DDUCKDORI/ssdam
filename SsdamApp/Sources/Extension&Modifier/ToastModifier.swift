@@ -9,7 +9,8 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct ToastReducer: Reducer {
+@Reducer
+struct ToastReducer {
     
     public struct State: Equatable {
         @PresentationState var isPresented: PresentationState<Bool>? = .init(wrappedValue: false)

@@ -15,7 +15,8 @@ enum UserType {
     case child
 }
 
-struct UserTypeReducer: Reducer {
+@Reducer
+struct UserTypeReducer {
     struct State: Equatable {
         var userType: UserType? = nil
     }

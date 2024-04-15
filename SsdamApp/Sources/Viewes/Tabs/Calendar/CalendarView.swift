@@ -27,7 +27,8 @@ final class CompletedDateManager: ObservableObject {
     }
 }
 
-struct CalendarReducer: Reducer {
+@Reducer
+struct CalendarReducer {
     @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.mainUseCase) var mainUseCase
     struct State: Equatable {

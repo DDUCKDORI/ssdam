@@ -10,10 +10,10 @@ import SwiftUI
 import ComposableArchitecture
 import Utils
 
-struct LaunchReducer: Reducer {
+@Reducer
+struct LaunchReducer {
     @Dependency(\.screenRouter) var screenRouter
     struct State: Equatable {
-        //        var text: String = ""
     }
     
     enum Action: Equatable {

@@ -10,7 +10,8 @@ import SwiftUI
 import ComposableArchitecture
 import Utils
 
-struct HomeAnswerCardReducer: Reducer {
+@Reducer
+struct HomeAnswerCardReducer {
     struct State: Equatable {
         var payloads: [FetchAnswerPayload] = []
         var expands: [Bool] = []

@@ -13,7 +13,8 @@ import Utils
 import Networking
 import CoreData
 
-struct AnswerListReducer: Reducer {
+@Reducer
+struct AnswerListReducer {
     @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.mainUseCase) var mainUseCase
     struct State: Equatable {

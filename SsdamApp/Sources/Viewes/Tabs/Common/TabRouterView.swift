@@ -10,7 +10,8 @@ import SwiftUI
 import ComposableArchitecture
 import Utils
 
-struct TabRouterReducer: Reducer {
+@Reducer
+struct TabRouterReducer {
     struct State: Equatable {
         var tab: Tab = .home
         var homeState: HomeReducer.State = .init()
