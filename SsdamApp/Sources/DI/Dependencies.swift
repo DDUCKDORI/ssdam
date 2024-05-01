@@ -15,16 +15,25 @@ extension AuthUseCaseImpl: DependencyKey {
     public static var liveValue: AuthUseCaseImpl {
         AuthUseCaseImpl(repository: AuthRepositoryImpl(client: .init()))
     }
+    public static var previewValue: AuthUseCaseImpl {
+        AuthUseCaseImpl(repository: AuthRepositoryImpl(client: .init()))
+    }
 }
 
 extension Router: DependencyKey {
     public static var liveValue: ScreenRouter {
         ScreenRouter(factory: .init())
     }
+    public static var previewValue: ScreenRouter {
+        ScreenRouter(factory: .init())
+    }
 }
 
 extension MainUseCaseImpl: DependencyKey {
     public static var liveValue: MainUseCaseImpl {
+        MainUseCaseImpl(repository: MainRepositoryImpl(client: .init()))
+    }
+    public static var previewValue: MainUseCaseImpl {
         MainUseCaseImpl(repository: MainRepositoryImpl(client: .init()))
     }
 }
