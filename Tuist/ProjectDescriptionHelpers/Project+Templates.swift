@@ -55,8 +55,8 @@ extension Project {
             sources: ["Sources/**"],
             resources: ["Resources/**"],
             entitlements: "Entitlements/Ssdam.entitlements",
-            dependencies: dependencies
-//            settings: .settings(configurations: [.release(name: "release", xcconfig: "Config"), .debug(name: "debug", xcconfig: "Config")])
+            dependencies: dependencies,
+            settings: .settings(base: ["DEVELOPMENT_TEAM": "5H679H8G3X"], configurations: [.release(name: "release", xcconfig: "xcconfigs/release.xcconfig"), .debug(name: "debug", xcconfig: "xcconfigs/debug.xcconfig")])
         )
 
         let testTarget = Target.target(
