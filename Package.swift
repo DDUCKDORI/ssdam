@@ -20,8 +20,7 @@ import PackageDescription
         targetSettings: [:
 //            "Mockable": ["ENABLE_TESTING_SEARCH_PATHS": "YES"],
 //            "MockableTest": ["ENABLE_TESTING_SEARCH_PATHS": "YES"],
-        ],
-        platforms: [.iOS]
+        ]
     )
 
 #endif
