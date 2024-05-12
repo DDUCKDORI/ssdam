@@ -71,3 +71,6 @@ Tuist/Dependencies
 Matchfile
 *.xcconfig
 .build/
+fastlane/.env
+*.p8
+fastlane/release_note

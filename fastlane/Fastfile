@@ -18,7 +18,48 @@ default_platform(:ios)
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
+    app_store_connect_api_key(
+    key_id: ENV["APPLE_API_KEY_KEY_ID"],
+    issuer_id: ENV["APPLE_API_KEY_ISSUER_ID"],
+    key_filepath: "./fastlane/AuthKey_79YR34L53V.p8",
+    duration: 1200, # optional (maximum 1200)
+    in_house: false)
+
+    match(
+      git_url: ENV["GIT_URL"],
+      storage_mode: "git",
+      type: "appstore",
+      readonly: true
+    )
+    
+    match(
+      git_url: ENV["GIT_URL"],
+      storage_mode: "git",
+      type: "development",
+      readonly: true
+    )
+
+    sync_code_signing(
+      type: "appstore",
+      app_identifier: ["com.dduckdori.Ssdam"],
+      readonly: true
+    )
+    increment_build_number(
+    xcodeproj: "./SsdamApp/Ssdam.xcodeproj"
+    )
+    
+    get_version_number(xcodeproj: "./SsdamApp/Ssdam.xcodeproj", target: "Ssdam")
+
     build_app(scheme: "Ssdam")
-    upload_to_testflight
+
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+    
+    slack(
+        message: "iOS-Testflight 업로드 중. 잠시만 기다려주세요",
+        slack_url: ENV['SLACK_URL'],
+        payload:{
+            "수정사항" => File.open("release_note").read
+        }
+    )
   end
 end
