@@ -7,8 +7,6 @@
 //
 
 import Alamofire
-import Combine
-import CombineMoya
 import Foundation
 import Moya
 
@@ -43,22 +41,22 @@ public final class APIClient: MoyaProvider<MultiTarget> {
         }
     }
 
-    public func nullableResponseRequest(router: TargetType) -> AnyCancellable {
-        self.requestPublisher(.target(router), callbackQueue: .main)
-            .filter(statusCodes: 200 ..< 500)
-            .retry(3)
-            .subscribe(on: DispatchQueue.global())
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-    }
+//    public func nullableResponseRequest(router: TargetType) -> AnyCancellable {
+//        self.requestPublisher(.target(router), callbackQueue: .main)
+//            .filter(statusCodes: 200 ..< 500)
+//            .retry(3)
+//            .subscribe(on: DispatchQueue.global())
+//            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
+//    }
 }
 
 
-extension MoyaProvider {
-    func request(_ target: Target) async -> Result<Response, MoyaError> {
-        await withCheckedContinuation { continuation in
-            self.request(target) { result in
-                continuation.resume(returning: result)
-            }
-        }
-    }
-}
+//extension MoyaProvider {
+//    func request(_ target: Target) async -> Result<Response, MoyaError> {
+//        await withCheckedContinuation { continuation in
+//            self.request(target) { result in
+//                continuation.resume(returning: result)
+//            }
+//        }
+//    }
+//}

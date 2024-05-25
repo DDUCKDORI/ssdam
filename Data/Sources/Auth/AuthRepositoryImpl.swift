@@ -34,7 +34,7 @@ public final class AuthRepositoryImpl: AuthRepository {
         return data ?? ""
     }
     
-    public func fetchNumberOfFamily(code: String) async -> SwiftyJSON.JSON {
+    public func fetchNumberOfFamily(code: String) async -> JSON {
         let data = try? await client.request(router: AuthAPI.fetchNumberOfFamily(code))
             .map { try? JSON(data: $0.data) }
 //            .mapError(\.backendError)
