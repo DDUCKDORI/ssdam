@@ -143,64 +143,97 @@ struct SettingView: View {
     let store: StoreOf<SettingReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
-            VStack {
-                List {
-                    Section {
-                        Group {
-                            Text("서비스 이용약관")
-                                .onTapGesture {
-                                    viewStore.send(.sheet(.presented(.service)))
-                                }
-                            Text("개인정보 처리방침")
-                                .onTapGesture {
-                                    viewStore.send(.sheet(.presented(.privacy)))
-                                }
-                            Text("이메일 문의")
-                                .onTapGesture {
-                                    if MFMailComposeViewController.canSendMail() {
-                                        viewStore.send(.sheet(.presented(.mail)))
+            ZStack(alignment: .top) {
+                VStack {
+                    List {
+                        Section {
+                            Group {
+                                Text("서비스 이용약관")
+                                    .onTapGesture {
+                                        viewStore.send(.sheet(.presented(.service)))
                                     }
-                                    else {
-                                        let url = URL(string: "mailto:ssdami9345@gmail.com")!
-                                        UIApplication.shared.open(url)
+                                Text("개인정보 처리방침")
+                                    .onTapGesture {
+                                        viewStore.send(.sheet(.presented(.privacy)))
                                     }
-                                }
-                        }
-                    } header: {
-                        Text("고객문의")
-                            .font(.pHeadline2)
-                            .foregroundStyle(.black)
-                            .padding(.bottom, 13)
-                    }
-                    .font(.pButton4)
-                    .foregroundStyle(Color(.gray60))
-                    
-                    Section {
-                        Group {
-                            //                            Text("가족 연결해제")
-                            //                                .onTapGesture {
-                            //                                    viewStore.send(.alert(.presented(.disconnect)))
-                            //                                }
-                            Text("로그아웃")
-                                .onTapGesture {
-                                    viewStore.send(.alert(.presented(.logout)))
-                                }
-                            Text("회원탈퇴")
-                                .onTapGesture {
-                                    viewStore.send(.alert(.presented(.withdraw)))
-                                }
+                                Text("이메일 문의")
+                                    .onTapGesture {
+                                        if MFMailComposeViewController.canSendMail() {
+                                            viewStore.send(.sheet(.presented(.mail)))
+                                        }
+                                        else {
+                                            let url = URL(string: "mailto:ssdami9345@gmail.com")!
+                                            UIApplication.shared.open(url)
+                                        }
+                                    }
+                            }
+                        } header: {
+                            Text("고객문의")
+                                .font(.pHeadline2)
+                                .foregroundStyle(.black)
+                                .padding(.bottom, 13)
                         }
                         .font(.pButton4)
                         .foregroundStyle(Color(.gray60))
-                    } header: {
-                        Text("서비스 설정")
-                            .font(.pHeadline2)
-                            .foregroundStyle(.black)
-                            .padding(.bottom, 13)
+                        
+                        Section {
+                            Group {
+                                //                            Text("가족 연결해제")
+                                //                                .onTapGesture {
+                                //                                    viewStore.send(.alert(.presented(.disconnect)))
+                                //                                }
+                                Text("로그아웃")
+                                    .onTapGesture {
+                                        viewStore.send(.alert(.presented(.logout)))
+                                    }
+                                Text("회원탈퇴")
+                                    .onTapGesture {
+                                        viewStore.send(.alert(.presented(.withdraw)))
+                                    }
+                            }
+                            .font(.pButton4)
+                            .foregroundStyle(Color(.gray60))
+                        } header: {
+                            Text("서비스 설정")
+                                .font(.pHeadline2)
+                                .foregroundStyle(.black)
+                                .padding(.bottom, 13)
+                        }
+                        
                     }
-                    
+                    .listStyle(.insetGrouped)
                 }
-                .listStyle(.insetGrouped)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Buy me a coffee")
+                        .font(.pHeadline2)
+                        .padding(.leading, 15)
+                        .padding(.bottom, 20)
+                    
+                    HStack(spacing: 16) {
+                        VStack {
+                            Image(.espresso)
+                            Text("Espresso $3")
+                                .font(.pButton4)
+                                .foregroundStyle(Color(.mint80))
+                        }
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity)
+                        .background(Color(.mint20))
+                        .clipShape(RoundedCorner(radius: 10))
+                        VStack {
+                            Image(.latte)
+                            Text("Latte $5")
+                                .font(.pButton4)
+                                .foregroundStyle(Color(.yellow80))
+                        }
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity)
+                        .background(Color(.yellow20))
+                        .clipShape(RoundedCorner(radius: 10))
+                    }
+                }
+                .padding(.horizontal, 20)
+                .offset(y: 391)
             }
             .sheet(store: self.store.scope(state: \.$sheet, action: \.sheet), onDismiss: { viewStore.send(.sheet(.dismiss)) }) { store in
                 switch viewStore.sheet?.wrappedValue {
