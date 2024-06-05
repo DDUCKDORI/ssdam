@@ -12,6 +12,7 @@ import Utils
 import Networking
 import Domain
 import MessageUI
+import StoreKit
 
 enum SheetType: Equatable {
     case service
@@ -40,12 +41,14 @@ enum AlertActionType: Equatable {
 
 @Reducer
 struct SettingReducer {
+    @Dependency(\.purchaseManager) var purchaseManager
     @Dependency(\.screenRouter) var screenRouter
     @Dependency(\.authUseCase) var authUseCase
     struct State: Equatable {
         @PresentationState var alert: AlertState<AlertActionType>?
         @PresentationState var sheet: PresentationState<SheetType>?
         var accessToken: String = ""
+        var products: [SKProduct] = []
     }
     
     enum Action {
@@ -54,6 +57,8 @@ struct SettingReducer {
         case withdrawResponse(Result<WithdrawEntity, Error>)
         case issueAccessTokenResponse(Result<TokenEntity, Error>)
         case withdrawAction(WithdrawBody)
+        case fetchProducts
+        case purchase(SKProduct)
     }
     
     var body: some ReducerOf<Self> {
@@ -134,12 +139,21 @@ struct SettingReducer {
             case let .withdrawResponse(.failure(error)):
                 print(error.localizedDescription)
                 return .none
+            case let .purchase(produdct):
+                purchaseManager.buyProduct(product: produdct)
+                return .none
+            case .fetchProducts:
+                purchaseManager.fetchProducts(productIdentifiers: ["d_espresso", "d_latte"])
+                state.products = purchaseManager.products
+                print(state.products)
+                return .none
             }
         }
     }
 }
 
 struct SettingView: View {
+    @StateObject var purchaseManager = PurchaseManager.shared
     let store: StoreOf<SettingReducer>
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -210,26 +224,34 @@ struct SettingView: View {
                         .padding(.bottom, 20)
                     
                     HStack(spacing: 16) {
-                        VStack {
-                            Image(.espresso)
-                            Text("Espresso $3")
-                                .font(.pButton4)
-                                .foregroundStyle(Color(.mint80))
+                        if !purchaseManager.products.isEmpty {
+                            VStack {
+                                Image(.espresso)
+                                Text("Espresso $3")
+                                    .font(.pButton4)
+                                    .foregroundStyle(Color(.mint80))
+                            }
+                            .padding(.vertical, 8)
+                            .frame(maxWidth: .infinity)
+                            .background(Color(.mint20))
+                            .clipShape(RoundedCorner(radius: 10))
+                            .onTapGesture {
+                                purchaseManager.buyProduct(product: purchaseManager.products[0])
+                            }
+                            VStack {
+                                Image(.latte)
+                                Text("Latte $5")
+                                    .font(.pButton4)
+                                    .foregroundStyle(Color(.yellow80))
+                            }
+                            .padding(.vertical, 8)
+                            .frame(maxWidth: .infinity)
+                            .background(Color(.yellow20))
+                            .clipShape(RoundedCorner(radius: 10))
+                            .onTapGesture {
+                                purchaseManager.buyProduct(product: purchaseManager.products[1])
+                            }
                         }
-                        .padding(.vertical, 8)
-                        .frame(maxWidth: .infinity)
-                        .background(Color(.mint20))
-                        .clipShape(RoundedCorner(radius: 10))
-                        VStack {
-                            Image(.latte)
-                            Text("Latte $5")
-                                .font(.pButton4)
-                                .foregroundStyle(Color(.yellow80))
-                        }
-                        .padding(.vertical, 8)
-                        .frame(maxWidth: .infinity)
-                        .background(Color(.yellow20))
-                        .clipShape(RoundedCorner(radius: 10))
                     }
                 }
                 .padding(.horizontal, 20)
@@ -252,6 +274,12 @@ struct SettingView: View {
                 Text("Designed by Shinhye")
                     .font(.caption)
                     .foregroundStyle(Color(.gray30))
+            }
+            .onAppear {
+                DispatchQueue.main.async {
+                    purchaseManager.fetchProducts(productIdentifiers: ["d_espresso", "d_latte"])
+                    purchaseManager.products.sort(by: { Double(truncating: $0.price) < Double(truncating: $01.price) })
+                }
             }
         }
     }
