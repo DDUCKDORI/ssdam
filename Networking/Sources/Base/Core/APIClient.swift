@@ -25,7 +25,6 @@ public final class APIClient: MoyaProvider<MultiTarget> {
         let sessionConfig = URLSessionConfiguration.default
         sessionConfig.timeoutIntervalForRequest = 5
         sessionConfig.waitsForConnectivity = true
-        sessionConfig.requestCachePolicy = .returnCacheDataElseLoad
 
         let session = Session(configuration: sessionConfig,
                               startRequestsImmediately: true)
