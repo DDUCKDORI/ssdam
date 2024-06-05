@@ -13,6 +13,7 @@ import Networking
 import GoogleMobileAds
 import Firebase
 import AppTrackingTransparency
+import StoreKit
 
 @main
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -20,6 +21,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     let screenRouter = ScreenRouter(factory: .init())
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        
+        SKPaymentQueue.default().add(PurchaseManager.shared)
         
         FirebaseApp.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
