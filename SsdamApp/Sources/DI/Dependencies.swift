@@ -38,6 +38,12 @@ extension MainUseCaseImpl: DependencyKey {
     }
 }
 
+extension PurchaseManager: DependencyKey {
+    public static var liveValue: PurchaseManager { .shared }
+    public static var previewValue: PurchaseManager { .shared }
+}
+
+
 extension DependencyValues {
     var screenRouter: ScreenRouter {
         get { self[ScreenRouter.self] }
@@ -52,5 +58,10 @@ extension DependencyValues {
     var mainUseCase: MainUseCaseImpl {
         get { self[MainUseCaseImpl.self] }
         set { self[MainUseCaseImpl.self] = newValue }
+    }
+    
+    var purchaseManager: PurchaseManager {
+        get {self[PurchaseManager.self] }
+        set {self[PurchaseManager.self] = newValue }
     }
 }
