@@ -6,14 +6,15 @@
 //  Copyright © 2023 com.dduckdori. All rights reserved.
 //
 
-//import FirebaseCore
-import UIKit
-import CoreData
-import Networking
-import GoogleMobileAds
-import Firebase
 import AppTrackingTransparency
+import CoreData
+import Firebase
+import GoogleMobileAds
+import Networking
 import StoreKit
+
+// import FirebaseCore
+import UIKit
 
 @main
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -21,15 +22,14 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     let screenRouter = ScreenRouter(factory: .init())
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        
         SKPaymentQueue.default().add(PurchaseManager.shared)
         
         FirebaseApp.configure()
         GADMobileAds.sharedInstance().start(completionHandler: nil)
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-           ATTrackingManager.requestTrackingAuthorization(completionHandler: { _ in })
-//         }
-
+        //        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        ATTrackingManager.requestTrackingAuthorization(completionHandler: { _ in })
+        //         }
+        
         navigationBarConfigure()
         
         let window = UIWindow(frame: UIScreen.main.bounds)
@@ -39,7 +39,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }))
         screenRouter.start(window: window, rootView: launchView)
         window.makeKeyAndVisible()
-        
         
         UNUserNotificationCenter.current().delegate = self
         //        application.registerForRemoteNotifications()
@@ -53,7 +52,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         //            print("FCM registration token: \(token)")
         //          }
         //        }
-        
         
         return true
     }
@@ -79,7 +77,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     //    }
 }
 
-//extension AppDelegate: MessagingDelegate {
+// extension AppDelegate: MessagingDelegate {
 //    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
 //        print("Firebase registration token: \(String(describing: fcmToken))")
 //
@@ -92,7 +90,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 //        // TODO: If necessary send token to application server.
 //        // Note: This callback is fired at each app startup and whenever a new token is generated.
 //    }
-//}
+// }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     // 푸시메세지가 앱이 켜져 있을때 나올때
@@ -121,8 +119,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         NetworkMonitor.shared.startNetworkMonitoring { status in
             if status == .notReachable {
                 if let vc = UIApplication.shared.firstKeyWindow?.visibleViewController as? UIViewController {
-                    let alert = UIAlertController(title: "네트워크 오류", message: "연결이 불안정합니다\n개발자 이동훈(이)가 원인을 찾고 있습니다🤔", preferredStyle:UIAlertController.Style.alert)
-                    let action1 = UIAlertAction(title:"확인", style: .default) { action in
+                    let alert = UIAlertController(title: "네트워크 오류", message: "연결이 불안정합니다\n개발자 이동훈(이)가 원인을 찾고 있습니다🤔", preferredStyle: UIAlertController.Style.alert)
+                    let action1 = UIAlertAction(title: "확인", style: .default) { _ in
                     }
                     alert.addAction(action1)
                     vc.present(alert, animated: true, completion: nil)
