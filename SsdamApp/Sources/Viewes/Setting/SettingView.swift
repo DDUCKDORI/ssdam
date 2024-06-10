@@ -217,14 +217,14 @@ struct SettingView: View {
                     }
                     .listStyle(.insetGrouped)
                 }
-                VStack(alignment: .leading, spacing: 0) {
-                    Text("Buy me a coffee")
-                        .font(.pHeadline2)
-                        .padding(.leading, 15)
-                        .padding(.bottom, 20)
-                    
-                    HStack(spacing: 16) {
-                        if !purchaseManager.products.isEmpty {
+                if !purchaseManager.products.isEmpty {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Buy me a coffee")
+                            .font(.pHeadline2)
+                            .padding(.leading, 15)
+                            .padding(.bottom, 20)
+                        
+                        HStack(spacing: 16) {
                             VStack {
                                 Image(.espresso)
                                 Text("Espresso $3")
@@ -253,9 +253,9 @@ struct SettingView: View {
                             }
                         }
                     }
+                    .padding(.horizontal, 20)
+                    .offset(y: 391)
                 }
-                .padding(.horizontal, 20)
-                .offset(y: 391)
             }
             .sheet(store: self.store.scope(state: \.$sheet, action: \.sheet), onDismiss: { viewStore.send(.sheet(.dismiss)) }) { store in
                 switch viewStore.sheet?.wrappedValue {
