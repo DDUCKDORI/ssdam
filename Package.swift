@@ -9,6 +9,7 @@ import PackageDescription
         productTypes: [
             "ComposableArchitecture": .staticFramework,
             "FirebaseAnalytics": .staticLibrary,
+            "FirebaseCrashlytics": .staticLibrary,
             "GoogleMobileAds": .staticLibrary,
             "Moya": .staticLibrary,
             "CombineMoya": .staticLibrary,
@@ -28,9 +29,9 @@ import PackageDescription
 let package = Package(
     name: "Ssdam",
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", branch: "main"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", exact: "1.10.0"),
         .package(url: "https://github.com/Alamofire/Alamofire.git", branch: "master"),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk", branch: "main"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", exact: "10.22.1"),
         .package(url: "https://github.com/Moya/Moya.git", branch: "master"),
         .package(url: "https://github.com/googleads/swift-package-manager-google-mobile-ads.git", branch: "main"),
         .package(url: "https://github.com/SwiftyJSON/SwiftyJSON.git", branch: "master")
