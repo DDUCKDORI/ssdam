@@ -14,7 +14,7 @@ public extension TargetDependency {
 //    static let firebaseRemoteConfig: TargetDependency = .external(name: "FirebaseRemoteConfig")
     static let firebaseAnalytics: TargetDependency = .external(name: "FirebaseAnalytics")
 //    static let firebaseDynamicLinks: TargetDependency = .external(name: "FirebaseDynamicLinks")
-//    static let firebaseCrashlytics: TargetDependency = .external(name: "FirebaseCrashlytics")
+    static let firebaseCrashlytics: TargetDependency = .external(name: "FirebaseCrashlytics")
     static let tca: TargetDependency = .external(name: "ComposableArchitecture")
     static let googleMobileAds: TargetDependency = .external(name: "GoogleMobileAds")
 }
@@ -25,7 +25,7 @@ extension Project {
         let targets = makeAppTargets(name: name,
                                      destinations: destinations,
                                      dependencies: dependencies)
-        
+
         return Project(name: name,
                        organizationName: "com.dduckdori",
 //                       options: .options(
@@ -68,7 +68,8 @@ extension Project {
             sources: ["Tests/**"],
             dependencies: [
                 .target(name: "\(name)")
-        ])
+            ]
+        )
         return [mainTarget, testTarget]
     }
 }
@@ -82,7 +83,8 @@ public extension Project {
         name: String,
         dependencies: [TargetDependency],
         additionalTargets: [String],
-        resources: ProjectDescription.ResourceFileElements? = nil) -> Project {
+        resources: ProjectDescription.ResourceFileElements? = nil
+    ) -> Project {
 //        let settings: Settings = makeAppSettings()
 
         let targets: [Target] = [

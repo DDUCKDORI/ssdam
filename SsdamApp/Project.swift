@@ -14,7 +14,7 @@ let project = Project.app(
     dependencies: [
 //        .kingfisher,
         .firebaseAnalytics,
-//        .firebaseCrashlytics,
+        .firebaseCrashlytics,
 //        .firebaseDynamicLinks,
 //        .firebaseRemoteConfig,
         .tca,
