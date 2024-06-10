@@ -8,7 +8,7 @@
 
 import Foundation
 import Moya
-import SwiftyJSON
+//import SwiftyJSON
 
 //public struct BackendError: Decodable, Error {
 //    public var status: String
