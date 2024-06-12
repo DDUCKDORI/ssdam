@@ -55,6 +55,7 @@ extension Project {
             sources: ["Sources/**"],
             resources: ["Resources/**"],
             entitlements: "Entitlements/Ssdam.entitlements",
+            scripts: [.crashlytics],
             dependencies: dependencies,
             settings: .settings(base: ["DEVELOPMENT_TEAM": "5H679H8G3X"], configurations: [.release(name: "release", xcconfig: "xcconfigs/release.xcconfig"), .debug(name: "debug", xcconfig: "xcconfigs/debug.xcconfig")])
         )
