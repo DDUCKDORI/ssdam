@@ -30,6 +30,7 @@ class PurchaseManager: NSObject, ObservableObject, SKProductsRequestDelegate, SK
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         DispatchQueue.main.async {
             self.products = response.products
+            self.products.sort(by: { Double(truncating: $0.price) < Double(truncating: $01.price) })
         }
     }
 

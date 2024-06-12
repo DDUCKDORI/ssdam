@@ -278,7 +278,6 @@ struct SettingView: View {
             .onAppear {
                 DispatchQueue.main.async {
                     purchaseManager.fetchProducts(productIdentifiers: ["d_espresso", "d_latte"])
-                    purchaseManager.products.sort(by: { Double(truncating: $0.price) < Double(truncating: $01.price) })
                 }
             }
         }
