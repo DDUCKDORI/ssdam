@@ -71,3 +71,4 @@ Tuist/Dependencies
 Matchfile
 *.xcconfig
 .build/
+.mise.toml

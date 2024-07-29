@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -20,8 +20,7 @@ import PackageDescription
         targetSettings: [:
 //            "Mockable": ["ENABLE_TESTING_SEARCH_PATHS": "YES"],
 //            "MockableTest": ["ENABLE_TESTING_SEARCH_PATHS": "YES"],
-        ],
-        platforms: [.iOS]
+        ]
     )
 
 #endif
